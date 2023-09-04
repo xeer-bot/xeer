@@ -1,11 +1,11 @@
 import { CommandInteraction, ApplicationCommandOptionType, User } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
-import { noBotPermsEmbed, npEmbed } from "../utils/embeds.ts";
+import { noBotPermsEmbedBUK, npEmbed, colors } from "../../utils/embeds.ts";
 
 @Discord()
 export class UnbanCommand {
     @Slash({ name: "unban", description: "...Unbans?" })
-    async ping(
+    async execute(
         @SlashOption({ 
             name: "memberid",
             description: "Member to unban! ofc (ID)",
@@ -14,26 +14,27 @@ export class UnbanCommand {
         })
         member: string,
     interaction: CommandInteraction, bot: Client): Promise<void> {
+        await interaction.deferReply();
         const now = new Date();
         if (interaction.memberPermissions?.has("BanMembers")) {
             interaction.guild?.members.unban(member).then(async res => {
-                await interaction.reply({
+                await interaction.followUp({
                     embeds: [{
-                        title: "> :hammer: Banhammer",
+                        title: ":hammer: Banhammer",
                         description: `<@${member}> was been unbanned!`,
-                        color: 0x2b2d31,
+                        color: colors.green,
                         timestamp: now.toISOString()
                     }]
                 });
             }).catch(async res => {
-                const e = noBotPermsEmbed("Ban Members", now);
-                await interaction.reply({
+                const e = noBotPermsEmbedBUK("Ban Members");
+                await interaction.followUp({
                     embeds: [e]
                 });
             });
         } else {
-            const e = npEmbed(undefined, "Ban Members", now);
-            await interaction.reply({
+            const e = npEmbed(undefined, "Ban Members");
+            await interaction.followUp({
                 embeds: [e]
             });
         }

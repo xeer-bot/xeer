@@ -1,0 +1,8 @@
+{
+    "port": 3000,
+    "domain": "http://localhost:3000",
+    "oauth2": {
+        "client_secret": "oB3slvklZn5U-cG94Y4xZgY34nJVffTa",
+        "client_id": "1135254130521280545"
+    }
+}

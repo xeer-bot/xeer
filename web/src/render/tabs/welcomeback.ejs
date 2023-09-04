@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include("../components/head") -%>
+<body>
+    <%- include("../components/navigation") -%>
+    <div class="container">
+        <h1 class="title">Welcome back, <span id="u-token">...</span></h1>
+        <p class="subtitle">Use navigation bar to navigate!</p>
+    </div>
+    <script>
+        fetch("https://discord.com/api/users/@me", {
+            headers: {
+                authorization: "<%= token %>"
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                document.querySelector("#u-token").textContent = `${data.username}`
+            }).catch(console.error);
+    </script>
+</body>
+</html>

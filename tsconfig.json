@@ -4,11 +4,12 @@
     "target": "ESNext",
     "module": "ESNext",
     "outDir": "build",
-    "rootDir": "src",
+    "rootDir": "./",
     "strict": true,
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
     "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
 
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

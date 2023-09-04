@@ -1,11 +1,11 @@
 import { CommandInteraction, ApplicationCommandOptionType, GuildMember, GuildMemberRoleManager } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
-import { noBotPermsEmbed, npEmbed } from "../utils/embeds.ts";
+import { noBotPermsEmbedBUK, npEmbed, colors } from "../../utils/embeds.ts";
 
 @Discord()
 export class BanCommand {
     @Slash({ name: "ban", description: "...Bans?" })
-    async ping(
+    async execute(
         @SlashOption({ 
             name: "member",
             description: "Member to ban! ofc",
@@ -20,13 +20,14 @@ export class BanCommand {
         })
         reason: string,
     interaction: CommandInteraction, bot: Client): Promise<void> {
+        await interaction.deferReply();
         const now = new Date();
         if (interaction.memberPermissions?.has("BanMembers") && (interaction.member?.roles as GuildMemberRoleManager).highest.position > member.roles.highest.position) {
             (await bot.users.fetch(member.id)).send({
                 embeds: [{
-                    title: "> :hammer: Banhammer",
+                    title: ":hammer: Banhammer",
                     description: `You got banned from ${interaction.guild?.name}!\nReason: ${reason}`,
-                    color: 0x2b2d31,
+                    color: colors.red,
                     timestamp: now.toISOString()
                 }]
             }).then(async () => {
@@ -36,8 +37,8 @@ export class BanCommand {
                 await ban(interaction, member, now, reason);
             })
         } else {
-            const e = npEmbed(undefined, "Ban Members", now);
-            await interaction.reply({
+            const e = npEmbed(undefined, "Ban Members");
+            await interaction.followUp({
                 embeds: [e]
             });
         }
@@ -46,17 +47,17 @@ export class BanCommand {
 
 async function ban(interaction: CommandInteraction, member: GuildMember, now: Date, reason: string) {
     interaction.guild?.members.ban(member).then(async res => {
-        await interaction.reply({
+        await interaction.followUp({
             embeds: [{
-                title: "> :hammer: Banhammer",
+                title: ":hammer: Banhammer",
                 description: `${member} was been banned!\nReason: ${reason}`,
-                color: 0x2b2d31,
+                color: colors.green,
                 timestamp: now.toISOString()
             }]
         });
     }).catch(async () => {
-        const e = noBotPermsEmbed("Ban Members", now);
-        await interaction.reply({
+        const e = noBotPermsEmbedBUK("Ban Members");
+        await interaction.followUp({
             embeds: [e]
         });
     });

@@ -1,10 +1,11 @@
 {
   "name": "xeer",
-  "version": "1.0.0",
+  "version": "02.05.2023-dev",
   "private": true,
   "license": "MIT",
   "type": "module",
   "main": "build/main.js",
+  "author": "(GitHub) necesku",
   "scripts": {
     "build": "tsc",
     "build:changelog": "npx @discordx/changelog --src src",
@@ -14,6 +15,7 @@
   },
   "dependencies": {
     "@discordx/importer": "^1.2.2",
+    "@prisma/client": "^5.1.1",
     "colorette": "^2.0.20",
     "discord.js": "^14.11.0",
     "discordx": "^11.7.6"
@@ -22,6 +24,7 @@
     "@types/node": "^20.3.1",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
+    "prisma": "^5.1.1",
     "ts-node": "^10.9.1",
     "typescript": "5.1.3"
   },

@@ -1,29 +1,45 @@
-export function errEmbed(text: (string|undefined), now: Date) {
-    const textF = text ? text : "An error occured!"; 
+export const colors = {
+    primary: 0x2b2d31,
+    red: 0xff0000,
+    green: 0x15ff00,
+    blue: 0x0011ff,
+    yellow: 0xffff00
+}
+
+export const emojis = {
+    success: "<a:success:881595320193126410>",
+    error: "<a:error:1140682020020813976>"
+}
+
+export function errEmbed(err: Error, text: (string|undefined)) {
+    const now = new Date();
+    const textF = text ? text : `An error occured!\n\`\`\`${err.message}\`\`\``; 
     return {
-        title: "> :x: Error!",
+        title: `${emojis.error} Error!`,
         description: `${textF}`,
-        color: 0x2b2d31,
+        color: colors.red,
         timestamp: now.toISOString()
     }
 }
 
-export function npEmbed(text: (string|undefined), permission: (string|undefined), now: Date) {
+export function npEmbed(text: (string|undefined), permission: (string|undefined)) {
+    const now = new Date();
     const textF = text ? text : `You don't have ${permission ? `\`${permission}\`` : "enough"} permission(s)!`; 
     return {
-        title: "> :x: No permission!",
+        title: `${emojis.error} No permission!`,
         description: `${textF}`,
-        color: 0x2b2d31,
+        color: colors.red,
         timestamp: now.toISOString()
     }
 }
 
-export function noBotPermsEmbed(permission: string, now: Date) {
-    const textF = `An error occured. Common causes:\n- The bot has no \`${permission}\` permission.\n- The punished highest role's position is higher than bot's role position.`; 
+export function noBotPermsEmbedBUK(permission: string) {
+    const now = new Date();
+    const textF = `An error occured. Common causes:\n- The bot has no \`${permission}\` permission.\n- The punished highest role's position is higher than bot's role position.\n- The punished is already banned or unbanned (only if using ban/unban)`; 
     return {
-        title: "> :x: Error!",
+        title: `${emojis.error} Error!`,
         description: `${textF}`,
-        color: 0x2b2d31,
+        color: colors.red,
         timestamp: now.toISOString()
     }
 }

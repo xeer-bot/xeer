@@ -1,0 +1,17 @@
+.container {
+    padding: 40px;
+}
+
+.container .title {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.container::-webkit-scrollbar {
+    display: none;
+}
+
+.container .subtitle {
+    color: rgb(150, 155, 172);
+    margin-top: 5px;
+}
