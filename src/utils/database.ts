@@ -7,3 +7,7 @@ export async function createGuildConfiguration(id: string) {
         leavemsg: ""
     } });
 }
+
+export async function guildConfigurationCheck(id: string) {
+    if (await prisma.guildConfiguration.findUnique({ where: { id: id } })) { return true; } else return false;
+}

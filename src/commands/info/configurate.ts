@@ -21,7 +21,7 @@ export class ConfigurateCommand {
         option: string,
         @SlashOption({
             name: "text",
-            description: "Text ({user}: user)",
+            description: "Text (Placeholders: {user}, {guildname}, {timestamp})",
             required: true,
             type: ApplicationCommandOptionType.String
         })
