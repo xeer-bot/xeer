@@ -50,10 +50,10 @@ async function run() {
     await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
 
     if (!process.env.BOT_TOKEN) {
-      	throw Error("Could not find BOT_TOKEN in your environment");
+      	error("Couldn't find the BOT_TOKEN in your environment!");
+    } else {
+      await bot.login(process.env.BOT_TOKEN);
     }
-
-    await bot.login(process.env.BOT_TOKEN);
 }
 
 run();

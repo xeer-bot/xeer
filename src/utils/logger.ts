@@ -1,7 +1,5 @@
 import { green, blue, yellow, red, bold, blackBright } from "colorette";
 
-const webhookURL = "https://discord.com/api/webhooks/1136110444092858428/DzaOSbH4D4puUczys1hKWYd60OVEuyjBbtPWRSWnjgfy96WrpLiyXpVwfeh2MzHM0ffg"
-
 export function getTime() {
     const now = new Date();
     return now.toLocaleTimeString();
