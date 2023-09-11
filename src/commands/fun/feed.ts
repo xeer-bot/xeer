@@ -5,6 +5,6 @@ import { Client, Discord, Slash } from "discordx";
 export class FeedCommand {
     @Slash({ name: "feed", description: "Give me a snack!" })
     async execute(interaction: CommandInteraction, bot: Client) {
-        interaction.reply(":slight_smile:");
+        interaction.reply("*nom nom* :slight_smile:");
     }
 }
