@@ -4,9 +4,9 @@ import { createGuildConfiguration } from "../utils/database.ts";
 
 @Discord()
 export class GuildMemberAdd {
-    @On({ event: "guildMemberAdd" })
+    @On({ event: "guildMemberRemove" })
     async guildMemberAdd(
-        [member]: ArgsOf<"guildMemberAdd">,
+        [member]: ArgsOf<"guildMemberRemove">,
         bot: Client,
         guardPayload: any
     ) {

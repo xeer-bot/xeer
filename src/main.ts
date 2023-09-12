@@ -2,8 +2,11 @@ import { dirname, importx } from "@discordx/importer";
 import type { Interaction, Message, CommandInteraction } from "discord.js";
 import { IntentsBitField } from "discord.js";
 import { Client } from "discordx";
-import { success, error } from "./utils/logger.ts";
+import { success, error, info } from "./utils/logger.ts";
 import { PrismaClient } from "@prisma/client";
+import { title } from "./utils/main.ts";
+
+title();
 
 export const prisma = new PrismaClient();
 export const executedRecently = new Set();
@@ -52,7 +55,8 @@ async function run() {
     if (!process.env.BOT_TOKEN) {
       	error("Couldn't find the BOT_TOKEN in your environment!");
     } else {
-      await bot.login(process.env.BOT_TOKEN);
+        info("Logging in...");
+        await bot.login(process.env.BOT_TOKEN);
     }
 }
 
