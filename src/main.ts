@@ -5,8 +5,10 @@ import { Client } from "discordx";
 import { success, error, info } from "./utils/logger.ts";
 import { PrismaClient } from "@prisma/client";
 import { title } from "./utils/main.ts";
+import { init } from "./websocket/main.ts";
 
 title();
+init();
 
 export const prisma = new PrismaClient();
 export const executedRecently = new Set();

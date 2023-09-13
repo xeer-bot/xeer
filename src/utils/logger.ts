@@ -1,6 +1,6 @@
 import { green, blue, yellow, red, bold, blackBright } from "colorette";
 
-export function getTime() {
+function getTime() {
     const now = new Date();
     return now.toLocaleTimeString();
 }
