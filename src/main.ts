@@ -6,9 +6,12 @@ import { success, error, info } from "./utils/logger.ts";
 import { PrismaClient } from "@prisma/client";
 import { title } from "./utils/main.ts";
 import { init } from "./websocket/main.ts";
+import * as dotenv from "dotenv";
 
 title();
 init();
+
+dotenv.config();
 
 export const prisma = new PrismaClient();
 export const executedRecently = new Set();
@@ -55,7 +58,7 @@ async function run() {
     await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
 
     if (!process.env.BOT_TOKEN) {
-      	error("Couldn't find the BOT_TOKEN in your environment!");
+      	error("Couldn't find the BOT_TOKEN in your environment/configuration file (.env)!");
     } else {
         info("Logging in...");
         await bot.login(process.env.BOT_TOKEN);
