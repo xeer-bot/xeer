@@ -10,6 +10,9 @@ lerna-debug.log*
 # Database
 data.db
 
+# Secret
+web/config.json
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 

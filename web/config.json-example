@@ -1,0 +1,14 @@
+
+
+{
+    "port": * PORT (example: 3000) *,
+    "domain": "* DOMAIN (example: http://localhost:3000) *",
+    "oauth2": {
+        "client_secret": "* CLIENT SECRET OF AN APPLICATION *",
+        "client_id": "* CLIENT ID OF AN APPLICATION *",
+        "authorize_link": "* AUTHORIZATION LINK WITH IDENTIFY, GUILD AND EMAIL SCOPES *"
+    },
+    "bot": {
+        "invite_link": "* LINK TO INVITE THE BOT *"
+    }
+}
