@@ -1,5 +1,3 @@
-
-
 {
     "port": * PORT (example: 3000) *,
     "domain": "* DOMAIN (example: http://localhost:3000) *",

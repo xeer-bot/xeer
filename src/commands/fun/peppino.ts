@@ -1,6 +1,8 @@
 import { CommandInteraction } from "discord.js";
 import { Discord, Slash } from "discordx";
 
+const peppinos = []
+
 @Discord()
 export class PeppinoCommand {
     @Slash({ name: "peppino", description: "!!! USE WITH CAUTION !!!" })

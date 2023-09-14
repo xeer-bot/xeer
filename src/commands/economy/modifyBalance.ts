@@ -3,7 +3,6 @@ import { Discord, Slash, Client, Guard, SlashOption, SlashChoice, SlashGroup } f
 import { colors, emojis, errEmbed } from "../../utils/embeds.ts";
 import { BotOwnerOnly } from "../../guards/devOnly.ts";
 import { prisma } from "../../main.ts";
-import { contextBridge } from "electron";
 
 @Discord()
 @SlashGroup({ name: "modifybalance", description: "Modify balance (Bot Owner only)" })
