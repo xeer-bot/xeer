@@ -29,11 +29,10 @@ export class ConfigurateCommand {
         text: string,
     interaction: CommandInteraction, bot: Client): Promise<void> {
         const gID = interaction.guild?.id || "";
-        await interaction.deferReply();
         if (interaction.memberPermissions?.has("Administrator")) {
             if (await prisma.guildConfiguration.findUnique({ where: { id: gID } })) {
                 const data: any = {};
-                if (option.endsWith("-toggled")) { text.toLowerCase(); if (text == "allow" || text == "disallow") await interaction.followUp({ embeds: [errEmbed(new Error(), "Wrong text, I only accept `ALLOW` or `DISALLOW`.")] }); return; };
+                if (option.endsWith("-toggled")) { text.toLowerCase(); if (text != "allow" || "disallow") await interaction.followUp({ embeds: [errEmbed(new Error(), "Wrong text, I only accept `ALLOW` or `DISALLOW`.")] }); };
                 data[option] = text;
                 await prisma.guildConfiguration.update({ where: {
                     id: gID
@@ -46,8 +45,8 @@ export class ConfigurateCommand {
                     timestamp: now.toISOString()
                 }] });
             } else {
-                await interaction.followUp({ embeds: [errEmbed(new Error(), "Guild Configuration was made, please try again.")] });
                 await createGuildConfiguration(gID);
+                await interaction.followUp({ embeds: [errEmbed(new Error(), "Guild Configuration was made, please try again.")] });
             }
         } else {
             await interaction.followUp({ embeds: [npEmbed(undefined, "Administrator")] });
