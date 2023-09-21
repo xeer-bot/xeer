@@ -1,5 +1,5 @@
 import { Server } from "socket.io"
-import * as logger from "../utils/logger.ts";
+import * as logger from "../utils/logger.js";
 
 const port = 443;
 

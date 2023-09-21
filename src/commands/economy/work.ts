@@ -1,7 +1,7 @@
 import type { CommandInteraction } from "discord.js";
 import { Discord, Slash, Client, Guard } from "discordx";
-import { executedRecently, prisma } from "../../main.ts";
-import { colors, errEmbed } from "../../utils/embeds.ts";
+import { executedRecently, prisma } from "../../main.js";
+import { colors, errEmbed } from "../../utils/embeds.js";
 
 @Discord()
 export class WorkCommand {

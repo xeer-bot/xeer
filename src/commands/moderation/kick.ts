@@ -1,10 +1,10 @@
 import { CommandInteraction, ApplicationCommandOptionType, GuildMember, GuildMemberRoleManager } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
-import { npEmbed, noBotPermsEmbedBUK, colors } from "../../utils/embeds.ts";
+import { npEmbed, noBotPermsEmbedBUK, colors } from "../../utils/embeds.js";
 
 @Discord()
 export class KickCommand {
-    @Slash({ name: "kick", description: "...Kicks?" })
+    @Slash({ name: "kick", description: "A perfect command to kick someone." })
     async execute(
         @SlashOption({ 
             name: "member",

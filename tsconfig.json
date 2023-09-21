@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "noEmit": true,
     "target": "ESNext",
     "module": "ESNext",
     "outDir": "build",
@@ -8,7 +7,6 @@
     "strict": true,
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
 
     "experimentalDecorators": true,

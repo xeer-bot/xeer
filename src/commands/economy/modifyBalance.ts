@@ -1,14 +1,14 @@
 import { SlashCommandStringOption, type CommandInteraction, ApplicationCommandOptionType, PresenceStatusData, User } from "discord.js";
 import { Discord, Slash, Client, Guard, SlashOption, SlashChoice, SlashGroup } from "discordx";
-import { colors, emojis, errEmbed } from "../../utils/embeds.ts";
-import { BotOwnerOnly } from "../../guards/devOnly.ts";
-import { prisma } from "../../main.ts";
+import { colors, emojis, errEmbed } from "../../utils/embeds.js";
+import { BotOwnerOnly } from "../../guards/devOnly.js";
+import { prisma } from "../../main.js";
 
 @Discord()
-@SlashGroup({ name: "modifybalance", description: "Modify balance (Bot Owner only)" })
+@SlashGroup({ name: "modifybalance", description: "Economy : Modify balance (Bot Owner only)" })
 @SlashGroup("modifybalance")
 export class ModifyBalanceCommand {
-    @Slash({ description: "Sets" })
+    @Slash({ description: "Economy : Sets the balance." })
     @Guard(BotOwnerOnly)
     async set(
         @SlashOption({
@@ -59,7 +59,7 @@ export class ModifyBalanceCommand {
             } });
         }
     }
-    @Slash({ description: "Clears" })
+    @Slash({ description: "Economy : Clears the balance." })
     @Guard(BotOwnerOnly)
     async clear(
         @SlashOption({
@@ -103,7 +103,7 @@ export class ModifyBalanceCommand {
             } });
         }
     }
-    @Slash({ description: "Gets" })
+    @Slash({ description: "Economy : Gets a balance." })
     @Guard(BotOwnerOnly)
     async get(
         @SlashOption({

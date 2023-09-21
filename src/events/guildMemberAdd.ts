@@ -1,6 +1,6 @@
 import { Discord, ArgsOf, On, Client } from "discordx";
-import { prisma } from "../main.ts";
-import { createGuildConfiguration } from "../utils/database.ts";
+import { prisma } from "../main.js";
+import { createGuildConfiguration } from "../utils/database.js";
 
 @Discord()
 export class GuildMemberAdd {

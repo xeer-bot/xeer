@@ -1,6 +1,6 @@
 import type { CommandInteraction } from "discord.js";
 import { Discord, Slash, Client } from "discordx";
-import { colors } from "../../utils/embeds.ts";
+import { colors } from "../../utils/embeds.js";
 
 @Discord()
 export class PingCommand {

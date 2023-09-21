@@ -1,7 +1,7 @@
 import type { CommandInteraction } from "discord.js";
 import { Discord, Slash, Client } from "discordx";
-import { colors, errEmbed } from "../../utils/embeds.ts";
-import { prisma } from "../../main.ts";
+import { colors, errEmbed } from "../../utils/embeds.js";
+import { prisma } from "../../main.js";
 
 @Discord()
 export class BalanceCommand {

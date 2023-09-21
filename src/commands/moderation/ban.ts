@@ -1,10 +1,10 @@
 import { CommandInteraction, ApplicationCommandOptionType, GuildMember, GuildMemberRoleManager } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
-import { noBotPermsEmbedBUK, npEmbed, colors } from "../../utils/embeds.ts";
+import { noBotPermsEmbedBUK, npEmbed, colors } from "../../utils/embeds.js";
 
 @Discord()
 export class BanCommand {
-    @Slash({ name: "ban", description: "...Bans?" })
+    @Slash({ name: "ban", description: "A banhammer." })
     async execute(
         @SlashOption({ 
             name: "member",

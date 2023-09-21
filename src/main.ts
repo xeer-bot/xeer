@@ -2,10 +2,10 @@ import { dirname, importx } from "@discordx/importer";
 import type { Interaction, Message, CommandInteraction } from "discord.js";
 import { IntentsBitField } from "discord.js";
 import { Client } from "discordx";
-import { success, error, info } from "./utils/logger.ts";
+import * as log from "./utils/logger.js";
 import { PrismaClient } from "@prisma/client";
-import { title } from "./utils/main.ts";
-import { init } from "./websocket/main.ts";
+import { title } from "./utils/main.js";
+import { init } from "./websocket/main.js";
 import * as dotenv from "dotenv";
 
 title();
@@ -38,7 +38,7 @@ bot.once("ready", async () => {
         ...bot.guilds.cache.map((g) => g.id)
     );
 
-    success(`Bot ready as ${bot.user?.username}.`);
+    log.success(`Bot ready as ${bot.user?.username}.`);
 
 });
 
@@ -46,7 +46,7 @@ bot.on("interactionCreate", async (interaction: (Interaction)) => {
     try {
         await bot.executeInteraction(interaction);
     } catch (err) {
-        error(err);
+        log.error(err);
     }
 });
 
@@ -58,9 +58,9 @@ async function run() {
     await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
 
     if (!process.env.BOT_TOKEN) {
-      	error("Couldn't find the BOT_TOKEN in your environment/configuration file (.env)!");
+      	log.error("Couldn't find the BOT_TOKEN in your environment/configuration file (.env)!");
     } else {
-        info("Logging in...");
+        log.info("Logging in...");
         await bot.login(process.env.BOT_TOKEN);
     }
 }

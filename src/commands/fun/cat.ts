@@ -1,10 +1,10 @@
 import { CommandInteraction } from "discord.js";
 import { Discord, Slash, Client } from "discordx";
-import { colors } from "../../utils/embeds.ts";
+import { colors } from "../../utils/embeds.js";
 
 @Discord()
 export class CatSayCommand {
-    @Slash({ name: "cat", description: "Random cat." })
+    @Slash({ name: "cat", description: "Gives a random cat." })
     async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
         await interaction.deferReply();
         const now = new Date();

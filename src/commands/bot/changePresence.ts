@@ -1,7 +1,7 @@
 import { SlashCommandStringOption, type CommandInteraction, ApplicationCommandOptionType, PresenceStatusData } from "discord.js";
 import { Discord, Slash, Client, Guard, SlashOption, SlashChoice } from "discordx";
-import { colors } from "../../utils/embeds.ts";
-import { BotOwnerOnly } from "../../guards/devOnly.ts";
+import { colors } from "../../utils/embeds.js";
+import { BotOwnerOnly } from "../../guards/devOnly.js";
 
 @Discord()
 export class ChangePresenceCommand {

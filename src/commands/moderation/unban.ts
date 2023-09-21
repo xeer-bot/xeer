@@ -1,10 +1,10 @@
 import { CommandInteraction, ApplicationCommandOptionType, User } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
-import { noBotPermsEmbedBUK, npEmbed, colors } from "../../utils/embeds.ts";
+import { noBotPermsEmbedBUK, npEmbed, colors } from "../../utils/embeds.js";
 
 @Discord()
 export class UnbanCommand {
-    @Slash({ name: "unban", description: "...Unbans?" })
+    @Slash({ name: "unban", description: "An unbanhammer." })
     async execute(
         @SlashOption({ 
             name: "memberid",
@@ -20,7 +20,7 @@ export class UnbanCommand {
             interaction.guild?.members.unban(member).then(async res => {
                 await interaction.followUp({
                     embeds: [{
-                        title: ":hammer: Banhammer",
+                        title: ":hammer: Unbanhammer",
                         description: `<@${member}> was been unbanned!`,
                         color: colors.green,
                         timestamp: now.toISOString()

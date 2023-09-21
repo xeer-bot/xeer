@@ -1,10 +1,10 @@
 import { CommandInteraction, ApplicationCommandOptionType } from "discord.js";
 import { Discord, Slash, Client, SlashOption, Guard } from "discordx";
-import { errEmbed, colors } from "../../utils/embeds.ts";
+import { errEmbed, colors } from "../../utils/embeds.js";
 
 @Discord()
 export class CatSayCommand {
-    @Slash({ name: "catsay", description: "Cat says." })
+    @Slash({ name: "catsay", description: "A cat says something that you want." })
     async execute(
         @SlashOption({ 
             name: "text",

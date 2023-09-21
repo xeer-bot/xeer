@@ -1,6 +1,6 @@
 import { GuardFunction } from "discordx";
 import { CommandInteraction } from "discord.js";
-import { errEmbed } from "../utils/embeds.ts";
+import { errEmbed } from "../utils/embeds.js";
 import config from "../../botconfig.json" assert { type: "json" };
 
 export const BotOwnerOnly: GuardFunction<

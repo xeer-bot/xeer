@@ -1,17 +1,18 @@
 import { ApplicationCommandOptionType, type CommandInteraction } from "discord.js";
 import { Discord, Slash, Client, SlashChoice, SlashOption } from "discordx";
-import { colors, emojis, errEmbed, npEmbed } from "../../utils/embeds.ts";
-import { prisma } from "../../main.ts";
-import { createGuildConfiguration } from "../../utils/database.ts";
+import { colors, emojis, errEmbed, npEmbed } from "../../utils/embeds.js";
+import { prisma } from "../../main.js";
+import { createGuildConfiguration } from "../../utils/database.js";
 
 @Discord()
 export class ConfigurateCommand {
-    @Slash({ name: "configurate", description: "The CONFIGURATOR 3000" })
+    @Slash({ name: "configurate", description: "Configure the Welcome/Leave Messages and their Channel's IDs" })
     async execute(
         @SlashChoice({ name: "Welcome Message", value: "welcomemsg" })
         @SlashChoice({ name: "Leave Message", value: "leavemsg" })
         @SlashChoice({ name: "Welcome Message Channel ID", value: "welcomechannel" })
         @SlashChoice({ name: "Leave Message Channel ID", value: "leavechannel" })
+        @SlashChoice({ name: "Send Command (ALLOW or DISALLOW)", value: "sendcmd-toggled" })
         @SlashOption({ 
             name: "option",
             description: "Configuration Option",
@@ -32,6 +33,7 @@ export class ConfigurateCommand {
         if (interaction.memberPermissions?.has("Administrator")) {
             if (await prisma.guildConfiguration.findUnique({ where: { id: gID } })) {
                 const data: any = {};
+                if (option.endsWith("-toggled")) { text.toLowerCase(); if (text == "allow" || text == "disallow") await interaction.followUp({ embeds: [errEmbed(new Error(), "Wrong text, I only accept `ALLOW` or `DISALLOW`.")] }); return; };
                 data[option] = text;
                 await prisma.guildConfiguration.update({ where: {
                     id: gID

@@ -1,4 +1,4 @@
-import { prisma } from "../main.ts";
+import { prisma } from "../main.js";
 
 export async function createGuildConfiguration(id: string) {
     await prisma.guildConfiguration.create({ data: {
