@@ -1,12 +1,17 @@
 <header>
-    <nav class="horizontal">
-        <div class="wrapper"></div>
-    </nav>
     <nav class="vertical">
         <p href="#" class="title"><img src="/assets/img/xeer-black.png" width="32" height="32" style="border-radius: 50%; vertical-align: middle; margin-right: 6px;"> xeer</p>
         <div class="wrapper">
+            <p class="section">SELECT GUILD</p>
+            <select id="selected_guild" name="Select"></select>
             <p class="section">UTILITIES</p>
-            <a href="#"><span class="material-icons">chat</span> Send Messages</a>
+            <a href="/dashboard/welcomer"><span class="material-icons">chat</span> Welcomer</a>
         </div>
     </nav>
 </header>
+<script>
+    getDiscordUser().then(res => {
+        console.log(res);
+
+    })
+</script>

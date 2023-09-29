@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include("../components/head") -%>
+<body>
+    <%- include("../components/navigation") -%>
+    <div class="container">
+        <h1 class="title">Welcomer</h1>
+        <p class="subtitle">It can welcome and say bye!</p>
+    </div>
+    <script>
+        const socket = new WebSocket("ws://localhost:443");
+        socket.addEventListener("message", (data) => {
+            createToast("info", "WebSocket", data.data);
+        });
+        socket.addEventListener("open", (event) => {
+            socket.send(JSON.stringify({
+                token: "<%= token %>"
+            }));
+        });
+    </script>
+</body>
+</html>

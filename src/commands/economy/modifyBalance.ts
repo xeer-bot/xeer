@@ -3,9 +3,10 @@ import { Discord, Slash, Client, Guard, SlashOption, SlashChoice, SlashGroup } f
 import { colors, emojis, errEmbed } from "../../utils/embeds.js";
 import { BotOwnerOnly } from "../../guards/devOnly.js";
 import { prisma } from "../../main.js";
+import { userAccountThing } from "../../utils/database.js";
 
 @Discord()
-@SlashGroup({ name: "modifybalance", description: "Economy : Modify balance (Bot Owner only)" })
+@SlashGroup({ name: "modifybalance", description: "Modifies balance (Bot Owner only)" })
 @SlashGroup("modifybalance")
 export class ModifyBalanceCommand {
     @Slash({ description: "Economy : Sets the balance." })
@@ -29,35 +30,24 @@ export class ModifyBalanceCommand {
         const now = new Date();
         await interaction.deferReply();
         const iuser = iuserr || interaction.user;
-        const user = await prisma.user.findUnique({ where: {
-            id: iuser.id
-        } });
-        if (user) {
-            await prisma.user.update({
-                where: {
-                    id: iuser.id
-                },
-                data: {
-                    cash: cash
-                }
-            })
-            await interaction.followUp({
-                embeds: [{
-                    title: `${emojis.success} Success!`,
-                    description: `Operation completed successfully!`,
-                    color: colors.green,
-                    timestamp: now.toISOString()
-                }]
-            });
-        } else {
-            await interaction.followUp({
-                embeds: [ errEmbed(new Error(), "No account found in the database!\nTry again!") ]
-            });
-            await prisma.user.create({ data: {
-                id: iuser.id,
-                cash: 0
-            } });
-        }
+        const user = await userAccountThing(interaction.user.id);
+        if (!user) return;
+        await prisma.user.update({
+            where: {
+                id: iuser.id
+            },
+            data: {
+                cash: cash
+            }
+        })
+        await interaction.followUp({
+            embeds: [{
+                title: `${emojis.success} Success!`,
+                description: `Operation completed successfully!`,
+                color: colors.green,
+                timestamp: now.toISOString()
+            }]
+        });
     }
     @Slash({ description: "Economy : Clears the balance." })
     @Guard(BotOwnerOnly)

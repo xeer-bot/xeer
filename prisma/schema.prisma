@@ -9,13 +9,14 @@ datasource db {
 
 model User {
   id   String @id @unique @default("")
-  cash Int? @default(0)
+  cash Int?   @default(0)
 }
 
 model GuildConfiguration {
-  id             String @id @unique
-  welcomemsg     String @default("")
-  leavemsg       String @default("")
-  welcomechannel String @default("")
-  leavechannel   String @default("")
+  id              String @id @unique
+  welcomemsg      String @default("")
+  leavemsg        String @default("")
+  welcomechannel  String @default("")
+  leavechannel    String @default("")
+  sendcmd_toggled String @default("allow")
 }

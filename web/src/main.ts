@@ -6,6 +6,12 @@ import { isLoggedIn, router } from "./routers/authorize";
 import session from "express-session";
 import fs from "fs";
 
+if (process.platform == 'win32') {
+    process.title = "xeer";
+} else {
+    process.stdout.write('\x1b]2;' + "xeer" + '\x1b\x5c');
+}
+
 const app = express();
 
 app.use(router);
@@ -20,13 +26,19 @@ app.get("/", (req, res) => {
 });
 
 app.get("/dashboard/:tab", isLoggedIn, (req, res) => {
-    const tab = req.query.tab;
+    const { tab } = req.params;
+    const { gid } = req.query
     const token = req.session.token;
-    if (tab && fs.existsSync(path.join(__dirname, `/render/tabs/${tab}.ejs`))) {
-        res.render(`./tabs/${tab.toString()}`, {"token": token});
+    if (gid) {
+        if (tab && fs.existsSync(path.join(__dirname, `/render/tabs/${tab}.ejs`))) {
+            res.render(`./tabs/${tab.toString()}`, { "token": token, "guild_id": gid });
+        } else {
+            res.render("./tabs/welcomeback", { "token": token });
+        }
     } else {
-        res.render("./tabs/welcomeback", { "token": token });
+        res.redirect("/dashboard/");
     }
+
 });
 
 app.get("/dashboard/", isLoggedIn, (req, res) => {

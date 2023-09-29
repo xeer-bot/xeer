@@ -8,6 +8,19 @@ export async function createGuildConfiguration(id: string) {
     } });
 }
 
-export async function guildConfigurationCheck(id: string) {
-    if (await prisma.guildConfiguration.findUnique({ where: { id: id } })) { return true; } else return false;
+export async function createUserAccount(id: string) {
+    await prisma.user.create({ data: {
+        id: id,
+        cash: 0
+    } });
+}
+
+export async function guildConfigurationThing(id: string) {
+    const guild = await prisma.guildConfiguration.findUnique({ where: { id: id } });
+    if (!guild) { await createGuildConfiguration(id); return await prisma.guildConfiguration.findUnique({ where: { id: id } }); } else { return guild };
+}
+
+export async function userAccountThing(id: string) {
+    const user = await prisma.user.findUnique({ where: { id: id } });
+    if (!user) { await createUserAccount(id); return await prisma.user.findUnique({ where: { id: id } }); } else { return user };
 }

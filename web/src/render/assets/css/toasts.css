@@ -1,0 +1,82 @@
+.toast {
+    color: black;
+    margin: 20px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 13px;
+    display: flex;
+    width: fit-content;
+    position: relative;
+    margin-left: auto;
+}
+
+.toasts {
+    position: fixed;
+    overflow: none;
+    bottom: 0;
+    right: 0;
+}
+
+.slide-in {
+    animation: slide-in 0.5s;
+}
+
+.slide-out {
+    right: -500px;
+    animation: slide-out 0.3s;
+}
+
+.toast .icon {
+    margin: 0 15px 0 5px;
+    align-self: center;
+}
+
+.spinner {
+    width: 24px;
+    height: 24px;
+    border: 5px solid #dbdbdb;
+    border-bottom-color: #8f8f8f;
+    border-radius: 50%;
+    margin: 0 20px 0 10px;
+    align-self: center;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+
+.toast .description {
+    margin: 0;
+}
+
+.toast .title {
+    font-weight: bold;
+}
+
+@keyframes slide-in {
+    0% {
+        right: -500px;
+    }
+    60% {
+        right: 30px;
+    }
+    to {
+        right: 0;
+    }
+}
+
+@keyframes slide-out {
+    from {
+        right: 0px;
+    }
+    to {
+        right: -500px;
+    }
+}
+
+@keyframes rotation {
+    from {
+        rotate: 0deg;
+    }
+    to {
+        rotate: 360deg;
+    }
+}

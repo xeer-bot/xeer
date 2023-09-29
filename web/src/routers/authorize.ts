@@ -29,7 +29,7 @@ router.get("/user/authorize", (req, res) => {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
         }).then(data => data.json()).then(data => {
-            if (data.error) { return res.redirect("/") }
+            if (data.error) { return res.redirect("/"); }
             req.session.token = `${data.token_type} ${data.access_token}`;
             req.session.save((err) => {
                 if (err) {

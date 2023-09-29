@@ -10,6 +10,16 @@ html, body {
     overflow: hidden;
 }
 
+body {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    padding-left: 5%;
+    padding-right: 5%;
+    padding-bottom: 2%;
+    padding-top: 2%;
+}
+
 .centered {
     display: flex;
     flex-direction: column;
