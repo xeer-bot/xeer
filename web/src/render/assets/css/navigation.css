@@ -22,6 +22,7 @@ nav p.title {
     font-weight: 600;
     margin-left: 8px;
     font-size: 12px;
+    margin-top: 20px;
 }
 
 nav a {
@@ -46,12 +47,14 @@ nav.vertical a:hover {
 }
 
 header {
-    height: 100vh;
+    height: 100%;
 }
 
 nav.vertical {
     background-color: var(--nav-bg-color);
     height: 91%;
+    margin-top: 40px;
+    margin-left: 6vw;
     border-radius: 20px;
     padding-top: 6px;
     padding-left: 10px;

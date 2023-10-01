@@ -2,6 +2,8 @@
 
 .container {
     padding: 40px;
+    margin-top: 10px;
+    margin-right: 3vw;
 }
 
 .container .title {

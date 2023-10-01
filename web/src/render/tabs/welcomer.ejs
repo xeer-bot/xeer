@@ -1,22 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
     <%- include("../components/head") -%>
+    <link href="/assets/css/button.css" rel="stylesheet">
+    <link href="/assets/css/input.css" rel="stylesheet">
 <body>
     <%- include("../components/navigation") -%>
     <div class="container">
         <h1 class="title">Welcomer</h1>
         <p class="subtitle">It can welcome and say bye!</p>
+        <form id="saveForm" onsubmit="save();" style="width: 30vw; display: flex; flex-direction: column;">
+            <label for="wmsg">Welcome Message</label>
+            <input id="wmsg">
+            <label for="wcs">Welcome Channel</label>
+            <select id="wcs"></select>
+            <label for="lmsg">Leave Message</label>
+            <input id="lmsg">
+            <label for="lcs">Leave Channel</label>
+            <select id="lcs"></select>
+            <br>
+            <a class="button" type="submit">Button</a>
+        </form>
     </div>
     <script>
-        const socket = new WebSocket("ws://localhost:443");
         socket.addEventListener("message", (data) => {
-            createToast("info", "WebSocket", data.data);
+            try {
+                const dJson = JSON.parse(data.data);
+                if (dJson.error) {
+                    createToast("error", "WebSocket", dJson.message);
+                }
+            } catch (e) {
+                createToast("info", "WebSocket", data.data);
+            }
         });
-        socket.addEventListener("open", (event) => {
+        function save() {
             socket.send(JSON.stringify({
-                token: "<%= token %>"
-            }));
-        });
+                token: "<%= token %>",
+                guild_id: "<%= guild_id %>",
+                action: "SAVE"
+            }))
+        }
     </script>
+    <%- include("../components/footer") -%>
 </body>
 </html>

@@ -1,0 +1,21 @@
+@import url("./colors.css");
+
+select {
+    display: block;
+    font-family: "Montserrat", sans-serif;
+    background-color: var(--nav-element-hover-color);
+    color: var(--subtitle-color);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 16px;
+    width: 100%;
+    border: none;
+}
+
+nav select {
+    width: 290px;
+    margin-top: 8px;
+    margin: 5px;
+}

@@ -5,6 +5,8 @@ html, body {
     color: whitesmoke;
     padding: 0;
     margin: 0;
+    height: 100%;
+    width: 100%;
     background-image: radial-gradient(#3d3d42 0.5px, rgb(22, 22, 24) 0.5px);
     background-size: 9px 9px;
     overflow: hidden;
@@ -12,12 +14,13 @@ html, body {
 
 body {
     display: flex;
-    height: 100%;
-    width: 100%;
-    padding-left: 5%;
-    padding-right: 5%;
-    padding-bottom: 2%;
-    padding-top: 2%;
+}
+
+footer {
+    position: fixed;
+    overflow: none;
+    bottom: 0;
+    right: 10px;
 }
 
 .centered {

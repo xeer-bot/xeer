@@ -5,13 +5,38 @@
             <p class="section">SELECT GUILD</p>
             <select id="selected_guild" name="Select"></select>
             <p class="section">UTILITIES</p>
-            <a href="/dashboard/welcomer"><span class="material-icons">chat</span> Welcomer</a>
+            <a href="#welcomer" onclick="goAnotherTab('welcomer')"><span class="material-icons">chat</span> Welcomer</a>
         </div>
     </nav>
 </header>
 <script>
-    getDiscordUser().then(res => {
-        console.log(res);
-
-    })
+    const socket = new WebSocket("ws://localhost:443");
+    const selector = document.querySelector("#selected_guild");
+    socket.addEventListener("message", (data) => {
+        try {
+            const dJson = JSON.parse(data.data);
+            if (!dJson.error) {
+                if (dJson.response_to == "GET_USER_GUILDS") {
+                    dJson.data.forEach(obj => {
+                        const optionObject = document.createElement("option");
+                        optionObject.setAttribute("value", obj.id);
+                        if (obj.id == "<%= guild_id %>") { optionObject.selected = true; }
+                        optionObject.textContent = obj.name;
+                        selector.appendChild(optionObject);
+                    });
+                }
+            }
+        } catch (e) {}
+    });
+    socket.addEventListener("open", async (event) => {
+        socket.send(JSON.stringify({
+            token: "<%= token %>",
+            uid: (await getDiscordUser("<%= token %>")).id,
+            gids: await getDiscordUserGIDs("<%= token %>"),
+            action: "GET_USER_GUILDS"
+        }));
+    });
+    function goAnotherTab(tName) {
+        document.location = new URL(`/dashboard/${tName}?gid=${document.querySelector("#selected_guild").value}`, document.location.origin);
+    }
 </script>

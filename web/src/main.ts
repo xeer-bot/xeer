@@ -33,7 +33,7 @@ app.get("/dashboard/:tab", isLoggedIn, (req, res) => {
         if (tab && fs.existsSync(path.join(__dirname, `/render/tabs/${tab}.ejs`))) {
             res.render(`./tabs/${tab.toString()}`, { "token": token, "guild_id": gid });
         } else {
-            res.render("./tabs/welcomeback", { "token": token });
+            res.render("./tabs/welcomeback", { "token": token, "guild_id": "" });
         }
     } else {
         res.redirect("/dashboard/");
@@ -43,7 +43,7 @@ app.get("/dashboard/:tab", isLoggedIn, (req, res) => {
 
 app.get("/dashboard/", isLoggedIn, (req, res) => {
     const token = req.session.token;
-    res.render("./tabs/welcomeback", { "token": token });
+    res.render("./tabs/welcomeback", { "token": token, "guild_id": "" });
 })
 
 app.get("/add", (req, res) => {
