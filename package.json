@@ -16,14 +16,18 @@
   "dependencies": {
     "@discordx/importer": "^1.2.2",
     "@prisma/client": "^5.1.1",
+    "@types/express": "^4.17.18",
     "colorette": "^2.0.20",
+    "cors": "^2.8.5",
     "discord.js": "^14.11.0",
     "discordx": "^11.7.6",
     "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "node-bash-title": "^0.0.2",
     "ws": "^8.14.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.14",
     "@types/node": "^20.3.1",
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",

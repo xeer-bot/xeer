@@ -2,7 +2,7 @@
 
 async function getDiscordUser(token) {
     return new Promise(async (resolve, reject) => {
-        await fetch("https://discord.com/api/users/@me", {
+        fetch("https://discord.com/api/users/@me", {
             headers: {
                 authorization: token
             }
@@ -16,7 +16,7 @@ async function getDiscordUser(token) {
 
 async function getDiscordUserGuilds(token) {
     return new Promise(async (resolve, reject) => {
-        await fetch("https://discord.com/api/users/@me/guilds", {
+        fetch("https://discord.com/api/users/@me/guilds", {
             headers: {
                 authorization: token
             }
@@ -30,7 +30,7 @@ async function getDiscordUserGuilds(token) {
 
 async function getDiscordUserGIDs(token) {
     return new Promise(async (resolve, reject) => {
-        await fetch("https://discord.com/api/users/@me/guilds", {
+        fetch("https://discord.com/api/users/@me/guilds", {
             headers: {
                 authorization: token
             }

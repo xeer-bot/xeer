@@ -5,11 +5,11 @@ import { Client } from "discordx";
 import * as log from "./utils/logger.js";
 import { PrismaClient } from "@prisma/client";
 import { title } from "./utils/main.js";
-import { init } from "./websocket/main.js";
+import { listen } from "./http/server.js";
 import * as dotenv from "dotenv";
 
 title();
-init();
+await listen();
 
 dotenv.config();
 

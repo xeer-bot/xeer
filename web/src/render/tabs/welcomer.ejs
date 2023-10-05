@@ -18,27 +18,42 @@
             <label for="lcs">Leave Channel</label>
             <select id="lcs"></select>
             <br>
-            <a class="button" type="submit">Button</a>
+            <a class="button" type="submit">Save Changes</a>
         </form>
     </div>
     <script>
-        socket.addEventListener("message", (data) => {
-            try {
-                const dJson = JSON.parse(data.data);
-                if (dJson.error) {
-                    createToast("error", "WebSocket", dJson.message);
-                }
-            } catch (e) {
-                createToast("info", "WebSocket", data.data);
-            }
+
+        const connector_url = "http://localhost:443/";
+
+        const wcs_s = document.querySelector("#wcs");
+        const lcs_s = document.querySelector("#lcs");
+
+        fetch(new URL(`/api/get_channels?token=<%= token %>&guild_id=<%= guild_id %>`, connector_url))
+            .then(res => res.json())
+            .then(async (res) => {
+                console.log(res);
+                res.channels.forEach(obj => {
+                    const optionObject = document.createElement("option");
+                    optionObject.setAttribute("value", obj.id);
+                    optionObject.textContent = obj.name;
+                    wcs_s.appendChild(optionObject);
+                    const optionObjectAlt = document.createElement("option");
+                    optionObjectAlt.setAttribute("value", obj.id);
+                    optionObjectAlt.textContent = obj.name;
+                    lcs_s.appendChild(optionObjectAlt);
+                });
         });
-        function save() {
-            socket.send(JSON.stringify({
+        async function save() {
+            fetch(new URL("/api/save/", connector_url), { method: "post", body: JSON.stringify({
                 token: "<%= token %>",
                 guild_id: "<%= guild_id %>",
-                action: "SAVE"
-            }))
+            }) })
+                .then(res => res.json())
+                .then(async (res) => {
+                    // soon
+                });
         }
+            
     </script>
     <%- include("../components/footer") -%>
 </body>
