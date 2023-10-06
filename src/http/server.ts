@@ -1,7 +1,7 @@
 import express from "express";
-import { bot } from "../main.js";
+import bodyParser from "body-parser";
+import { bot, prisma } from "../main.js";
 import * as logger from "../utils/logger.js";
-import cors from "cors";
 import { cnfCache, hasAdministrator } from "../utils/connector_utils.js";
 
 const app = express();
@@ -10,17 +10,30 @@ const backend_url = 'http://localhost:3000'
 
 let cache: any = {}; 
 
-app.use(cors({ origin: [backend_url], allowedHeaders: ["Access-Control-Allow-Origin"] }));
+export function setCache(newCache: any) {
+    cache = newCache;
+}
+
+app.use((req,res,next) => {
+    res.setHeader('Access-Control-Allow-Origin', backend_url);
+    res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
+
+app.use(bodyParser.json());
 
 const port = 443;
 
-app.get("/api/get_channels", (req, res) => {
+app.get("/api/get_channels", async (req, res) => {
     const jData = req.query;
     if (jData.guild_id && jData.token) {
-        cnfCache(cache, jData.token.toString()).catch(e => res.status(500).json({ error: true, rtm: true, message: `Error: ${e}` })).then(c => cache = c);
+        try {
+            cache = await cnfCache(cache, jData.token.toString());
+        } catch (e) { res.status(500).json({ error: true, rtm: true, message: "Something unexpected happened!" }); }
         const id = cache[jData.token.toString()];
         if (id) {
-            if (!hasAdministrator(bot, jData.guild_id.toString(), id)) res.status(500).json({ error: true, rtm: true, message: "You don't have Administrator permission!" });
+            if (!hasAdministrator(bot, jData.guild_id.toString(), id)) return res.status(500).json({ error: true, rtm: true, message: "You don't have Administrator permission!" });
             const guild = bot.guilds.cache.get(jData.guild_id.toString());
             if (guild) {
                 let channels: any = [];
@@ -37,11 +50,13 @@ app.get("/api/get_channels", (req, res) => {
     } else res.status(500).json({ error: true, rtm: true, message: "Wrong arguments!" });
 });
 
-app.get("/api/get_guilds", (req, res) => {
+app.get("/api/get_guilds", async (req, res) => {
     let { token, gids } = req.query;
     gids = gids?.toString().split(",");
     if (token && gids) {
-        cnfCache(cache, token.toString()).catch(e => res.status(500).json({ error: true, rtm: true, message: `${e}` })).then(c => cache = c);
+        try {
+            cache = await cnfCache(cache, token.toString());
+        } catch (e) { res.status(500).json({ error: true, rtm: true, message: "Something unexpected happened!" }); }
         try {
             let guilds: any = [];
             gids.forEach((gid: any) => {
@@ -53,19 +68,36 @@ app.get("/api/get_guilds", (req, res) => {
     } else { return res.status(500).json({ error: true, rtm: true, message: "Wrong arguments!" }); };
 });
 
-app.post("/api/save", (req, res) => {
+app.post("/api/save", async (req, res) => {
     let { feature, token, guild_id, data } = req.body;
-    if (feature && token && data) {
-        cnfCache(cache, token.toString()).catch(e => res.status(500).json({ error: true, rtm: true, message: `Error: ${e}` })).then(c => cache = c);
+    if (feature && token && data && guild_id) {
+        try {
+            cache = await cnfCache(cache, token.toString());
+        } catch (e) { res.status(500).json({ error: true, rtm: true, message: "Something unexpected happened!" }); }
         const id = cache[token.toString()];
         if (id) {
-            if (!hasAdministrator(bot, guild_id.toString(), id)) res.status(500).json({ error: true, rtm: true, message: "You don't have Administrator permission!" });
-            
+            if (!hasAdministrator(bot, guild_id.toString(), id)) return res.status(500).json({ error: true, rtm: true, message: "You don't have Administrator permission!" });
+            if (feature == "welcomer") {
+                try {
+                    await prisma.guildConfiguration.update({ where: {
+                        id: guild_id
+                    }, data: {
+                        welcomemsg: data.welcome_message,
+                        welcomechannel: data.welcome_channel,
+                        leavemsg: data.leave_message,
+                        leavechannel: data.leave_channel
+                    } });
+                    res.json({ message: "Success!" });
+                } catch (e) {
+                    logger.error(e);
+                    res.status(500).json({ error: true, rtm: true, message: "An error occured while trying to save!" });
+                }
+            }
         } else {
             res.status(500).json({ error: true, rtm: true, message: "Something unexpected happened!" });
         }
-    }
-})
+    } else res.status(500).json({ error: true, rtm: true, message: "Wrong arguments!" });
+});
 
 export async function listen() {
     app.listen(port, () => {

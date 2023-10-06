@@ -1,4 +1,5 @@
 import { Client, User } from "discord.js";
+import { setCache } from "../http/server.js";
 
 export async function cnfCache(cache: any, aToken: string): Promise<any> {
     return new Promise(async (resolve, reject) => {
@@ -12,14 +13,20 @@ export async function cnfCache(cache: any, aToken: string): Promise<any> {
                 .then(res => {
                     if (res.message == "401: Unauthorized") reject("Unauthorized");
                     cache[aToken] = res.id
+                    setCache(cache);
                     resolve(cache);
             }).catch(e => { reject("Something unexpected happened!"); });
         } else resolve(cache);
     });
 }
 
-export function hasAdministrator(bot: Client, gID: string, uID: string): boolean {
-    return bot.guilds.cache.get(gID)?.members.cache.get(uID)?.permissions.has("Administrator") ?? false;
+export async function hasAdministrator(bot: Client, gID: string, uID: string): Promise<boolean> {
+    return new Promise(async (resolve, reject) => {
+        const g = bot.guilds.cache.get(gID)
+        if (g) {
+            resolve((await g.members.fetch(uID)).permissions.has("Administrator") ?? false);
+        } return resolve(false);
+    });
 }
 
 export async function cnrDU(bot: Client, uID: string): Promise<User> {

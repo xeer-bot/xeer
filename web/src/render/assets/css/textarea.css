@@ -1,0 +1,17 @@
+@import url("./colors.css");
+
+textarea {
+    display: block;
+    font-family: "Montserrat", sans-serif;
+    background-color: var(--nav-element-hover-color);
+    color: var(--subtitle-color);
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 16px;
+    width: 97%;
+    border: none;
+    outline: none;
+    resize: vertical;
+}
