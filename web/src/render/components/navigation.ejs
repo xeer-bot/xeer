@@ -3,15 +3,19 @@
         <p href="#" class="title"><img src="/assets/img/xeer-black.png" width="32" height="32" style="border-radius: 50%; vertical-align: middle; margin-right: 6px;"> xeer</p>
         <div class="wrapper">
             <p class="section">SELECT GUILD</p>
-            <select id="selected_guild" name="Select"></select>
+            <select id="selected_guild" name="Select" onchange="onSChange()"></select>
             <p class="section">UTILITIES</p>
             <a href="#welcomer" onclick="goAnotherTab('welcomer');"><span class="material-icons">chat</span> Welcomer</a>
         </div>
     </nav>
 </header>
 <script>
+    const lastSelected = "<%= guild_id %>";
     function goAnotherTab(tName) {
         document.location = new URL(`/dashboard/${tName}?gid=${document.querySelector("#selected_guild").value}`, document.location.origin);
+    }
+    function onSChange() {
+        document.location = document.location.href.replace(lastSelected, document.querySelector("#selected_guild").value);
     }
 </script>
 <script type="module">
@@ -19,16 +23,33 @@
     const connector_url = "http://localhost:443";
 
     const selector = document.querySelector("#selected_guild");
+
+    function addGuilds(guilds) {
+        guilds.forEach(obj => {
+            const optionObject = document.createElement("option");
+            optionObject.setAttribute("value", obj.id);
+            if (obj.id == "<%= guild_id %>") { optionObject.selected = true; }
+            optionObject.textContent = obj.name;
+            selector.appendChild(optionObject);
+        });
+    }
+
+    const guilds = localStorage.getItem("guilds");
+    if (guilds) {
+        try {
+            const guildsJSON = JSON.parse(guilds);
+            addGuilds(guildsJSON);
+        } catch (e) {}
+    }
+
     fetch(new URL(`/api/get_guilds?token=<%= token %>&uid=${(await getDiscordUser("<%= token %>")).id}&gids=${await getDiscordUserGIDs("<%= token %>")}`, connector_url))
         .then(res => res.json())
         .then(async (res) => {
-            res.guilds.forEach(obj => {
-                const optionObject = document.createElement("option");
-                optionObject.setAttribute("value", obj.id);
-                if (obj.id == "<%= guild_id %>") { optionObject.selected = true; }
-                optionObject.textContent = obj.name;
-                selector.appendChild(optionObject);
-            });
+            if (selector.childNodes.length > 0) {
+                selector.innerHTML = null;
+            }
+            localStorage.setItem("guilds", JSON.stringify(res.guilds));
+            addGuilds(res.guilds);
         });
 
 </script>
