@@ -33,7 +33,7 @@ export class ConfigurateCommand {
         if (interaction.memberPermissions?.has("Administrator")) {
             await guildConfigurationThing(interaction.guild?.id || "");
             const data: any = {};
-            if (option.endsWith("_toggled")) { text = text.toLowerCase(); if (text != ("allow" || "disallow")) await interaction.followUp({ embeds: [errEmbed(new Error(), "Wrong text, I only accept `ALLOW` or `DISALLOW`.")] }); return; };
+            if (option.endsWith("_toggled")) { text = text.toLowerCase(); if (text != "allow" && text != "disallow") { await interaction.followUp({ embeds: [errEmbed(new Error(), "Wrong text, I only accept `ALLOW` or `DISALLOW`.")] }); return; }};
             data[option] = text;
             await prisma.guildConfiguration.update({ where: {
                 id: gID

@@ -14,8 +14,8 @@ export class PingCommand {
             content: "",
             embeds: [{
                 title: ":stopwatch: Latency",
-                description: `:stopwatch: Roundtrip latency: ${roundtrip}ms\n:heart: Websocket Heartbeat: ${bot.ws.ping}ms`,
-                color: colors.primary,
+                description: `> :stopwatch: Roundtrip latency: ${roundtrip}ms\n> :heart: Websocket Heartbeat: ${bot.ws.ping}ms`,
+                color: 0xFFFFFF,
                 timestamp: now.toISOString()
             }]
         });
