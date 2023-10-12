@@ -1,6 +1,6 @@
 import type { CommandInteraction } from "discord.js";
 import { Discord, Slash, Client } from "discordx";
-import { colors } from "../../utils/embeds.js";
+import { get_dashboard_latency } from "../../http/server.js";
 
 @Discord()
 export class PingCommand {
@@ -14,7 +14,7 @@ export class PingCommand {
             content: "",
             embeds: [{
                 title: ":stopwatch: Latency",
-                description: `> :stopwatch: Roundtrip latency: ${roundtrip}ms\n> :heart: Websocket Heartbeat: ${bot.ws.ping}ms`,
+                description: `> Roundtrip Latency: \`${roundtrip}ms\`\n> Websocket Heartbeat: \`${bot.ws.ping}ms\`\n> Dashboard Latency: \`${await get_dashboard_latency()}\``,
                 color: 0xFFFFFF,
                 timestamp: now.toISOString()
             }]

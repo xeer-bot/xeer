@@ -44,11 +44,15 @@ app.get("/dashboard/:tab", isLoggedIn, (req, res) => {
 app.get("/dashboard/", isLoggedIn, (req, res) => {
     const token = req.session.token;
     res.render("./tabs/welcomeback", { "token": token, "guild_id": "" });
-})
+});
+
+app.get("/ping", async (req, res) => {
+    res.send("pong!");
+});
 
 app.get("/add", (req, res) => {
     res.redirect(config.bot.invite_link);
-})
+});
 
 app.listen(config.port, () => {
     logger.success(`Listening on ${config.port}! :3`);

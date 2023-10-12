@@ -8,6 +8,18 @@ const app = express();
 
 const backend_url = 'http://localhost:3000'
 
+export async function get_dashboard_latency() {
+    const before = new Date();
+    try {
+        await fetch(new URL("/ping", backend_url));
+        const after = new Date();
+        const latency = after.getTime() - before.getTime();
+        return `🟢 ${latency}ms`
+    } catch (e) {
+        return "🔴 OFFLINE";
+    }
+};
+
 let cache: any = {}; 
 
 export function setCache(newCache: any) {
