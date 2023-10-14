@@ -3,7 +3,8 @@ export const colors = {
     red: 0xff0000,
     green: 0x15ff00,
     blue: 0x0011ff,
-    yellow: 0xffff00
+    yellow: 0xffff00,
+    purple: 0x8c00ff
 }
 
 export const emojis = {

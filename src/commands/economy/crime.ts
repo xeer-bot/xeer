@@ -3,32 +3,35 @@ import { Discord, Slash, Client, Guard } from "discordx";
 import { executedRecently, prisma } from "../../main.js";
 import { colors, errEmbed } from "../../utils/embeds.js";
 import { userAccountThing } from "../../utils/database.js";
+import { getRandomArbitrary } from "../../utils/main.js";
 
 @Discord()
-export class SlutCommand {
-    @Slash({ name: "slut", description: "Economy : Slut" })
+export class CrimeCommand {
+    @Slash({ name: "crime", description: "Economy : Crime" })
     async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
         await interaction.deferReply();
-        if (!executedRecently.has(interaction.user.id)) {
+        if (!executedRecently.has(interaction.user.id+"-crime")) {
             const messages = [
-                "were a man prostitute",
-                "were a prostitute",
-                "were an underaged prostitute",
-                "were hacking a darkweb website",
-                "were nuking tiktok's server",
-                "were hacking a bank",
-                "were hacking FBI",
+                "",
+                "hacked a darkweb website",
+                "nuked TikTok's server",
+                "hacked a Bank",
+                "hacked FBI",
+                "robbed a Gun Shop",
+                "bought and sold Drugs",
+                "robbed Apple Store",
+                "robbed a Bank"
             ]
             const now = new Date();
             const user = await userAccountThing(interaction.user.id);
             if (!user) return;
-            const index = Math.floor(Math.random()*messages.length);
-            const rCash = Math.floor(Math.random()*(index*10));
+            let index = Math.floor(Math.random()*messages.length);
+            const rCash = getRandomArbitrary(index*10, index*25);
             await interaction.followUp({
                 embeds: [{
-                    title: ":poop: Slut",
+                    title: ":smiling_imp: Crime",
                     description: `You ${messages[index]} and got $${rCash}!`,
-                    color: colors.yellow,
+                    color: colors.purple,
                     timestamp: now.toISOString()
                 }]
             });
@@ -40,10 +43,10 @@ export class SlutCommand {
                     id: interaction.user.id
                 }
             })
-            executedRecently.add(interaction.user.id+"-slut");
+            executedRecently.add(interaction.user.id+"-crime");
             setTimeout(() => {
-                executedRecently.delete(interaction.user.id+"-slut");
-            }, 300000);
-        } else await interaction.followUp({ embeds: [ errEmbed(new Error(), "Try again in `5 minutes`!")] });
+                executedRecently.delete(interaction.user.id+"-crime");
+            }, 1800000);
+        } else await interaction.followUp({ embeds: [ errEmbed(new Error(), "Try again in `30 minutes`!")] });
     }
 }

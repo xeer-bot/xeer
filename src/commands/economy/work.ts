@@ -3,6 +3,7 @@ import { Discord, Slash, Client, Guard } from "discordx";
 import { executedRecently, prisma } from "../../main.js";
 import { colors, errEmbed } from "../../utils/embeds.js";
 import { userAccountThing } from "../../utils/database.js";
+import { getRandomArbitrary } from "../../utils/main.js";
 
 @Discord()
 export class WorkCommand {
@@ -11,19 +12,20 @@ export class WorkCommand {
         await interaction.deferReply();
         if (!executedRecently.has(interaction.user.id)) {
             const messages = [
+                "",
                 "did your chores",
                 "walked someone's dog",
                 "washed a car",
                 "worked in an office",
                 "worked in a zoo",
-                "were developing a game",
-                "were building a house",
+                "developed a game",
+                "built a house",
             ]
             const now = new Date();
             const user = await userAccountThing(interaction.user.id);
             if (!user) return;
             const index = Math.floor(Math.random()*messages.length);
-            const rCash = Math.floor(Math.random()*(index*5));
+            const rCash = getRandomArbitrary(index*2, index*5)
             await interaction.followUp({
                 embeds: [{
                     title: ":construction_worker: Work",

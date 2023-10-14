@@ -8,3 +8,7 @@ export function title() {
 		process.stdout.write('\x1b]2;' + "xeer" + '\x1b\x5c');
 	}
 }
+
+export function getRandomArbitrary(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min) + min);
+}
