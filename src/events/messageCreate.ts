@@ -28,7 +28,7 @@ export class MessageCreate {
                 const user = await guildA.members.fetch(msg.author.id);
                 const guildB = await guildConfigurationThing(guildA.id);
                 if (guildB?.sendcmd_toggled == "allow") {
-                        await sendToChannel.send(`${msg.content.toString()} (Sent by \`${msg.author.username}\` from \`${msg.guild?.name}\`)`);
+                        await sendToChannel.send(msg.content);
                         await msg.react("✅");
                 } else {
                     await msg.reply({ embeds: [errEmbed(new Error(), "The guild doesn't allow `say` command!")] })

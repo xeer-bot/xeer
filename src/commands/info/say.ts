@@ -18,7 +18,7 @@ export class SayCommand {
         @SlashOption({
             name: "channel_id",
             description: "Channel ID",
-            required: true,
+            required: false,
             type: ApplicationCommandOptionType.String
         })
         cID: string,
