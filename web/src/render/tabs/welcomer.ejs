@@ -1,69 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-    <%- include("../components/head") -%>
-    <link href="/assets/css/button.css" rel="stylesheet">
-    <link href="/assets/css/textarea.css" rel="stylesheet">
-<body>
-    <%- include("../components/navigation") -%>
-    <div class="container">
-        <h1 class="title">Welcomer</h1>
-        <p class="subtitle">It can welcome and say bye!</p>
-        <form id="saveForm" style="width: 30vw; display: flex; flex-direction: column;">
-            <label for="wmsg">Welcome Message (Placeholders: {user}, {guildname}, {timestamp})</label>
-            <textarea id="wmsg"></textarea>
-            <label for="wcs">Welcome Channel</label>
-            <select id="wcs"></select>
-            <label for="lmsg">Leave Message (Placeholders: {user}, {guildname}, {timestamp})</label>
-            <textarea id="lmsg"></textarea>
-            <label for="lcs">Leave Channel</label>
-            <select id="lcs"></select>
-            <br>
-            <a class="button" type="submit" onclick="save();">Save Changes</a>
-        </form>
-    </div>
-    <script>
-
-        const connector_url = "http://server.nexcord.com:10586";
-
-        const wcs_s = document.querySelector("#wcs");
-        const lcs_s = document.querySelector("#lcs");
-
-        fetch(new URL(`/api/get_channels?token=<%= token %>&guild_id=<%= guild_id %>`, connector_url))
+<h1 class="text-3xl font-black">Welcomer</h1>
+<p class="mt-1 text-white text-opacity-60 text-[#8b9294]">It can welcome and say bye!</p>
+<br>
+<form id="saveForm" class="flex w-[30vw] flex-col">
+    <label for="wmsg">Welcome Message (Placeholders: {user}, {guildname}, {timestamp})</label>
+    <textarea id="wmsg" class="block bg-[#202125] w-[100%] my-[5px] p-[8px] rounded-[6px] text-[#8b9294] outline-none"></textarea>
+    <label for="wcs">Welcome Channel</label>
+    <select id="wcs" class="block bg-[#202125] w-[100%] my-[5px] p-[8px] rounded-[6px] text-[#8b9294] outline-none"></select>
+    <label for="lmsg">Leave Message (Placeholders: {user}, {guildname}, {timestamp})</label>
+    <textarea id="lmsg" class="block bg-[#202125] w-[100%] my-[5px] p-[8px] rounded-[6px] text-[#8b9294] outline-none"></textarea>
+    <label for="lcs">Leave Channel</label>
+    <select id="lcs" class="block bg-[#202125] w-[100%] my-[5px] p-[8px] rounded-[6px] text-[#8b9294] outline-none"></select>
+    <br>
+    <a class="bg-[#5865f2] rounded-[8px] py-[10px] px-[15px] text-[20px] transition duration-[0.225s] hover:bg-[#4150F1] hover:cursor-pointer" type="submit" id="savebtn">Save Changes</a>
+</form>
+<script type="text/javascript" id="invisible">
+    const connector_url = "http://localhost:443";
+    const wcs_s = document.querySelector("#wcs");
+    const lcs_s = document.querySelector("#lcs");
+    const savebtn = document.querySelector("#savebtn");
+    fetch(new URL(`/api/get_channels?guild_id=<%= guild_id %>`, connector_url), {
+            headers: {
+                "Authorization": "<%= token %>"
+            }
+        })
+        .then(res => res.json())
+        .then(async (res) => {
+            res.channels.forEach(obj => {
+                const optionObject = document.createElement("option");
+                optionObject.setAttribute("value", obj.id);
+                optionObject.textContent = obj.name;
+                wcs_s.appendChild(optionObject);
+                const optionObjectAlt = document.createElement("option");
+                optionObjectAlt.setAttribute("value", obj.id);
+                optionObjectAlt.textContent = obj.name;
+                lcs_s.appendChild(optionObjectAlt);
+            });
+    });
+    savebtn.addEventListener("click", async (e) => {
+        fetch(new URL("/api/save", connector_url), { method: "post", headers: {
+            "Content-Type": "application/json",
+            "Authorization": "<%= token %>"
+        }, body: JSON.stringify({
+            feature: "welcomer",
+            guild_id: "<%= guild_id %>",
+            data: {
+                welcome_message: document.querySelector("#wmsg").value,
+                welcome_channel: document.querySelector("#wcs").value,
+                leave_message: document.querySelector("#lmsg").value,
+                leave_channel: document.querySelector("#lcs").value
+            }
+        }) })
             .then(res => res.json())
             .then(async (res) => {
-                res.channels.forEach(obj => {
-                    const optionObject = document.createElement("option");
-                    optionObject.setAttribute("value", obj.id);
-                    optionObject.textContent = obj.name;
-                    wcs_s.appendChild(optionObject);
-                    const optionObjectAlt = document.createElement("option");
-                    optionObjectAlt.setAttribute("value", obj.id);
-                    optionObjectAlt.textContent = obj.name;
-                    lcs_s.appendChild(optionObjectAlt);
-                });
-        });
-
-        function save() {
-            fetch(new URL("/api/save", connector_url), { method: "post", headers: {
-                "Content-Type": "application/json"
-            }, body: JSON.stringify({
-                feature: "welcomer",
-                token: "<%= token %>",
-                guild_id: "<%= guild_id %>",
-                data: {
-                    welcome_message: document.querySelector("#wmsg").value,
-                    welcome_channel: document.querySelector("#wcs").value,
-                    leave_message: document.querySelector("#lmsg").value,
-                    leave_channel: document.querySelector("#lcs").value
-                }
-            }) })
-                .then(res => res.json())
-                .then(async (res) => {
-                    createToast("success", "Welcomer", res.message);
-                });
-        }
-            
-    </script>
-    <%- include("../components/footer") -%>
-</body>
-</html>
+                createToast("success", "Welcomer", res.message);
+            });
+    });
+</script>

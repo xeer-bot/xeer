@@ -1,14 +1,16 @@
 export function title() {
-    console.log("██╗  ██╗███████╗███████╗██████╗ \n╚██╗██╔╝██╔════╝██╔════╝██╔══██╗\n ╚███╔╝ █████╗  █████╗  ██████╔╝\n ██╔██╗ ██╔══╝  ██╔══╝  ██╔══██╗\n██╔╝ ██╗███████╗███████╗██║  ██║\n╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝");
-    console.log("Loading...");
-    console.log();
-    if (process.platform == 'win32') {
-		process.title = "xeer";
+	console.log(
+		'██╗  ██╗███████╗███████╗██████╗ \n╚██╗██╔╝██╔════╝██╔════╝██╔══██╗\n ╚███╔╝ █████╗  █████╗  ██████╔╝\n ██╔██╗ ██╔══╝  ██╔══╝  ██╔══██╗\n██╔╝ ██╗███████╗███████╗██║  ██║\n╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝'
+	);
+	console.log('Loading...');
+	console.log();
+	if (process.platform == 'win32') {
+		process.title = 'xeer';
 	} else {
-		process.stdout.write('\x1b]2;' + "xeer" + '\x1b\x5c');
+		process.stdout.write('\x1b]2;' + 'xeer' + '\x1b\x5c');
 	}
 }
 
 export function getRandomArbitrary(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min) + min);
+	return Math.floor(Math.random() * (max - min) + min);
 }

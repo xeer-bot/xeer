@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="../assets/js/user.js"></script>
+    <script src="../assets/js/toasts.js"></script>
+    <link rel="stylesheet" href="../assets/css/toasts.css">
+    <title>Dashboard</title>
+</head>
+<style>@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap'); body, html { min-height: 100vh; } * { font-family: "Montserrat", sans-serif; }</style>
+<body class="bg-[#1d1e22] text-[whitesmoke] md:flex px-[6vw]">
+    <div class="w-full md:w-[320px] bg-[#242529] p-5 pt-8 rounded-[24px] my-10">
+        <div class="items-center flex flex-col">
+            <p class="my-0 text-3xl margin-"><img title="icon" src="../assets/img/xeer-black.png" width="32" height="32" class="rounded-full align-middle inline mr-[12px]">xeer</p>
+        </div>
+        <div class="mt-5">
+            <p class="m-0 font-semibold text-[12px] mt-[20px]">SELECTOR</p>
+            <select title="life" class="block bg-[#202125] w-[100%] my-[5px] p-[8px] rounded-[6px] text-[#8b9294] outline-none" id="selected_guild"></select>
+        <p class="m-0 font-semibold text-[12px] mt-[20px]">UTILITIES</p>
+        <a class="p-2 w-full self-start block rounded-[6px] text-[#8b9294] mt-1 hover:bg-[#202125] hover:cursor-pointer" onclick='goAnotherTab("welcomer")'>
+            <span class="material-icons align-middle mr-2">chat</span>
+            Welcomer
+        </a>
+        <p class="m-0 font-semibold text-[12px] mt-[20px]">PREMIUM</p>
+        <a class="p-2 w-full self-start block rounded-[6px] text-[#8b9294] mt-1 hover:bg-[#202125] hover:cursor-pointer">
+            <span class="material-icons align-middle mr-2">chat</span>
+            Message Sender (SOON)
+        </a>
+        </div>
+    </div>
+    <div class="md:ml-14 my-14" id="container">
+    </div>
+    <script>
+        const lastSelected = "<%= guild_id %>";
+        const container = document.querySelector("#container");
+        async function goAnotherTab(tName) {
+            const loc = new URL(`/dashboard/${tName}?gid=${document.querySelector("#selected_guild").value}`, document.location.origin);
+            await getTabContent(loc);
+        }
+        async function getTabContent(url) {
+            try {
+                const content = await fetch(url);
+                container.innerHTML = await content.text();
+                const tabScript = await container.querySelector("script");
+                await tabScript.remove();
+                console.log(`[#] Evaling script from URL ${url}...`);
+                await eval(tabScript.innerHTML);
+                console.log(`[#] Done evaling script from URL ${url}!`);
+            } catch (err) {
+                createToast("error", "Error!", "An error happened!");
+                console.log(err);
+            }
+        }
+        function onSChange() {
+            document.location = document.location.href.replace(lastSelected, document.querySelector("#selected_guild").value);
+        }
+    </script>
+    <script type="module">
+    
+        const connector_url = "http://localhost:443";
+    
+        const selector = document.querySelector("#selected_guild");
+    
+        function addGuilds(guilds) {
+            guilds.forEach(obj => {
+                const optionObject = document.createElement("option");
+                optionObject.setAttribute("value", obj.id);
+                if (obj.id == "<%= guild_id %>") { optionObject.selected = true; }
+                optionObject.textContent = obj.name;
+                selector.appendChild(optionObject);
+            });
+        }
+    
+        const guilds = localStorage.getItem("guilds");
+        if (guilds) {
+            try {
+                const guildsJSON = JSON.parse(guilds);
+                addGuilds(guildsJSON);
+            } catch (e) {}
+        }
+
+        await getTabContent(new URL(`/dashboard/welcomeback?gid=${document.querySelector("#selected_guild").value}`, document.location.origin));
+    
+        fetch(new URL(`/api/get_guilds?uid=${(await getDiscordUser("<%= token %>")).id}&gids=${await getDiscordUserGIDs("<%= token %>")}`, connector_url), {
+            headers: {
+                "Authorization": "<%= token %>"
+            }
+        })
+            .then(res => res.json())
+            .then(async (res) => {
+                try {
+                    if (selector.childNodes.length > 0) {
+                        selector.innerHTML = null;
+                    }
+                    localStorage.setItem("guilds", JSON.stringify(res.guilds));
+                    addGuilds(res.guilds);
+                } catch (err) {
+                    
+                }
+            });
+    
+    </script>
+</body>
+</html>
