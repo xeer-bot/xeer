@@ -1,37 +1,37 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
 
 html,
 body {
-	font-family: 'Montserrat', sans-serif;
-	color: whitesmoke;
-	padding: 0;
-	margin: 0;
-	height: 100%;
-	width: 100%;
-	background-image: radial-gradient(#3d3d42 0.5px, rgb(22, 22, 24) 0.5px);
-	background-size: 9px 9px;
-	overflow: hidden;
+    font-family: "Montserrat", sans-serif;
+    color: whitesmoke;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    background-image: radial-gradient(#3d3d42 0.5px, rgb(22, 22, 24) 0.5px);
+    background-size: 9px 9px;
+    overflow: hidden;
 }
 
 body {
-	display: flex;
+    display: flex;
 }
 
 footer {
-	position: fixed;
-	overflow: none;
-	bottom: 0;
-	right: 10px;
+    position: fixed;
+    overflow: none;
+    bottom: 0;
+    right: 10px;
 }
 
 .centered {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
 }
 
 .glowing-x {
-	color: #5865f2;
+    color: #5865f2;
 }

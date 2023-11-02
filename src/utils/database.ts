@@ -1,44 +1,56 @@
-import { prisma } from '../main.js';
+import { prisma } from "../main.js";
 
 export async function createGuildConfiguration(id: string) {
-	await prisma.guildConfiguration.create({
-		data: {
-			id: id,
-			welcomemsg: '',
-			leavemsg: '',
-		},
-	});
+    await prisma.guildConfiguration.create({
+        data: {
+            id: id,
+            welcomemsg: "",
+            leavemsg: "",
+        },
+    });
 }
 
 export async function createUserAccount(id: string) {
-	await prisma.user.create({
-		data: {
-			id: id,
-			cash: 0,
-		},
-	});
+    await prisma.user.create({
+        data: {
+            id: id,
+            cash: 0,
+        },
+    });
 }
 
 export async function guildConfigurationThing(id: string) {
-	const guild = await prisma.guildConfiguration.findUnique({
-		where: { id: id },
-	});
-	if (!guild) {
-		await createGuildConfiguration(id);
-		return await prisma.guildConfiguration.findUnique({
-			where: { id: id },
-		});
-	} else {
-		return guild;
-	}
+    const guild = await prisma.guildConfiguration.findUnique({
+        where: {
+            id: id,
+        },
+    });
+    if (!guild) {
+        await createGuildConfiguration(id);
+        return await prisma.guildConfiguration.findUnique({
+            where: {
+                id: id,
+            },
+        });
+    } else {
+        return guild;
+    }
 }
 
 export async function userAccountThing(id: string) {
-	const user = await prisma.user.findUnique({ where: { id: id } });
-	if (!user) {
-		await createUserAccount(id);
-		return await prisma.user.findUnique({ where: { id: id } });
-	} else {
-		return user;
-	}
+    const user = await prisma.user.findUnique({
+        where: {
+            id: id,
+        },
+    });
+    if (!user) {
+        await createUserAccount(id);
+        return await prisma.user.findUnique({
+            where: {
+                id: id,
+            },
+        });
+    } else {
+        return user;
+    }
 }

@@ -1,18 +1,18 @@
 button,
 a.button {
-	font-family: 'Montserrat', sans-serif;
-	background-color: #5865f2;
-	border: none;
-	color: white;
-	font-size: 24px;
-	padding: 15px 20px;
-	border-radius: 8px;
-	transition: 0.225s;
-	text-decoration: none;
+    font-family: "Montserrat", sans-serif;
+    background-color: #5865f2;
+    border: none;
+    color: white;
+    font-size: 24px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    transition: 0.225s;
+    text-decoration: none;
 }
 
 button:hover,
 a.button:hover {
-	background-color: hsl(235, 86%, 60%);
-	cursor: pointer;
+    background-color: hsl(235, 86%, 60%);
+    cursor: pointer;
 }
