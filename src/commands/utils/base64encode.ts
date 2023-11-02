@@ -19,6 +19,6 @@ export class Base64Encode {
         bot: Client
     ): Promise<void> {
         await interaction.deferReply();
-        await interaction.followUp("```" + Buffer.from(text).toString("base64") + "```");
+        await interaction.followUp({ content: "```" + Buffer.from(text).toString("base64") + "```", ephemeral: true });
     }
 }
