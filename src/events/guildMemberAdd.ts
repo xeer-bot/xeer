@@ -8,9 +8,10 @@ export class GuildMemberAdd {
         event: "guildMemberAdd",
     })
     async guildMemberAdd([member]: ArgsOf<"guildMemberAdd">, bot: Client, guardPayload: any) {
+        // guildconfig
         const guildConfig = await prisma.guildConfiguration.findUnique({
             where: {
-                id: member.guild.id,
+                id: member.guild.id
             },
         });
         if (guildConfig) {

@@ -1,6 +1,6 @@
-import { CommandInteraction, ApplicationCommandOptionType, User, ChannelType } from "discord.js";
+import { CommandInteraction, ApplicationCommandOptionType, ChannelType } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
-import { noBotPermsEmbedBUK, npEmbed, colors, emojis } from "../../utils/embeds.js";
+import { npEmbed, colors, emojis } from "../../utils/embeds.js";
 
 @Discord()
 export class ClearCommand {

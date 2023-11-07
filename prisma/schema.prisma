@@ -20,3 +20,9 @@ model GuildConfiguration {
   leavechannel    String @default("")
   sendcmd_toggled String @default("allow")
 }
+
+model StatisticsChannels {
+  cid     String @id @unique
+  gid     String @unique
+  content String @default("")
+}

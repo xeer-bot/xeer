@@ -15,7 +15,7 @@ export class InfoCommand {
         const now = new Date();
         let botowner = bot.users.cache.get(botconfig.ownerID)?.username;
         let description = `This instance is managed by ${botowner}.`;
-        if (botconfig.ownerID == "1102609471542411326") {
+        if (botconfig.ownerID == "1168788770510868553") {
             description = "This instance is an **official instance**.";
         }
         await interaction.followUp({
@@ -28,18 +28,12 @@ export class InfoCommand {
                     description: description,
                     fields: [
                         {
-                            name: "Author:",
-                            value: pkg.author,
-                        },
-                        {
-                            name: "Commands:",
-                            value: `${bot.application?.commands.cache.size.toString()} commands`,
-                        },
-                        {
-                            name: "Guilds:",
-                            value: `${bot.guilds.cache.size.toString()} guilds`,
-                            inline: true,
-                        },
+                            name: "Statistics:",
+                            value: `
+                            Commands: ${bot.application?.commands.cache.size.toString()}
+                            Guild(s): ${bot.guilds.cache.size.toString()}
+                            `,
+                        }
                     ],
                     color: 0xffffff,
                     timestamp: now.toISOString(),
