@@ -7,7 +7,7 @@
     "main": "build/main.js",
     "author": "(GitHub) necesku",
     "scripts": {
-        "build": "tsc",
+        "build": "node builder.cjs",
         "build:changelog": "npx @discordx/changelog --src src",
         "dev": "ts-node-esm src/main.ts",
         "start": "node build/src/main.js",

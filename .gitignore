@@ -10,6 +10,9 @@ lerna-debug.log*
 # Database
 data.db
 
+# Build
+build
+
 # Secret
 web/config.json
 
