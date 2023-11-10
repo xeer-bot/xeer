@@ -11,7 +11,6 @@ export const emojis = {
     success: ":white_check_mark:",
     error: ":x:",
 };
-
 export function errEmbed(err: Error, text: string | undefined) {
     const now = new Date();
     const textF = text ? text : `An error occured!\n\`\`\`${err.message}\`\`\``;

@@ -11,7 +11,7 @@ export class GuildMemberAdd {
         // guildconfig
         const guildConfig = await prisma.guildConfiguration.findUnique({
             where: {
-                id: member.guild.id
+                id: member.guild.id,
             },
         });
         if (guildConfig) {

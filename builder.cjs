@@ -1,15 +1,11 @@
 const fs = require("fs");
-const cp = require("child_process")
+const cp = require("child_process");
 
-const files = [
-    "build_date.txt",
-    ".env"
-]
+const files = ["build_date.txt", ".env"];
 
 console.log("Running...");
 
 cp.exec("npx tsc", (err, stdout, stderr) => {
-
     const dateRaw = new Date();
     if (err) {
         throw err;
@@ -34,11 +30,10 @@ cp.exec("npx tsc", (err, stdout, stderr) => {
                 console.log(`Copying file ${file} done!`);
             });
         });
-        
+
         setTimeout(() => {
             console.log("Done! Exitting...");
             process.exit();
         }, 1000);
     }, 1000);
-
-})
+});

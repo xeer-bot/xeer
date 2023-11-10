@@ -1,6 +1,6 @@
 import { CommandInteraction, ApplicationCommandOptionType } from "discord.js";
-import { Discord, Slash, Client, SlashOption, Guard } from "discordx";
-import { errEmbed, colors } from "../../utils/embeds.js";
+import { Discord, Slash, Client, SlashOption } from "discordx";
+import { colors } from "../../utils/embeds.js";
 
 @Discord()
 export class CatSayCommand {
@@ -21,24 +21,18 @@ export class CatSayCommand {
     ): Promise<void> {
         await interaction.deferReply();
         const now = new Date();
-        interaction
-            .followUp({
-                embeds: [
-                    {
-                        title: ":cat: Cat.",
-                        description: `Cat says: ${text}`,
-                        image: {
-                            url: `https://cataas.com/cat/says/${encodeURIComponent(text)}`,
-                        },
-                        color: colors.yellow,
-                        timestamp: now.toISOString(),
+        await interaction.followUp({
+            embeds: [
+                {
+                    title: ":cat: Cat.",
+                    description: `Cat says: ${text}`,
+                    image: {
+                        url: `https://cataas.com/cat/says/${encodeURIComponent(text)}`,
                     },
-                ],
-            })
-            .catch((err) => {
-                interaction.followUp({
-                    embeds: [errEmbed(err, undefined)],
-                });
-            });
+                    color: colors.yellow,
+                    timestamp: now.toISOString(),
+                },
+            ],
+        });
     }
 }

@@ -1,4 +1,4 @@
-import { CommandInteraction, ApplicationCommandOptionType, User } from "discord.js";
+import { CommandInteraction, ApplicationCommandOptionType } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
 import { noBotPermsEmbedBUK, npEmbed, colors } from "../../utils/embeds.js";
 

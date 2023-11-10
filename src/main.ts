@@ -1,5 +1,5 @@
 import { dirname, importx } from "@discordx/importer";
-import type { Interaction, Message} from "discord.js";
+import type { Interaction, Message } from "discord.js";
 import { IntentsBitField } from "discord.js";
 import { Client } from "discordx";
 import * as log from "./utils/logger.js";
@@ -60,17 +60,17 @@ setInterval(async () => {
             setTimeout(async () => {
                 const statisticsChannel = await prisma.statisticsChannels.findUnique({
                     where: {
-                        gid: guild.id
-                    }
+                        gid: guild.id,
+                    },
                 });
                 if (statisticsChannel) {
                     let channel = await bot.channels.fetch(statisticsChannel.cid);
                     if (channel?.isVoiceBased()) {
                         const guildFetched = await guild.fetch();
-                        let guildMembersTotal = (await guildFetched.members.fetch());
-                        let guildMembers = guildMembersTotal.filter(m => !m.user.bot);
-                        let guildMembersOnline = guildMembers.filter(m => m.presence?.status != "offline");
-                        let guildBots = guildMembersTotal.filter(m => m.user.bot);
+                        let guildMembersTotal = await guildFetched.members.fetch();
+                        let guildMembers = guildMembersTotal.filter((m) => !m.user.bot);
+                        let guildMembersOnline = guildMembers.filter((m) => m.presence?.status != "offline");
+                        let guildBots = guildMembersTotal.filter((m) => m.user.bot);
                         let content = statisticsChannel.content;
                         content = content.replaceAll("{bot}", guildBots.size.toString());
                         content = content.replaceAll("{members}", guildMembers.size.toString());
@@ -81,13 +81,15 @@ setInterval(async () => {
                 }
             }, 1000);
         });
-    } catch (err) {console.log(err)}
-}, 30000)
+    } catch (err) {
+        console.log(err);
+    }
+}, 30000);
 
 async function run() {
     log.info("Registering commands...");
     await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
-    
+
     if (!process.env.BOT_TOKEN) {
         log.error("Couldn't find the BOT_TOKEN in your environment/configuration file (.env)!");
     } else {

@@ -1,5 +1,5 @@
-import { SlashCommandStringOption, type CommandInteraction, ApplicationCommandOptionType, PresenceStatusData, User } from "discord.js";
-import { Discord, Slash, Client, Guard, SlashOption, SlashChoice, SlashGroup } from "discordx";
+import { type CommandInteraction, ApplicationCommandOptionType, User } from "discord.js";
+import { Discord, Slash, Client, Guard, SlashOption, SlashGroup } from "discordx";
 import { colors, emojis, errEmbed } from "../../utils/embeds.js";
 import { BotOwnerOnly } from "../../guards/devOnly.js";
 import { prisma } from "../../main.js";
@@ -50,7 +50,7 @@ export class ModifyBalanceCommand {
         await interaction.followUp({
             embeds: [
                 {
-                    title: `zzSuccess!`,
+                    title: `${emojis.success} Success!`,
                     description: `Operation completed successfully!`,
                     color: colors.green,
                     timestamp: now.toISOString(),

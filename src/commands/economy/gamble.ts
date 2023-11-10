@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, type CommandInteraction } from "discord.js";
-import { Discord, Slash, Client, SlashOption} from "discordx";
+import { Discord, Slash, Client, SlashOption } from "discordx";
 import { executedRecently, prisma } from "../../main.js";
 import { colors, errEmbed } from "../../utils/embeds.js";
 import { userAccountThing } from "../../utils/database.js";
@@ -16,10 +16,12 @@ export class GambleCommand {
             name: "bet",
             description: "The money that you want to win 2x or lose.",
             required: true,
-            type: ApplicationCommandOptionType.Number
+            type: ApplicationCommandOptionType.Number,
         })
         bet: number,
-        interaction: CommandInteraction, bot: Client): Promise<void> {
+        interaction: CommandInteraction,
+        bot: Client
+    ): Promise<void> {
         await interaction.deferReply();
         if (!executedRecently.has(interaction.user.id + "-gamble")) {
             const now = new Date();
@@ -36,7 +38,8 @@ export class GambleCommand {
                             timestamp: now.toISOString(),
                         },
                     ],
-                }); return;
+                });
+                return;
             }
             if (!user) return;
             const random = getRandomArbitrary(1, 4);
@@ -50,9 +53,10 @@ export class GambleCommand {
                             timestamp: now.toISOString(),
                         },
                     ],
-                }); return;
+                });
+                return;
             }
-            const moneyWon = bet*2
+            const moneyWon = bet * 2;
             await interaction.followUp({
                 embeds: [
                     {

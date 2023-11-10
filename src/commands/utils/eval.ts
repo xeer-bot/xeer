@@ -19,7 +19,9 @@ export class InfoCommand {
             type: ApplicationCommandOptionType.String,
         })
         code: string,
-        interaction: CommandInteraction, bot: Client): Promise<void> {
+        interaction: CommandInteraction,
+        bot: Client
+    ): Promise<void> {
         await interaction.deferReply();
         try {
             const result = await _eval(code, "evaled", {}, true);
@@ -28,7 +30,7 @@ export class InfoCommand {
                 resultReplaced = result.replace(bot.token ?? "😧", "no.");
             }
             interaction.followUp(resultReplaced);
-        } catch(err) {
+        } catch (err) {
             if (err instanceof Error) {
                 await interaction.followUp({ embeds: [errEmbed(err, undefined)] });
             } else {
