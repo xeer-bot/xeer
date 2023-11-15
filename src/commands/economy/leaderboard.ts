@@ -2,6 +2,8 @@ import type { CommandInteraction } from "discord.js";
 import { Discord, Slash, Client } from "discordx";
 import { colors, errEmbed } from "../../utils/embeds.js";
 import { prisma } from "../../main.js";
+import { getTranslated, format } from "../../languages/helper.js";
+import { userAccountThing } from "../../utils/database.js";
 
 @Discord()
 export class LeaderboardCommand {
@@ -12,6 +14,8 @@ export class LeaderboardCommand {
     async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
         await interaction.deferReply();
         const now = new Date();
+        const user = await userAccountThing(interaction.user.id);
+        if (!user) return;
         const users = await prisma.user.findMany({
             orderBy: {
                 cash: "desc",
@@ -24,14 +28,7 @@ export class LeaderboardCommand {
                 leaderboard += `${i}. <@${users[i].id}>: $${users[i].cash}\n`;
             }
             interaction.followUp({
-                embeds: [
-                    {
-                        title: ":money_with_wings: Leaderboard",
-                        description: leaderboard,
-                        color: colors.green,
-                        timestamp: now.toISOString(),
-                    },
-                ],
+                embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "leaderboard")), leaderboard))],
             });
         } else {
             interaction.followUp({

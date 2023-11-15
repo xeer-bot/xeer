@@ -2,7 +2,8 @@ import { ApplicationCommandOptionType, type CommandInteraction } from "discord.j
 import { Discord, Slash, Client, SlashChoice, SlashOption } from "discordx";
 import { colors, emojis, errEmbed, npEmbed } from "../../utils/embeds.js";
 import { prisma } from "../../main.js";
-import { createGuildConfiguration, guildConfigurationThing } from "../../utils/database.js";
+import { createGuildConfiguration, guildConfigurationThing, userAccountThing } from "../../utils/database.js";
+import { getTranslated } from "../../languages/helper.js";
 
 @Discord()
 export class ConfigurateCommand {
@@ -70,15 +71,10 @@ export class ConfigurateCommand {
                 data: data,
             });
             const now = new Date();
+            const user = await userAccountThing(interaction.user.id);
+            if (!user) return;
             await interaction.followUp({
-                embeds: [
-                    {
-                        title: `${emojis.success} Success!`,
-                        description: `Operation completed successfully!`,
-                        color: colors.green,
-                        timestamp: now.toISOString(),
-                    },
-                ],
+                embeds: [await getTranslated(user.language, "embeds", "success")],
             });
         } else {
             await interaction.followUp({

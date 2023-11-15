@@ -4,6 +4,7 @@ import { executedRecently, prisma } from "../../main.js";
 import { colors, errEmbed } from "../../utils/embeds.js";
 import { userAccountThing } from "../../utils/database.js";
 import { getRandomArbitrary } from "../../utils/main.js";
+import { getTranslated, format } from "../../languages/helper.js";
 
 @Discord()
 export class CrimeCommand {
@@ -20,15 +21,9 @@ export class CrimeCommand {
             if (!user) return;
             let index = getRandomArbitrary(1, messages.length);
             const rCash = getRandomArbitrary(index * 10, index * 25);
+            const embed = await getTranslated(user.language, "embeds", "crime_success");
             await interaction.followUp({
-                embeds: [
-                    {
-                        title: ":smiling_imp: Crime",
-                        description: `You ${messages[index]} and got $${rCash}!`,
-                        color: colors.purple,
-                        timestamp: now.toISOString(),
-                    },
-                ],
+                embeds: [JSON.parse(format(JSON.stringify(embed), messages[index], rCash))],
             });
             await prisma.user.update({
                 data: {

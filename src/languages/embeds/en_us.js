@@ -1,103 +1,122 @@
-import { colors } from "../../utils/embeds.js";
+import { colors, emojis } from "../../utils/embeds.js";
 
 const now = new Date();
 
 export default {
     success: {
         title: `${emojis.success} Success!`,
-        description: `Operation completed successfully!`,
+        description: "Operation completed successfully!",
         color: colors.green,
         timestamp: now.toISOString(),
     },
     // MODERATION
     user_banned: {
         title: ":hammer: Banhammer",
-        description: `${member} was been banned!\nReason: ${reason}`,
+        description: "${member} was been banned!\nReason: ${reason}",
         color: colors.green,
         timestamp: now.toISOString(),
     },
     got_banned: {
         title: ":hammer: Banhammer",
-        description: `You got banned from ${interaction.guild?.name}!\nReason: ${reason}`,
+        description: "You got banned from ${interaction.guild?.name}!\nReason: {reason}",
         color: colors.red,
         timestamp: now.toISOString(),
     },
     user_kicked: {
         title: ":hammer: Kickhammer",
-        description: `${member} was been kicked!\nReason: ${reason}`,
+        description: "${member} was been kicked!\nReason: ${reason}",
         color: colors.green,
         timestamp: now.toISOString(),
     },
     got_kicked: {
         title: ":hammer: Kickhammer",
-        description: `You got kicked from ${interaction.guild?.name}!\nReason: ${reason}`,
+        description: "You got kicked from ${interaction.guild?.name}!\nReason: ${reason}",
         color: colors.red,
         timestamp: now.toISOString(),
     },
     deleted_msgs: {
         title: `${emojis.success} Success!`,
-        description: `Deleted ${amount} messages!`,
+        description: "Deleted {amount} messages.",
         color: colors.green,
         footer: {
-            text: `Action requested by ${interaction.user.username}`,
+            text: "Action requested by ${interaction.user.username}",
         },
         timestamp: now.toISOString(),
     },
     user_unbanned: {
         title: ":hammer: Unbanhammer",
-        description: `<@${member}> was been unbanned!`,
+        description: "<@${member}> was been unbanned!",
         color: colors.green,
         timestamp: now.toISOString(),
     },
     // ECONOMY
     user_balance: {
         title: ":money_with_wings: Balance",
-        description: `<@${interaction.user.id}>'s Balance: $${user.cash}`,
+        description: "<@%%>'s Balance: $%%",
         color: colors.green,
         timestamp: now.toISOString(),
     },
     crime_success: {
         title: ":smiling_imp: Crime",
-        description: `You ${messages[index]} and got $${rCash}!`,
+        description: "You %% and got $%%!",
         color: colors.purple,
         timestamp: now.toISOString(),
     },
     leaderboard: {
         title: ":money_with_wings: Leaderboard",
-        description: leaderboard,
+        description: "${leaderboard}",
         color: colors.green,
         timestamp: now.toISOString(),
     },
     work: {
         title: ":construction_worker: Work",
-        description: `You ${messages[index]} and got $${rCash}!`,
+        description: "You ${messages[index]} and got ${rCash}!",
         color: colors.yellow,
+        timestamp: now.toISOString(),
+    },
+    gamble_no_money: {
+        title: ":smiling_imp: Gamble",
+        description: `You don't have that much money!`,
+        color: colors.purple,
+        timestamp: now.toISOString(),
+    },
+    gamble_lost: {
+        title: ":smiling_imp: Gamble",
+        description: `You lost all the money you bet!`,
+        color: colors.purple,
+        timestamp: now.toISOString(),
+    },
+    gamble_won: {
+        title: ":smiling_imp: Gamble",
+        description: `You won $%%!`,
+        color: colors.purple,
         timestamp: now.toISOString(),
     },
     // FUN
     cat: {
         title: ":cat: Random cat.",
-        description: `Random cat.`,
+        description: "Random cat.",
         image: {
-            url: `https://cataas.com/cat`,
+            url: "https://cataas.com/cat",
         },
         color: colors.yellow,
         timestamp: now.toISOString(),
     },
     cat_gif: {
         title: ":cat: Random cat.",
-        description: `Random cat gif.`,
+        description: "Random cat gif.",
         image: {
-            url: `https://cataas.com/cat/gif`,
+            url: "https://cataas.com/cat/gif",
+            dynamic: true
         },
         color: colors.yellow,
         timestamp: now.toISOString(),
     },
     cat_says: {
         title: ":cat: Cat.",
-        description: `Cat says: ${text}`,
+        description: "Cat says: %%",
         image: {
-            url: `https://cataas.com/cat/says/${encodeURIComponent(text)}`,
+            url: "https://cataas.com/cat/says/%%",
         },
         color: colors.yellow,
         timestamp: now.toISOString(),

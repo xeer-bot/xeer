@@ -9,6 +9,7 @@ lerna-debug.log*
 
 # Database
 data.db
+data.db-journal
 
 # Build
 build

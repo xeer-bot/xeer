@@ -1,6 +1,8 @@
 import { CommandInteraction, ApplicationCommandOptionType } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
 import { colors } from "../../utils/embeds.js";
+import { userAccountThing } from "../../utils/database.js";
+import { format, getTranslated } from "../../languages/helper.js";
 
 @Discord()
 export class CatSayCommand {
@@ -21,18 +23,10 @@ export class CatSayCommand {
     ): Promise<void> {
         await interaction.deferReply();
         const now = new Date();
+        const user = await userAccountThing(interaction.user.id);
+        if (!user) return;
         await interaction.followUp({
-            embeds: [
-                {
-                    title: ":cat: Cat.",
-                    description: `Cat says: ${text}`,
-                    image: {
-                        url: `https://cataas.com/cat/says/${encodeURIComponent(text)}`,
-                    },
-                    color: colors.yellow,
-                    timestamp: now.toISOString(),
-                },
-            ],
+            embeds: [JSON.parse(format(await getTranslated(user.language, "embeds", "cat_say"), text, encodeURIComponent(text)))],
         });
     }
 }

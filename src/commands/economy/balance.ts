@@ -1,8 +1,9 @@
 import type { CommandInteraction } from "discord.js";
 import { Discord, Slash, Client } from "discordx";
-import { colors, errEmbed } from "../../utils/embeds.js";
 import { prisma } from "../../main.js";
 import { userAccountThing } from "../../utils/database.js";
+import { getTranslated } from "../../languages/helper.js";
+import { format } from "../../languages/helper.js";
 
 @Discord()
 export class BalanceCommand {
@@ -12,19 +13,11 @@ export class BalanceCommand {
     })
     async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
         await interaction.deferReply();
-        const now = new Date();
-        const client = prisma;
         const user = await userAccountThing(interaction.user.id);
         if (!user) return;
-        interaction.followUp({
-            embeds: [
-                {
-                    title: ":money_with_wings: Balance",
-                    description: `<@${interaction.user.id}>'s Balance: $${user.cash}`,
-                    color: colors.green,
-                    timestamp: now.toISOString(),
-                },
-            ],
+        const embed = await getTranslated(user.language, "embeds", "user_balance");
+        await interaction.followUp({
+            embeds: [JSON.parse(format(JSON.stringify(embed), interaction.user.id, user.cash))],
         });
     }
 }

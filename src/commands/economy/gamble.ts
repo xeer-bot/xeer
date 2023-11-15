@@ -4,6 +4,7 @@ import { executedRecently, prisma } from "../../main.js";
 import { colors, errEmbed } from "../../utils/embeds.js";
 import { userAccountThing } from "../../utils/database.js";
 import { getRandomArbitrary } from "../../utils/main.js";
+import { getTranslated, format } from "../../languages/helper.js";
 
 @Discord()
 export class GambleCommand {
@@ -26,46 +27,25 @@ export class GambleCommand {
         if (!executedRecently.has(interaction.user.id + "-gamble")) {
             const now = new Date();
             const user = await userAccountThing(interaction.user.id);
+            if (!user) return;
             let userCash = user?.cash;
             if (!userCash) userCash = 0;
             if (userCash < bet) {
                 await interaction.followUp({
-                    embeds: [
-                        {
-                            title: ":smiling_imp: Gamble",
-                            description: `You don't have that much money!`,
-                            color: colors.purple,
-                            timestamp: now.toISOString(),
-                        },
-                    ],
+                    embeds: [await getTranslated(user.language, "embeds", "gamble_no_money")],
                 });
                 return;
             }
-            if (!user) return;
             const random = getRandomArbitrary(1, 4);
             if (random < 2) {
                 await interaction.followUp({
-                    embeds: [
-                        {
-                            title: ":smiling_imp: Gamble",
-                            description: `You lost all the money you bet!`,
-                            color: colors.purple,
-                            timestamp: now.toISOString(),
-                        },
-                    ],
+                    embeds: [await getTranslated(user.language, "embeds", "gamble_lost")],
                 });
                 return;
             }
             const moneyWon = bet * 2;
             await interaction.followUp({
-                embeds: [
-                    {
-                        title: ":smiling_imp: Gamble",
-                        description: `You won $${moneyWon}!`,
-                        color: colors.purple,
-                        timestamp: now.toISOString(),
-                    },
-                ],
+                embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "gamble_won")), moneyWon))],
             });
             await prisma.user.update({
                 data: {

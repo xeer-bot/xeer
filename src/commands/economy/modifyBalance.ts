@@ -4,6 +4,7 @@ import { colors, emojis, errEmbed } from "../../utils/embeds.js";
 import { BotOwnerOnly } from "../../guards/devOnly.js";
 import { prisma } from "../../main.js";
 import { userAccountThing } from "../../utils/database.js";
+import { format, getTranslated } from "../../languages/helper.js";
 
 @Discord()
 @SlashGroup({
@@ -48,14 +49,7 @@ export class ModifyBalanceCommand {
             },
         });
         await interaction.followUp({
-            embeds: [
-                {
-                    title: `${emojis.success} Success!`,
-                    description: `Operation completed successfully!`,
-                    color: colors.green,
-                    timestamp: now.toISOString(),
-                },
-            ],
+            embeds: [await getTranslated("en_us", "embeds", "success")],
         });
     }
     @Slash({
@@ -91,14 +85,7 @@ export class ModifyBalanceCommand {
                 },
             });
             await interaction.followUp({
-                embeds: [
-                    {
-                        title: `${emojis.success} Success!`,
-                        description: `Operation completed successfully!`,
-                        color: colors.green,
-                        timestamp: now.toISOString(),
-                    },
-                ],
+                embeds: [await getTranslated("en_us", "embeds", "success")],
             });
         } else {
             await interaction.followUp({
@@ -137,14 +124,7 @@ export class ModifyBalanceCommand {
         });
         if (user) {
             await interaction.followUp({
-                embeds: [
-                    {
-                        title: ":money_with_wings: Balance",
-                        description: `<@${iuser.id || interaction.user.id}>'s Balance: $${user.cash}`,
-                        color: colors.green,
-                        timestamp: now.toISOString(),
-                    },
-                ],
+                embeds: [JSON.parse(format(JSON.stringify(await getTranslated("en_us", "embeds", "user_balance")), iuser.id || interaction.user.id, user.cash))],
             });
         } else {
             await interaction.followUp({

@@ -5,7 +5,9 @@ export default {
         stats_field: "Statistics:",
         commands: "Commands",
         guilds: "Guild(s)",
-        managed_by: `This instance is managed by ${botowner}.`,
-        official: "This instance is an **official instance**.",
+        managed_by: `This instance is managed by %%.`,
+        official_instance: "This instance is an **official instance**.",
+        build_date: "Build Date",
+        translated_by: "teletvbis"
     },
 };
