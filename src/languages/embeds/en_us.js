@@ -18,7 +18,7 @@ export default {
     },
     got_banned: {
         title: ":hammer: Banhammer",
-        description: "You got banned from ${interaction.guild?.name}!\nReason: {reason}",
+        description: "You got banned from %%!\nReason: %%",
         color: colors.red,
         timestamp: now.toISOString(),
     },
@@ -30,7 +30,7 @@ export default {
     },
     got_kicked: {
         title: ":hammer: Kickhammer",
-        description: "You got kicked from ${interaction.guild?.name}!\nReason: ${reason}",
+        description: "You got kicked from %%!\nReason: %%",
         color: colors.red,
         timestamp: now.toISOString(),
     },
@@ -70,7 +70,7 @@ export default {
     },
     work: {
         title: ":construction_worker: Work",
-        description: "You %% and got %%!",
+        description: "You %% and got $%%!",
         color: colors.yellow,
         timestamp: now.toISOString(),
     },
