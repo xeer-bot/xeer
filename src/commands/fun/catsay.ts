@@ -26,7 +26,7 @@ export class CatSayCommand {
         const user = await userAccountThing(interaction.user.id);
         if (!user) return;
         await interaction.followUp({
-            embeds: [JSON.parse(format(await getTranslated(user.language, "embeds", "cat_say"), text, encodeURIComponent(text)))],
+            embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "cat_say")), text, encodeURIComponent(text)))],
         });
     }
 }

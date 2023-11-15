@@ -15,7 +15,7 @@ export async function createUserAccount(id: string) {
         data: {
             id: id,
             cash: 0,
-            language: "en_us"
+            language: "en_us",
         },
     });
 }

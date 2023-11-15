@@ -1,6 +1,8 @@
 import { CommandInteraction, ApplicationCommandOptionType, GuildMember, GuildMemberRoleManager } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
 import { noBotPermsEmbedBUK, npEmbed, colors } from "../../utils/embeds.js";
+import { getTranslated, format } from "../../languages/helper.js";
+import { userAccountThing } from "../../utils/database.js";
 
 @Discord()
 export class BanCommand {
@@ -28,23 +30,27 @@ export class BanCommand {
         await interaction.deferReply();
         const now = new Date();
         if (interaction.memberPermissions?.has("BanMembers") && (interaction.member?.roles as GuildMemberRoleManager).highest.position > member.roles.highest.position) {
+            const user = await userAccountThing(interaction.user.id);
+            if (!user) return;
             (await bot.users.fetch(member.id))
                 .send({
-                    embeds: [
-                        {
-                            title: ":hammer: Banhammer",
-                            description: `You got banned from ${interaction.guild?.name}!\nReason: ${reason}`,
-                            color: colors.red,
-                            timestamp: now.toISOString(),
-                        },
-                    ],
-                })
-                .then(async () => {
-                    await ban(interaction, member, now, reason);
+                    embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "got_banned")), interaction.guild?.name, reason))],
                 })
                 .catch(async () => {
-                    interaction.channel?.send(`\`❌ An error occured while DM'ing banned user, probably it had closed DM's.\``);
-                    await ban(interaction, member, now, reason);
+                    interaction.channel?.send(await getTranslated(user.language, "messages", "dm_noperms"));
+                });
+            interaction.guild?.members
+                .ban(member)
+                .then(async (res) => {
+                    await interaction.followUp({
+                        embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "user_banned")), member, reason))],
+                    });
+                })
+                .catch(async () => {
+                    const e = noBotPermsEmbedBUK("Ban Members");
+                    await interaction.followUp({
+                        embeds: [e],
+                    });
                 });
         } else {
             const e = npEmbed(undefined, "Ban Members");
@@ -53,27 +59,4 @@ export class BanCommand {
             });
         }
     }
-}
-
-async function ban(interaction: CommandInteraction, member: GuildMember, now: Date, reason: string) {
-    interaction.guild?.members
-        .ban(member)
-        .then(async (res) => {
-            await interaction.followUp({
-                embeds: [
-                    {
-                        title: ":hammer: Banhammer",
-                        description: `${member} was been banned!\nReason: ${reason}`,
-                        color: colors.green,
-                        timestamp: now.toISOString(),
-                    },
-                ],
-            });
-        })
-        .catch(async () => {
-            const e = noBotPermsEmbedBUK("Ban Members");
-            await interaction.followUp({
-                embeds: [e],
-            });
-        });
 }

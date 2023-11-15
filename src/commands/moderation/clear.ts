@@ -1,6 +1,8 @@
 import { CommandInteraction, ApplicationCommandOptionType, ChannelType } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
 import { npEmbed, colors, emojis } from "../../utils/embeds.js";
+import { format, getTranslated } from "../../languages/helper.js";
+import { userAccountThing } from "../../utils/database.js";
 
 @Discord()
 export class ClearCommand {
@@ -21,24 +23,16 @@ export class ClearCommand {
     ): Promise<void> {
         await interaction.deferReply();
         const now = new Date();
+        const user = await userAccountThing(interaction.user.id);
+        if (!user) return;
         if (interaction.channel?.type == ChannelType.DM) throw new Error("Channel's type is `DM`");
-        if (amount > 100) throw new Error("Max amount is `100`!");
-        if (amount < 0) throw new Error("Min amount is 0!");
+        if (amount > 100) throw new Error(await getTranslated(user.language, "messages", "max_amount_err"));
+        if (amount < 0) throw new Error(await getTranslated(user.language, "messages", "min_amount_err"));
         if (interaction.memberPermissions?.has("ManageMessages")) {
-            await interaction.followUp("⏱️ Deleting messages...");
+            await interaction.followUp(await getTranslated(user.language, "messages", "deleting_msgs"));
             await interaction.channel?.bulkDelete(amount, true);
             await interaction.channel?.send({
-                embeds: [
-                    {
-                        title: `${emojis.success} Success!`,
-                        description: `Deleted ${amount} messages!`,
-                        color: colors.green,
-                        footer: {
-                            text: `Action requested by ${interaction.user.username}`,
-                        },
-                        timestamp: now.toISOString(),
-                    },
-                ],
+                embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "deleted_msgs")), amount, interaction.user.username))],
             });
         } else {
             const e = npEmbed(undefined, "Manage Messages");

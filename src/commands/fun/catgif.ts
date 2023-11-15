@@ -16,7 +16,7 @@ export class CatSayCommand {
         const user = await userAccountThing(interaction.user.id);
         if (!user) return;
         await interaction.followUp({
-            embeds: [await getTranslated(user.language, "embeds", "cat_gif")]
+            embeds: [await getTranslated(user.language, "embeds", "cat_gif")],
         });
     }
 }

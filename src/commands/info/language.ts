@@ -35,8 +35,8 @@ export class LanguageCommand {
                 id: interaction.user.id,
             },
             data: {
-                language: selectedLanguage
-            }
+                language: selectedLanguage,
+            },
         });
         await interaction.followUp({
             embeds: [await getTranslated(user.language, "embeds", "success")],

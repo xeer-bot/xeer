@@ -12,7 +12,7 @@ export default {
     // MODERATION
     user_banned: {
         title: ":hammer: Banhammer",
-        description: "${member} was been banned!\nReason: ${reason}",
+        description: "%% was been banned!\nReason: %%",
         color: colors.green,
         timestamp: now.toISOString(),
     },
@@ -24,7 +24,7 @@ export default {
     },
     user_kicked: {
         title: ":hammer: Kickhammer",
-        description: "${member} was been kicked!\nReason: ${reason}",
+        description: "%% was been kicked!\nReason: %%",
         color: colors.green,
         timestamp: now.toISOString(),
     },
@@ -36,16 +36,16 @@ export default {
     },
     deleted_msgs: {
         title: `${emojis.success} Success!`,
-        description: "Deleted {amount} messages.",
+        description: "Deleted %% messages.",
         color: colors.green,
         footer: {
-            text: "Action requested by ${interaction.user.username}",
+            text: "Action requested by %%",
         },
         timestamp: now.toISOString(),
     },
     user_unbanned: {
         title: ":hammer: Unbanhammer",
-        description: "<@${member}> was been unbanned!",
+        description: "%% was been unbanned!",
         color: colors.green,
         timestamp: now.toISOString(),
     },
@@ -64,13 +64,13 @@ export default {
     },
     leaderboard: {
         title: ":money_with_wings: Leaderboard",
-        description: "${leaderboard}",
+        description: "%%",
         color: colors.green,
         timestamp: now.toISOString(),
     },
     work: {
         title: ":construction_worker: Work",
-        description: "You ${messages[index]} and got ${rCash}!",
+        description: "You %% and got %%!",
         color: colors.yellow,
         timestamp: now.toISOString(),
     },
@@ -107,7 +107,7 @@ export default {
         description: "Random cat gif.",
         image: {
             url: "https://cataas.com/cat/gif",
-            dynamic: true
+            dynamic: true,
         },
         color: colors.yellow,
         timestamp: now.toISOString(),

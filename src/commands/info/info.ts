@@ -22,7 +22,9 @@ export class InfoCommand {
         if (!user) return;
         const translated = await getTranslated(user.language, "custom", "info");
         let botowner = bot.users.cache.get(botconfig.ownerID)?.username;
-        if (!botowner) { botowner = "Unknown." }
+        if (!botowner) {
+            botowner = "Unknown.";
+        }
         let description = JSON.parse(format(JSON.stringify(translated["managed_by"]), botowner));
         if (botconfig.ownerID == "1168788770510868553") {
             description = translated["official_instance"];

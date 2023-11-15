@@ -8,6 +8,6 @@ export default {
         managed_by: `This instance is managed by %%.`,
         official_instance: "This instance is an **official instance**.",
         build_date: "Build Date",
-        translated_by: "teletvbis"
+        translated_by: "teletvbis",
     },
 };

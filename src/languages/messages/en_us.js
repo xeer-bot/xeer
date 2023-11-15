@@ -5,4 +5,5 @@ export default {
     deleting_msgs: "⏱️ Deleting messages...",
     // INFO
     ct_wrong_arg: "Wrong text, I only accept `ALLOW` or `DISALLOW`.",
+    dm_noperms: "`❌ An error occured while DM'ing user, (s)he has closed DM's.`",
 };

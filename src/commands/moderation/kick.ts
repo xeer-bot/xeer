@@ -1,6 +1,8 @@
 import { CommandInteraction, ApplicationCommandOptionType, GuildMember, GuildMemberRoleManager } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
 import { npEmbed, noBotPermsEmbedBUK, colors } from "../../utils/embeds.js";
+import { getTranslated, format } from "../../languages/helper.js";
+import { userAccountThing } from "../../utils/database.js";
 
 @Discord()
 export class KickCommand {
@@ -28,23 +30,27 @@ export class KickCommand {
         await interaction.deferReply();
         const now = new Date();
         if (interaction.memberPermissions?.has("KickMembers") && (interaction.member?.roles as GuildMemberRoleManager).highest.position > member.roles.highest.position) {
+            const user = await userAccountThing(interaction.user.id);
+            if (!user) return;
             (await bot.users.fetch(member.id))
                 .send({
-                    embeds: [
-                        {
-                            title: ":hammer: Kickhammer",
-                            description: `You got kicked from ${interaction.guild?.name}!\nReason: ${reason}`,
-                            color: colors.red,
-                            timestamp: now.toISOString(),
-                        },
-                    ],
-                })
-                .then(async () => {
-                    await kick(interaction, member, now, reason);
+                    embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "got_kicked")), interaction.guild?.name, reason))],
                 })
                 .catch(async () => {
-                    interaction.channel?.send(`\`❌ An error occured while DM'ing kicked user, probably it had closed DM's.\``);
-                    await kick(interaction, member, now, reason);
+                    interaction.channel?.send(await getTranslated(user.language, "messages", "dm_noperms"));
+                });
+            interaction.guild?.members
+                .kick(member)
+                .then(async (res) => {
+                    await interaction.followUp({
+                        embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "user_kicked")), interaction.guild?.name, reason))],
+                    });
+                })
+                .catch(async () => {
+                    const e = noBotPermsEmbedBUK("Kick Members");
+                    await interaction.followUp({
+                        embeds: [e],
+                    });
                 });
         } else {
             const e = npEmbed(undefined, "Kick Members");
@@ -53,27 +59,4 @@ export class KickCommand {
             });
         }
     }
-}
-
-async function kick(interaction: CommandInteraction, member: GuildMember, now: Date, reason: string) {
-    interaction.guild?.members
-        .kick(member)
-        .then(async (res) => {
-            await interaction.followUp({
-                embeds: [
-                    {
-                        title: ":hammer: Kickhammer",
-                        description: `${member} was been kicked!\nReason: ${reason}`,
-                        color: colors.green,
-                        timestamp: now.toISOString(),
-                    },
-                ],
-            });
-        })
-        .catch(async () => {
-            const e = noBotPermsEmbedBUK("Kick Members");
-            await interaction.followUp({
-                embeds: [e],
-            });
-        });
 }
