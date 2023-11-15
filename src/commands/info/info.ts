@@ -45,10 +45,14 @@ export class InfoCommand {
                         {
                             name: translated["stats_field"],
                             value: `
-                            ${translated["commands"]}: ${bot.application?.commands.cache.size.toString()}
-                            ${translated["guilds"]}: ${bot.guilds.cache.size.toString()}
+                            > ${translated["commands"]}: **${bot.application?.commands.cache.size.toString()}**
+                            > ${translated["guilds"]}: **${bot.guilds.cache.size.toString()}**
                             `,
                         },
+                        {
+                            name: "Translation",
+                            value: `> Translated by: **${translated["translated_by"]}**`
+                        }
                     ],
                     color: 0xffffff,
                     timestamp: now.toISOString(),
