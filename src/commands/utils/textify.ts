@@ -21,15 +21,14 @@ export class TextifyCommand {
         interaction: CommandInteraction,
         bot: Client
     ): Promise<void> {
-        const width = 1200;
-        const height = 627;
+        const width = 200;
+        const height = 200;
         await interaction.deferReply();
         const canvas = createCanvas(200, 200);
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = "#FFFFFF";
         ctx.fillRect(0, 0, width, height);
         ctx.fillStyle = "#000000";
-        ctx.font = "60 Impact";
         wrapText(ctx, text, 5, 13, 39, 10);
         await interaction.followUp({
             files: [canvas.toBuffer("image/png")]
