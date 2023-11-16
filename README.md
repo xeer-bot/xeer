@@ -7,8 +7,3 @@ If you want to use the dashboard then change `config.json-example`'s filename to
 -   Run `npm i` in the terminal and start using `npm run dev`.
 -   Run `npx prisma generate` in the terminal.
 -   (OPTIONAL) If you want bot-owner only commands to work, then change the `ownerID` variable in the `botconfig.json` file to your user id.
-
-# Features
-
-- Dashboard (Not completed, in very WIP stage)
-- 
