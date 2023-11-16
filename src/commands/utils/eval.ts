@@ -2,7 +2,6 @@ import { ApplicationCommandOptionType, type CommandInteraction } from "discord.j
 import { Discord, Slash, Client, Guard, SlashOption } from "discordx";
 import { BotOwnerOnly } from "../../guards/devOnly.js";
 import { errEmbed } from "../../utils/embeds.js";
-import _eval from "eval";
 
 @Discord()
 export class InfoCommand {
@@ -24,7 +23,7 @@ export class InfoCommand {
     ): Promise<void> {
         await interaction.deferReply();
         try {
-            const result = await _eval(code, "evaled", {}, true);
+            const result = await eval(code);
             let resultReplaced = "No output.";
             if (typeof result == "string") {
                 resultReplaced = result.replace(bot.token ?? "😧", "no.");
