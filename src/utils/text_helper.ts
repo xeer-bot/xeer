@@ -1,4 +1,4 @@
-export function wrapTextAlternative(context: any, text: string, x: number, y: number, maxCharacters: number, lineHeight: number) {
+export function wrapTextOld(context: any, text: string, x: number, y: number, maxCharacters: number, lineHeight: number) {
 	const pattern = `.{1,${maxCharacters}}`
 	const regex = new RegExp(pattern, "g");
     const array = text.match(regex) || [];
@@ -17,9 +17,19 @@ export function wrapText(context: any, text: string, x: number, y: number, maxCh
 	let finalSentences = [];
 	let currentSentenceIndex = 0;
 	let currentSentence = "";
+	let isN = false;
 	words.forEach(word => {
+		isN = false;
 		if (currentSentence.length + word.length < maxCharacters) {
-			currentSentence += word + " ";
+			if (word.startsWith("\\n")) {
+				word = word.substring(2);
+				finalSentences[currentSentenceIndex] = currentSentence;
+				currentSentenceIndex += 1;
+				currentSentence = word + " ";
+				isN = true;
+			} else {
+				currentSentence += word + " ";
+			}
 		} else {
 			finalSentences[currentSentenceIndex] = currentSentence;
 			currentSentenceIndex += 1;
