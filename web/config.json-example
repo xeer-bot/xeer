@@ -1,6 +1,7 @@
 {
     "port": * PORT (example: 3000) *,
-    "domain": "* DOMAIN (example: http://localhost:3000) *",
+    "domain": "* DOMAIN, CAN BE LOCALHOST (example: http://localhost:3000) *",
+    "connector_url": "* CONNECTOR URL (example: http://localhost:443) *",
     "oauth2": {
         "client_secret": "* CLIENT SECRET OF AN APPLICATION *",
         "client_id": "* CLIENT ID OF AN APPLICATION *",

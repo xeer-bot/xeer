@@ -1,7 +1,7 @@
 <h1 class="text-3xl font-black">Welcomer</h1>
 <p class="mt-1 text-white text-opacity-60 text-[#8b9294]">It can welcome and say bye!</p>
 <br>
-<form id="saveForm" class="flex w-[30vw] flex-col">
+<form id="saveForm" class="flex lg:w-[30vw] md:w-[50vw] flex-col">
     <label for="wmsg">Welcome Message (Placeholders: {user}, {guildname}, {timestamp})</label>
     <textarea id="wmsg" class="block bg-[#202125] w-[100%] my-[5px] p-[8px] rounded-[6px] text-[#8b9294] outline-none"></textarea>
     <label for="wcs">Welcome Channel</label>
@@ -14,7 +14,7 @@
     <a class="bg-[#5865f2] rounded-[8px] py-[10px] px-[15px] text-[20px] transition duration-[0.225s] hover:bg-[#4150F1] hover:cursor-pointer" type="submit" id="savebtn">Save Changes</a>
 </form>
 <script type="text/javascript" id="invisible">
-    const connector_url = "http://localhost:443";
+    const connector_url = "<%= connector_url %>";
     const wcs_s = document.querySelector("#wcs");
     const lcs_s = document.querySelector("#lcs");
     const savebtn = document.querySelector("#savebtn");

@@ -51,8 +51,8 @@ export class InfoCommand {
                         },
                         {
                             name: "Translation",
-                            value: `> Translated by: **${translated["translated_by"]}**`
-                        }
+                            value: `> Translated by: **${translated["translated_by"]}**`,
+                        },
                     ],
                     color: 0xffffff,
                     timestamp: now.toISOString(),

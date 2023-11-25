@@ -40,17 +40,20 @@ app.get("/dashboard/:tab", isLoggedIn, (req, res) => {
             res.render(`./tabs/${tab.toString()}`, {
                 token: token,
                 guild_id: gid,
+                connector_url: config.connector_url,
             });
         } else {
             res.render("./tabs/dashboard", {
                 token: token,
                 guild_id: "",
+                connector_url: config.connector_url,
             });
         }
     } else {
         res.render("./tabs/welcomeback", {
             token: token,
             guild_id: "",
+            connector_url: config.connector_url,
         });
     }
 });
@@ -60,6 +63,7 @@ app.get("/dashboard/", isLoggedIn, (req, res) => {
     res.render("./tabs/dashboard", {
         token: token,
         guild_id: "",
+        connector_url: config.connector_url,
     });
 });
 
