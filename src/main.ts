@@ -53,7 +53,7 @@ bot.on("messageCreate", (message: Message) => {
     bot.executeCommand(message);
 });
 
-setInterval(async () => {
+async function refresh() {
     try {
         const guilds = await bot.guilds.fetch();
         guilds.forEach((guild) => {
@@ -84,7 +84,8 @@ setInterval(async () => {
     } catch (err) {
         console.log(err);
     }
-}, 30000);
+    refresh();
+}
 
 async function run() {
     log.info("Registering commands...");
@@ -94,7 +95,9 @@ async function run() {
         log.error("Couldn't find the BOT_TOKEN in your environment/configuration file (.env)!");
     } else {
         log.info("Logging in...");
-        await bot.login(process.env.BOT_TOKEN);
+        bot.login(process.env.BOT_TOKEN).then(async () => {
+            await refresh();
+        });
     }
 }
 
