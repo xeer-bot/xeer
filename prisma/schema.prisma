@@ -24,6 +24,6 @@ model GuildConfiguration {
 
 model StatisticsChannels {
   cid     String @id @unique
-  gid     String @unique
+  gid     String @default("")
   content String @default("")
 }

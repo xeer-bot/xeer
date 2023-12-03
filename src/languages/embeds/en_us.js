@@ -9,6 +9,12 @@ export default {
         color: colors.green,
         timestamp: now.toISOString(),
     },
+    success_alt: {
+        title: `${emojis.success} Success!`,
+        description: "Operation completed successfully! (Took %%)",
+        color: colors.green,
+        timestamp: now.toISOString(),
+    },
     // MODERATION
     user_banned: {
         title: ":hammer: Banhammer",
@@ -118,6 +124,13 @@ export default {
         image: {
             url: "https://cataas.com/cat/says/%%",
         },
+        color: colors.yellow,
+        timestamp: now.toISOString(),
+    },
+    // INFO
+    statistics_list: {
+        title: ":abacus: Statistics Channels",
+        description: "%%",
         color: colors.yellow,
         timestamp: now.toISOString(),
     },
