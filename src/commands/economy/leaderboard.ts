@@ -25,7 +25,7 @@ export class LeaderboardCommand {
         if (users) {
             let leaderboard = "";
             for (let i = 0; i < users.length; i++) {
-                leaderboard += `${i}. <@${users[i].id}>: $${users[i].cash}\n`;
+                leaderboard += `${i}. <@${users[i].id}>: $${users[i].cash}\\n`;
             }
             interaction.followUp({
                 embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "leaderboard")), leaderboard))],
