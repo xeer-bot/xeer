@@ -1,5 +1,5 @@
 import { dirname, importx, resolve } from "@discordx/importer";
-import type { Guild, Interaction, Message } from "discord.js";
+import type { Guild, GuildMember, Interaction, Message } from "discord.js";
 import { IntentsBitField } from "discord.js";
 import { Client, DIService, MetadataStorage } from "discordx";
 import * as log from "./utils/logger.js";
@@ -18,17 +18,20 @@ export const prisma = new PrismaClient();
 export const executedRecently = new Set();
 
 export const bot = new Client({
-    intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.GuildMessageReactions, IntentsBitField.Flags.GuildVoiceStates, IntentsBitField.Flags.MessageContent],
+    intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.GuildMessageReactions, IntentsBitField.Flags.GuildVoiceStates, IntentsBitField.Flags.MessageContent, IntentsBitField.Flags.GuildPresences],
     silent: true,
     simpleCommand: {
         prefix: "!",
     },
 });
 
+bot.on("error", (error) => {
+    log.error(error);
+})
+
 bot.once("ready", async () => {
     await bot.guilds.fetch();
     await bot.initApplicationCommands();
-    await bot.clearApplicationCommands(...bot.guilds.cache.map((g: Guild) => g.id));
 
     log.success(`Bot ready as ${bot.user?.username}.`);
 });
@@ -70,9 +73,9 @@ async function refresh() {
                     if (channel?.isVoiceBased()) {
                         const guildFetched = await guild.fetch();
                         let guildMembersTotal = await guildFetched.members.fetch();
-                        let guildMembers = guildMembersTotal.filter((m: any) => !m.user.bot);
-                        let guildMembersOnline = guildMembers.filter((m: any) => m.presence?.status != "offline");
-                        let guildBots = guildMembersTotal.filter((m: any) => m.user.bot);
+                        let guildMembers = guildMembersTotal.filter((m: GuildMember) => !m.user.bot);
+                        let guildMembersOnline = guildMembers.filter((m: GuildMember) => m.presence?.status == "online" || m.presence?.status == "idle" || m.presence?.status == "dnd");
+                        let guildBots = guildMembersTotal.filter((m: GuildMember) => m.user.bot);
                         let content = statisticsChannel.content;
                         content = content.replaceAll("{bots}", guildBots.size.toString());
                         content = content.replaceAll("{members}", guildMembers.size.toString());
