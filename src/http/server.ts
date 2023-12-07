@@ -53,7 +53,7 @@ app.get("/api/get_channels", async (req, res) => {
         const id = cache[authorization.toString()];
         if (id) {
             if (!hasAdministrator(bot, jData.guild_id.toString(), id))
-                return res.status(500).json({
+                return res.status(403).json({
                     error: true,
                     rtm: true,
                     message: "You don't have Administrator permission!",
@@ -92,11 +92,7 @@ app.get("/api/get_channels", async (req, res) => {
                 message: "Something unexpected happened!",
             });
     } else
-        res.status(500).json({
-            error: true,
-            rtm: true,
-            message: "Wrong arguments!",
-        });
+        res.status(400);
 });
 
 app.get("/api/get_guilds", async (req, res) => {
@@ -134,11 +130,7 @@ app.get("/api/get_guilds", async (req, res) => {
             });
         }
     } else {
-        return res.status(500).json({
-            error: true,
-            rtm: true,
-            message: "Wrong arguments!",
-        });
+        return res.status(400).json();
     }
 });
 
@@ -158,7 +150,7 @@ app.post("/api/save", async (req, res) => {
         const id = cache[authorization.toString()];
         if (id) {
             if (!hasAdministrator(bot, guild_id.toString(), id))
-                return res.status(500).json({
+                return res.status(403).json({
                     error: true,
                     rtm: true,
                     message: "You don't have Administrator permission!",
@@ -195,16 +187,13 @@ app.post("/api/save", async (req, res) => {
                 message: "Something unexpected happened!",
             });
         }
-    } else
-        res.status(500).json({
-            error: true,
-            rtm: true,
-            message: "Wrong arguments!",
-        });
+    } else {
+        res.status(400);
+    }
 });
 
 export async function listen() {
     app.listen(port, () => {
-        logger.success(`Listening on port ${port}! 😇🎷`);
+        logger.success(`Listening on port ${port}.`);
     });
 }
