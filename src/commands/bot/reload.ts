@@ -23,7 +23,7 @@ export class Reload {
             const diff = ((new_.getTime() - old.getTime())/1000)
             await interaction.followUp({ embeds: [JSON.parse(format(JSON.stringify(await getTranslated("en_us", "embeds", "success_alt")), diff + "s"))] });
         } catch (err) {
-            throw err
+            throw err;
         }
     }
 }

@@ -25,10 +25,6 @@ export const bot = new Client({
     },
 });
 
-bot.on("error", (error) => {
-    log.error(error);
-})
-
 bot.once("ready", async () => {
     await bot.guilds.fetch();
     await bot.initApplicationCommands();
@@ -58,18 +54,19 @@ bot.on("messageCreate", (message: Message) => {
 });
 
 async function refresh() {
-    try {
-        const guilds = await bot.guilds.fetch();
-        guilds.forEach((guild: any) => {
-            setTimeout(async () => {
-                const statisticsChannels = await prisma.statisticsChannels.findMany({
-                    where: {
-                        gid: guild.id,
-                    },
-                });
-                if (!statisticsChannels) return;
-                statisticsChannels.forEach(async (statisticsChannel) => {
+    const guilds = await bot.guilds.fetch();
+    guilds.forEach((guild: any) => {
+        setTimeout(async () => {
+            const statisticsChannels = await prisma.statisticsChannels.findMany({
+                where: {
+                    gid: guild.id,
+                },
+            });
+            if (!statisticsChannels) return;
+            statisticsChannels.forEach(async (statisticsChannel) => {
+                try {
                     let channel = await bot.channels.fetch(statisticsChannel.cid);
+                    if (!channel) { return; }
                     if (channel?.isVoiceBased()) {
                         const guildFetched = await guild.fetch();
                         let guildMembersTotal = await guildFetched.members.fetch();
@@ -83,12 +80,10 @@ async function refresh() {
                         content = content.replaceAll("{membersonline}", guildMembersOnline.size.toString());
                         await channel?.setName(content);
                     }
-                })
-            }, 1000);
-        });
-    } catch (err) {
-        console.log(err);
-    }
+                } catch (err) {}
+            })
+        }, 1000);
+    });
     refresh();
 }
 

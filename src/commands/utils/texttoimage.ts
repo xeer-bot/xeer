@@ -19,6 +19,7 @@ export class TextToImageCommand {
         text: string,
         @SlashChoice("1")
         @SlashChoice("2")
+        @SlashChoice({ "name": "Manual", "value": "3"})
         @SlashOption({
             name: "mode",
             description: "Mode.",
@@ -26,6 +27,48 @@ export class TextToImageCommand {
             type: ApplicationCommandOptionType.String,
         })
         mode: string,
+        @SlashOption({
+            name: "width",
+            description: "Resolution Width.",
+            required: false,
+            type: ApplicationCommandOptionType.Number,
+        })
+        width: number,
+        @SlashOption({
+            name: "height",
+            description: "Resolution Height.",
+            required: false,
+            type: ApplicationCommandOptionType.Number,
+        })
+        height: number,
+        @SlashOption({
+            name: "starting_x",
+            description: "Starting Width.",
+            required: false,
+            type: ApplicationCommandOptionType.Number,
+        })
+        starting_x: number,
+        @SlashOption({
+            name: "starting_y",
+            description: "Starting Height.",
+            required: false,
+            type: ApplicationCommandOptionType.Number,
+        })
+        starting_y: number,
+        @SlashOption({
+            name: "max_char",
+            description: "Max Characters.",
+            required: false,
+            type: ApplicationCommandOptionType.Number,
+        })
+        max_char: number,
+        @SlashOption({
+            name: "line_height",
+            description: "Line Height.",
+            required: false,
+            type: ApplicationCommandOptionType.Number,
+        })
+        line_height: number,
         interaction: CommandInteraction,
         bot: Client
     ): Promise<void> {
@@ -36,9 +79,15 @@ export class TextToImageCommand {
             await interaction.followUp({
                 files: [canvas.toBuffer("image/png")],
             });
-        } else {
+        } if (mode == "2") {
             const canvas = makeCanvas(200, 600);
             altWrapText(canvas.getContext("2d"), text, 5, 13, 39, 10);
+            await interaction.followUp({
+                files: [canvas.toBuffer("image/png")],
+            });
+        } if (mode == "3") {
+            const canvas = makeCanvas(width, height);
+            altWrapText(canvas.getContext("2d"), text, starting_x, starting_y, max_char, line_height);
             await interaction.followUp({
                 files: [canvas.toBuffer("image/png")],
             });
