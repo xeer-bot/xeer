@@ -40,9 +40,17 @@
                 content: content.value
             }
         }) })
-            .then(res => res.json())
-            .then(async (res) => {
-                createToast("success", "Statistics", res.message);
-            });
+            .then((res) => {
+                if (res.status == 200) {
+                    res.json().then(json => {
+                        createToast("success", "Statistics", json.message)
+                    });
+                } else {
+                    res.json().then(json => {
+                        createToast("error", "Error", "An error occured.");
+                        console.log(json);
+                    });
+                }
+            })
     });
 </script>

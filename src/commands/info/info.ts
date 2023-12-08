@@ -1,8 +1,6 @@
 import type { CommandInteraction } from "discord.js";
 import { Discord, Slash, Client } from "discordx";
 import botconfig from "../../../botconfig.json" assert { type: "json" };
-import pkg from "../../../package.json" assert { type: "json" };
-import { colors } from "../../utils/embeds.js";
 import * as fs from "fs";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
@@ -32,7 +30,7 @@ export class InfoCommand {
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = dirname(__filename);
         const x = fs.readFileSync(__dirname + "/../../../build_date.txt").toString();
-        let build_date = new Date(x).toLocaleString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hour12: true, minute: "2-digit", second: "2-digit" });
+        const build_date = new Date(x).toLocaleString("en-US", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", hour12: true, minute: "2-digit", second: "2-digit" });
         await interaction.followUp({
             embeds: [
                 {

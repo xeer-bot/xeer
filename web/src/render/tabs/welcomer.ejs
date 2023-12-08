@@ -50,9 +50,17 @@
                 leave_channel: document.querySelector("#lcs").value
             }
         }) })
-            .then(res => res.json())
-            .then(async (res) => {
-                createToast("success", "Welcomer", res.message);
-            });
+            .then((res) => {
+                if (res.status == 200) {
+                    res.json().then(json => {
+                        createToast("success", "Welcomer", json.message)
+                    });
+                } else {
+                    res.json().then(json => {
+                        createToast("error", "Error", "An error occured.");
+                        console.log(json);
+                    });
+                }
+            })
     });
 </script>

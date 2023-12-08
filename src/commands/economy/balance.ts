@@ -1,6 +1,5 @@
 import type { CommandInteraction } from "discord.js";
 import { Discord, Slash, Client } from "discordx";
-import { prisma } from "../../main.js";
 import { userAccountThing } from "../../utils/database.js";
 import { getTranslated } from "../../languages/helper.js";
 import { format } from "../../languages/helper.js";

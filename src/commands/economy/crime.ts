@@ -1,7 +1,7 @@
 import type { CommandInteraction } from "discord.js";
-import { Discord, Slash, Client, Guard } from "discordx";
+import { Discord, Slash, Client } from "discordx";
 import { executedRecently, prisma } from "../../main.js";
-import { colors, errEmbed } from "../../utils/embeds.js";
+import { errEmbed } from "../../utils/embeds.js";
 import { userAccountThing } from "../../utils/database.js";
 import { getRandomArbitrary } from "../../utils/main.js";
 import { getTranslated, format } from "../../languages/helper.js";
@@ -19,7 +19,7 @@ export class CrimeCommand {
             const now = new Date();
             const user = await userAccountThing(interaction.user.id);
             if (!user) return;
-            let index = getRandomArbitrary(1, messages.length);
+            const index = getRandomArbitrary(1, messages.length);
             const rCash = getRandomArbitrary(index * 10, index * 25);
             const embed = await getTranslated(user.language, "embeds", "crime_success");
             await interaction.followUp({

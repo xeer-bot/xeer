@@ -1,7 +1,7 @@
 import { ApplicationCommandOptionType, type CommandInteraction } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
 import { executedRecently, prisma } from "../../main.js";
-import { colors, errEmbed } from "../../utils/embeds.js";
+import { errEmbed } from "../../utils/embeds.js";
 import { userAccountThing } from "../../utils/database.js";
 import { getRandomArbitrary } from "../../utils/main.js";
 import { getTranslated, format } from "../../languages/helper.js";

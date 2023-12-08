@@ -1,6 +1,6 @@
 import { type CommandInteraction, ApplicationCommandOptionType, User } from "discord.js";
 import { Discord, Slash, Client, Guard, SlashOption, SlashGroup } from "discordx";
-import { colors, emojis, errEmbed } from "../../utils/embeds.js";
+import { errEmbed } from "../../utils/embeds.js";
 import { BotOwnerOnly } from "../../guards/devOnly.js";
 import { prisma } from "../../main.js";
 import { userAccountThing } from "../../utils/database.js";

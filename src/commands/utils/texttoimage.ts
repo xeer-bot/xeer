@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, type CommandInteraction } from "discord.js";
-import { Discord, Slash, Client, Guard, SlashOption, SlashChoice } from "discordx";
-import { createCanvas, loadImage } from "canvas";
+import { Discord, Slash, Client, SlashOption, SlashChoice } from "discordx";
+import { createCanvas } from "canvas";
 import { wrapText, altWrapText } from "../../utils/text_helper.js";
 
 @Discord()
@@ -19,7 +19,7 @@ export class TextToImageCommand {
         text: string,
         @SlashChoice("1")
         @SlashChoice("2")
-        @SlashChoice({ "name": "Manual", "value": "3"})
+        @SlashChoice({ name: "Manual", value: "3" })
         @SlashOption({
             name: "mode",
             description: "Mode.",
@@ -79,13 +79,15 @@ export class TextToImageCommand {
             await interaction.followUp({
                 files: [canvas.toBuffer("image/png")],
             });
-        } if (mode == "2") {
+        }
+        if (mode == "2") {
             const canvas = makeCanvas(200, 600);
             altWrapText(canvas.getContext("2d"), text, 5, 13, 39, 10);
             await interaction.followUp({
                 files: [canvas.toBuffer("image/png")],
             });
-        } if (mode == "3") {
+        }
+        if (mode == "3") {
             const canvas = makeCanvas(width, height);
             altWrapText(canvas.getContext("2d"), text, starting_x, starting_y, max_char, line_height);
             await interaction.followUp({

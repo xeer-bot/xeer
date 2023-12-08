@@ -10,7 +10,6 @@
         "resolveJsonModule": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
     "exclude": ["build", "node_modules"]

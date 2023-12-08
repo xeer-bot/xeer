@@ -22,7 +22,9 @@ export class GuildMemberAdd {
                     guildConfig.welcomemsg = guildConfig.welcomemsg.replaceAll("{user}", `${member}`).replaceAll("{timestamp}", now.toISOString()).replaceAll("{guildname}", member.guild.name);
                     try {
                         guildConfig.welcomemsg = JSON.parse(guildConfig.welcomemsg);
-                    } catch (err) {}
+                    } catch (err) {
+                        /* empty */
+                    }
                     await ch.send(guildConfig.welcomemsg);
                 }
             }

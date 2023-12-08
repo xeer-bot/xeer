@@ -1,8 +1,8 @@
 import { ApplicationCommandOptionType, type CommandInteraction } from "discord.js";
 import { Discord, Slash, Client, SlashChoice, SlashOption } from "discordx";
-import { colors, emojis, errEmbed, npEmbed } from "../../utils/embeds.js";
+import { errEmbed, npEmbed } from "../../utils/embeds.js";
 import { prisma } from "../../main.js";
-import { createGuildConfiguration, guildConfigurationThing, userAccountThing } from "../../utils/database.js";
+import { guildConfigurationThing, userAccountThing } from "../../utils/database.js";
 import { getTranslated } from "../../languages/helper.js";
 
 @Discord()

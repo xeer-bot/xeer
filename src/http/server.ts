@@ -1,11 +1,11 @@
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
-import { bot, prisma } from "../main.js";
+import { bot } from "../main.js";
 import * as logger from "../utils/logger.js";
 import { cnfCache, hasAdministrator } from "../utils/connector_utils.js";
 import fs from "fs";
 import { dirname, join } from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 
 const app = express();
 
@@ -43,17 +43,21 @@ app.use(bodyParser.json());
 const port = 443;
 
 app.get("/teapot", async (req, res) => {
-    res.status(418).json({ "message": "I don't serve coffee, because I'm a teapot! 🫖" })
-})
+    res.status(418).json({ message: "I don't serve coffee, because I'm a teapot! 🫖" });
+});
 
 app.get("/api/get_channels", async (req, res) => {
     const jData = req.query;
     const authorization = req.headers.authorization;
 
-    if (!jData.guild_id || !authorization) { return res.status(400); }
+    if (!jData.guild_id || !authorization) {
+        return res.status(400);
+    }
     cache = await cnfCache(cache, authorization.toString());
     const id = cache[authorization.toString()];
-    if (!id) { return res.status(500); }
+    if (!id) {
+        return res.status(500);
+    }
 
     if (!hasAdministrator(bot, jData.guild_id.toString(), id)) {
         return res.status(403).json({
@@ -63,9 +67,11 @@ app.get("/api/get_channels", async (req, res) => {
     }
 
     const guild = bot.guilds.cache.get(jData.guild_id.toString());
-    if (!guild) { return res.status(403).json({ message: "You're not in that guild!" }); }
+    if (!guild) {
+        return res.status(403).json({ message: "You're not in that guild!" });
+    }
 
-    let channels: any = [];
+    const channels: any = [];
     guild.channels.cache.forEach((channel) => {
         if (channel.type == 0)
             channels.push({
@@ -92,7 +98,7 @@ app.get("/api/get_guilds", async (req, res) => {
     gids = gids?.toString().split(",");
     if (authorization && gids) {
         cache = await cnfCache(cache, authorization.toString());
-        let guilds: any = [];
+        const guilds: any = [];
         gids.forEach((gid: any) => {
             const guild = bot.guilds.cache.get(gid);
             if (guild)
@@ -110,13 +116,17 @@ app.get("/api/get_guilds", async (req, res) => {
 });
 
 app.post("/api/save", async (req: Request, res: Response) => {
-    let { feature, guild_id, data } = req.body;
+    const { feature, guild_id, data } = req.body;
     const authorization = req.headers.authorization;
-    if (!feature || !authorization || !data || !guild_id) { return res.status(400); };
+    if (!feature || !authorization || !data || !guild_id) {
+        return res.status(400);
+    }
 
     cache = await cnfCache(cache, authorization.toString());
     const id = cache[authorization.toString()];
-    if (!id) { return res.status(500); }
+    if (!id) {
+        return res.status(500);
+    }
 
     if (!hasAdministrator(bot, guild_id.toString(), id)) {
         return res.status(403).json({

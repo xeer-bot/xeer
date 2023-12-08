@@ -65,7 +65,7 @@ export class SayCommand {
                         embeds: [
                             {
                                 title: `${emojis.success} Success!`,
-                                description: `Operation completed successfully!`,
+                                description: "Operation completed successfully!",
                                 color: colors.green,
                                 timestamp: now.toISOString(),
                             },

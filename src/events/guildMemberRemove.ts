@@ -21,7 +21,9 @@ export class GuildMemberAdd {
                     guildConfig.leavemsg = guildConfig.leavemsg.replaceAll("{user}", `${member}`).replaceAll("{timestamp}", now.toISOString()).replaceAll("{guildname}", member.guild.name);
                     try {
                         guildConfig.leavemsg = JSON.parse(guildConfig.leavemsg);
-                    } catch (err) {}
+                    } catch (err) {
+                        /* empty */
+                    }
                     await ch.send(guildConfig.leavemsg);
                 }
             }

@@ -1,6 +1,6 @@
 import type { CommandInteraction } from "discord.js";
 import { Discord, Slash, Client } from "discordx";
-import { colors, errEmbed } from "../../utils/embeds.js";
+import { errEmbed } from "../../utils/embeds.js";
 import { prisma } from "../../main.js";
 import { getTranslated, format } from "../../languages/helper.js";
 import { userAccountThing } from "../../utils/database.js";

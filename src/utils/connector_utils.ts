@@ -2,7 +2,7 @@ import { Client, User } from "discord.js";
 import { setCache } from "../http/server.js";
 
 export async function cnfCache(cache: any, aToken: string): Promise<any> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         if (!cache[aToken]) {
             fetch("https://discord.com/api/users/@me", {
                 headers: {
@@ -24,6 +24,7 @@ export async function cnfCache(cache: any, aToken: string): Promise<any> {
 }
 
 export async function hasAdministrator(bot: Client, gID: string, uID: string): Promise<boolean> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
         const g = bot.guilds.cache.get(gID);
         if (g) {
@@ -34,7 +35,7 @@ export async function hasAdministrator(bot: Client, gID: string, uID: string): P
 }
 
 export async function cnrDU(bot: Client, uID: string): Promise<User> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const cUser = bot.users.cache.get(uID);
         if (!cUser) {
             bot.users

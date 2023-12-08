@@ -1,5 +1,5 @@
 import { dirname, importx, resolve } from "@discordx/importer";
-import type { Guild, GuildMember, Interaction, Message } from "discord.js";
+import type { GuildMember, Interaction, Message } from "discord.js";
 import { IntentsBitField } from "discord.js";
 import { Client, DIService, MetadataStorage } from "discordx";
 import * as log from "./utils/logger.js";
@@ -65,14 +65,16 @@ async function refresh() {
             if (!statisticsChannels) return;
             statisticsChannels.forEach(async (statisticsChannel) => {
                 try {
-                    let channel = await bot.channels.fetch(statisticsChannel.cid);
-                    if (!channel) { return; }
+                    const channel = await bot.channels.fetch(statisticsChannel.cid);
+                    if (!channel) {
+                        return;
+                    }
                     if (channel?.isVoiceBased()) {
                         const guildFetched = await guild.fetch();
-                        let guildMembersTotal = await guildFetched.members.fetch();
-                        let guildMembers = guildMembersTotal.filter((m: GuildMember) => !m.user.bot);
-                        let guildMembersOnline = guildMembers.filter((m: GuildMember) => m.presence?.status == "online" || m.presence?.status == "idle" || m.presence?.status == "dnd");
-                        let guildBots = guildMembersTotal.filter((m: GuildMember) => m.user.bot);
+                        const guildMembersTotal = await guildFetched.members.fetch();
+                        const guildMembers = guildMembersTotal.filter((m: GuildMember) => !m.user.bot);
+                        const guildMembersOnline = guildMembers.filter((m: GuildMember) => m.presence?.status == "online" || m.presence?.status == "idle" || m.presence?.status == "dnd");
+                        const guildBots = guildMembersTotal.filter((m: GuildMember) => m.user.bot);
                         let content = statisticsChannel.content;
                         content = content.replaceAll("{bots}", guildBots.size.toString());
                         content = content.replaceAll("{members}", guildMembers.size.toString());
@@ -80,8 +82,10 @@ async function refresh() {
                         content = content.replaceAll("{membersonline}", guildMembersOnline.size.toString());
                         await channel?.setName(content);
                     }
-                } catch (err) {}
-            })
+                } catch (err) {
+                    /* empty */
+                }
+            });
         }, 1000);
     });
     refresh();
@@ -89,21 +93,17 @@ async function refresh() {
 
 async function LoadFiles(src: string) {
     const files = await resolve(src);
-    await Promise.all(
-      files.map((file) => import(`${file}?version=${Date.now()}`))
-    );
-  }
+    await Promise.all(files.map((file) => import(`${file}?version=${Date.now()}`)));
+}
 
 export async function reload() {
     log.warn("Reloading commands and events...");
-    
+
     bot.removeEvents();
     MetadataStorage.clear();
     DIService.engine.clearAllServices();
 
-    await LoadFiles(
-      `${dirname(import.meta.url)}/{events,commands,commands-next}/**/*.{js,ts}`
-    );
+    await LoadFiles(`${dirname(import.meta.url)}/{events,commands,commands-next}/**/*.{js,ts}`);
 
     await MetadataStorage.instance.build();
     await bot.initApplicationCommands();

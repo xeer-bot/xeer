@@ -1,6 +1,6 @@
 import { CommandInteraction, ApplicationCommandOptionType, GuildMember, GuildMemberRoleManager } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
-import { npEmbed, noBotPermsEmbedBUK, colors } from "../../utils/embeds.js";
+import { npEmbed, noBotPermsEmbedBUK } from "../../utils/embeds.js";
 import { getTranslated, format } from "../../languages/helper.js";
 import { userAccountThing } from "../../utils/database.js";
 

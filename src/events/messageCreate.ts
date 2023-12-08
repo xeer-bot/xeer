@@ -1,7 +1,7 @@
 import { Discord, ArgsOf, On, Client } from "discordx";
 import { guildConfigurationThing } from "../utils/database.js";
 import { ChannelType } from "discord.js";
-import { colors, errEmbed, npEmbed } from "../utils/embeds.js";
+import { errEmbed, npEmbed } from "../utils/embeds.js";
 import config from "../../botconfig.json" assert { type: "json" };
 
 @Discord()

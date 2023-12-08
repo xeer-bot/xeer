@@ -7,5 +7,5 @@ export default {
     ct_wrong_arg: "Wrong text, I only accept `ALLOW` or `DISALLOW`.",
     dm_noperms: "`❌ An error occured while DM'ing user, they probably have closed DM's.`",
     // ERRORS
-    no_permission: "You need `%%` permission to use this command!"
+    no_permission: "You need `%%` permission to use this command!",
 };

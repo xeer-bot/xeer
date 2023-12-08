@@ -1,6 +1,6 @@
 import { CommandInteraction, ApplicationCommandOptionType, ChannelType } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
-import { npEmbed, colors, emojis } from "../../utils/embeds.js";
+import { npEmbed } from "../../utils/embeds.js";
 import { format, getTranslated } from "../../languages/helper.js";
 import { userAccountThing } from "../../utils/database.js";
 

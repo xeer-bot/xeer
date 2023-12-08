@@ -82,19 +82,19 @@ export default {
     },
     gamble_no_money: {
         title: ":smiling_imp: Gamble",
-        description: `You don't have that much money!`,
+        description: "You don't have that much money!",
         color: colors.purple,
         timestamp: now.toISOString(),
     },
     gamble_lost: {
         title: ":smiling_imp: Gamble",
-        description: `You lost all the money you bet!`,
+        description: "You lost all the money you bet!",
         color: colors.purple,
         timestamp: now.toISOString(),
     },
     gamble_won: {
         title: ":smiling_imp: Gamble",
-        description: `You won $%%!`,
+        description: "You won $%%!",
         color: colors.purple,
         timestamp: now.toISOString(),
     },

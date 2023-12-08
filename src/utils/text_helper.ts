@@ -13,8 +13,8 @@ export function wrapTextOld(context: any, text: string, x: number, y: number, ma
 }
 
 export function wrapText(context: any, text: string, x: number, y: number, maxCharacters: number, lineHeight: number) {
-    let words = text.split(" ");
-    let finalSentences = [];
+    const words = text.split(" ");
+    const finalSentences = [];
     let currentSentenceIndex = 0;
     let currentSentence = "";
     let isN = false;
@@ -50,8 +50,8 @@ function isUpperCase(str: string) {
 }
 
 export function altWrapText(context: any, text: string, x: number, y: number, maxCharacters: number, lineHeight: number) {
-    let words = text.split(" ");
-    let finalSentences = [];
+    const words = text.split(" ");
+    const finalSentences = [];
     let currentSentenceIndex = 0;
     let currentSentence = "";
     words.forEach((word) => {

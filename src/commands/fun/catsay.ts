@@ -1,6 +1,5 @@
 import { CommandInteraction, ApplicationCommandOptionType } from "discord.js";
 import { Discord, Slash, Client, SlashOption } from "discordx";
-import { colors } from "../../utils/embeds.js";
 import { userAccountThing } from "../../utils/database.js";
 import { format, getTranslated } from "../../languages/helper.js";
 

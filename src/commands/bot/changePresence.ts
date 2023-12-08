@@ -1,4 +1,4 @@
-import { SlashCommandStringOption, type CommandInteraction, ApplicationCommandOptionType, PresenceStatusData } from "discord.js";
+import { type CommandInteraction, ApplicationCommandOptionType, PresenceStatusData } from "discord.js";
 import { Discord, Slash, Client, Guard, SlashOption, SlashChoice } from "discordx";
 import { colors } from "../../utils/embeds.js";
 import { BotOwnerOnly } from "../../guards/devOnly.js";
@@ -86,7 +86,7 @@ export class ChangePresenceCommand {
             embeds: [
                 {
                     title: "<a:success:1138106613559996521> Success!",
-                    description: `Operation completed successfully!`,
+                    description: "Operation completed successfully!",
                     color: colors.green,
                     timestamp: now.toISOString(),
                 },
