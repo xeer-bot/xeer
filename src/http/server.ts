@@ -14,8 +14,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const backend_url = "http://localhost:3000";
 
 export async function get_dashboard_latency() {
-    const before = new Date();
     try {
+        const before = new Date();
         await fetch(new URL("/ping", backend_url));
         const after = new Date();
         const latency = after.getTime() - before.getTime();
@@ -64,7 +64,7 @@ app.get("/api/get_channels", async (req, res) => {
 
     const guild = bot.guilds.cache.get(jData.guild_id.toString());
     if (!guild) { return res.status(403).json({ message: "You're not in that guild!" }); }
-    
+
     let channels: any = [];
     guild.channels.cache.forEach((channel) => {
         if (channel.type == 0)
