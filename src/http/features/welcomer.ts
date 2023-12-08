@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { prisma } from "../../main";
+import { prisma } from "../../main.js";
 
 export async function save(guild_id: string, data: any, res: Response) {
     try {
