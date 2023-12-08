@@ -49,18 +49,22 @@ app.get("/teapot", async (req, res) => {
 app.get("/api/get_channels", async (req, res) => {
     const jData = req.query;
     const authorization = req.headers.authorization;
+
     if (!jData.guild_id || !authorization) { return res.status(400); }
     cache = await cnfCache(cache, authorization.toString());
     const id = cache[authorization.toString()];
     if (!id) { return res.status(500); }
+
     if (!hasAdministrator(bot, jData.guild_id.toString(), id)) {
         return res.status(403).json({
             error: true,
             message: "You don't have Administrator permission!",
         });
     }
+
     const guild = bot.guilds.cache.get(jData.guild_id.toString());
     if (!guild) { return res.status(403).json({ message: "You're not in that guild!" }); }
+    
     let channels: any = [];
     guild.channels.cache.forEach((channel) => {
         if (channel.type == 0)
@@ -69,6 +73,7 @@ app.get("/api/get_channels", async (req, res) => {
                 name: channel.name,
             });
     });
+
     if (channels.length > 0) {
         res.json({
             channels: channels,
@@ -108,23 +113,26 @@ app.post("/api/save", async (req: Request, res: Response) => {
     let { feature, guild_id, data } = req.body;
     const authorization = req.headers.authorization;
     if (!feature || !authorization || !data || !guild_id) { return res.status(400); };
-        cache = await cnfCache(cache, authorization.toString());
-        const id = cache[authorization.toString()];
-        if (!id) { return res.status(500); }
-        if (!hasAdministrator(bot, guild_id.toString(), id)) {
-            return res.status(403).json({
-                error: true,
-                message: "You don't have Administrator permission!",
-            });
-        }
-        if (fs.existsSync(join(__dirname, "features", feature + ".ts"))) {
-            (await import(`./features/${feature + ".ts"}`)).save(guild_id, data, res);
-        } else {
-            res.status(400).json({
-                error: true,
-                message: "Feature not implemented.",
-            });
-        }
+
+    cache = await cnfCache(cache, authorization.toString());
+    const id = cache[authorization.toString()];
+    if (!id) { return res.status(500); }
+
+    if (!hasAdministrator(bot, guild_id.toString(), id)) {
+        return res.status(403).json({
+            error: true,
+            message: "You don't have Administrator permission!",
+        });
+    }
+
+    if (fs.existsSync(join(__dirname, "features", feature + ".ts"))) {
+        (await import(`./features/${feature + ".ts"}`)).save(guild_id, data, res);
+    } else {
+        res.status(400).json({
+            error: true,
+            message: "Feature not implemented.",
+        });
+    }
 });
 
 export async function listen() {
