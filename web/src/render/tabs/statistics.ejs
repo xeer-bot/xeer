@@ -1,0 +1,48 @@
+<h1 class="text-3xl font-black">Statistics</h1>
+<p class="mt-1 text-white text-opacity-60 text-[#8b9294]">Server statistics.</p>
+<br>
+<form id="saveForm" class="flex lg:w-[30vw] md:w-[50vw] flex-col">
+    <label for="channel">Channel</label>
+    <select id="channel" class="block bg-[#202125] w-[100%] my-[5px] p-[8px] rounded-[6px] text-[#8b9294] outline-none"></select>
+    <label for="content">Content</label>
+    <input id="content" class="block bg-[#202125] w-[100%] my-[5px] p-[8px] rounded-[6px] text-[#8b9294] outline-none"></input>
+    <br>
+    <a class="bg-[#5865f2] rounded-[8px] py-[10px] px-[15px] text-[20px] transition duration-[0.225s] hover:bg-[#4150F1] hover:cursor-pointer" type="submit" id="savebtn">Save Changes</a>
+</form>
+<script type="text/javascript" id="invisible">
+    const connector_url = "<%= connector_url %>";
+    const channel = document.querySelector("#channel");
+    const content = document.querySelector("#content");
+    const savebtn = document.querySelector("#savebtn");
+    fetch(new URL(`/api/get_channels?guild_id=<%= guild_id %>`, connector_url), {
+            headers: {
+                "Authorization": "<%= token %>"
+            }
+        })
+        .then(res => res.json())
+        .then(async (res) => {
+            res.channels.forEach(obj => {
+                const optionObject = document.createElement("option");
+                optionObject.setAttribute("value", obj.id);
+                optionObject.textContent = obj.name;
+                channel.appendChild(optionObject);
+            });
+    });
+    savebtn.addEventListener("click", async (e) => {
+        fetch(new URL("/api/save", connector_url), { method: "post", headers: {
+            "Content-Type": "application/json",
+            "Authorization": "<%= token %>"
+        }, body: JSON.stringify({
+            feature: "statistics",
+            guild_id: "<%= guild_id %>",
+            data: {
+                channel: channel.value,
+                content: content.value
+            }
+        }) })
+            .then(res => res.json())
+            .then(async (res) => {
+                createToast("success", "Statistics", res.message);
+            });
+    });
+</script>

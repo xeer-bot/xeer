@@ -5,6 +5,7 @@
     background-color: white;
     border-radius: 13px;
     display: flex;
+    width: -moz-fit-content;
     width: fit-content;
     position: relative;
     margin-left: auto;
