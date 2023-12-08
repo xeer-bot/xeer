@@ -50,35 +50,35 @@ app.get("/api/get_channels", async (req, res) => {
     const jData = req.query;
     const authorization = req.headers.authorization;
     if (!jData.guild_id || !authorization) { return res.status(400); }
-        cache = await cnfCache(cache, authorization.toString());
-        const id = cache[authorization.toString()];
-        if (!id) { return res.status(500); }
-            if (!hasAdministrator(bot, jData.guild_id.toString(), id)) {
-                return res.status(403).json({
-                    error: true,
-                    message: "You don't have Administrator permission!",
-                });
-            }
-            const guild = bot.guilds.cache.get(jData.guild_id.toString());
-            if (!guild) { return res.status(403).json({ message: "You're not in that guild!" }); }
-                let channels: any = [];
-                guild.channels.cache.forEach((channel) => {
-                    if (channel.type == 0)
-                        channels.push({
-                            id: channel.id,
-                            name: channel.name,
-                        });
-                });
-                if (channels.length > 0) {
-                    res.json({
-                        channels: channels,
-                    });
-                } else {
-                    res.status(500).json({
-                        error: true,
-                        message: "The bot is not added to that guild!",
-                    });
-                }
+    cache = await cnfCache(cache, authorization.toString());
+    const id = cache[authorization.toString()];
+    if (!id) { return res.status(500); }
+    if (!hasAdministrator(bot, jData.guild_id.toString(), id)) {
+        return res.status(403).json({
+            error: true,
+            message: "You don't have Administrator permission!",
+        });
+    }
+    const guild = bot.guilds.cache.get(jData.guild_id.toString());
+    if (!guild) { return res.status(403).json({ message: "You're not in that guild!" }); }
+    let channels: any = [];
+    guild.channels.cache.forEach((channel) => {
+        if (channel.type == 0)
+            channels.push({
+                id: channel.id,
+                name: channel.name,
+            });
+    });
+    if (channels.length > 0) {
+        res.json({
+            channels: channels,
+        });
+    } else {
+        res.status(500).json({
+            error: true,
+            message: "The bot is not added to that guild!",
+        });
+    }
 });
 
 app.get("/api/get_guilds", async (req, res) => {
@@ -117,9 +117,8 @@ app.post("/api/save", async (req: Request, res: Response) => {
                 message: "You don't have Administrator permission!",
             });
         }
-        console.log(join(dirname(import.meta.url), "features", feature + ".ts"));
         if (fs.existsSync(join(__dirname, "features", feature + ".ts"))) {
-            await import(`./features/${feature + ".ts"}`);
+            (await import(`./features/${feature + ".ts"}`)).save(guild_id, data, res);
         } else {
             res.status(400).json({
                 error: true,
