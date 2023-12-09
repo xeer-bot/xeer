@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
-import { bot } from "../main.js";
+import { bot, prisma } from "../main.js";
 import * as logger from "../utils/logger.js";
 import { cnfCache, hasAdministrator } from "../utils/connector_utils.js";
 import fs from "fs";
@@ -46,7 +46,43 @@ app.get("/teapot", async (req, res) => {
     res.status(418).json({ message: "I don't serve coffee, because I'm a teapot! 🫖" });
 });
 
-app.get("/api/get_channels", async (req, res) => {
+app.get("/api/statistics_channels", async (req, res) => {
+    const jData = req.query;
+    const authorization = req.headers.authorization;
+
+    if (!jData.guild_id || !authorization) {
+        return res.status(400);
+    }
+    cache = await cnfCache(cache, authorization.toString());
+    const id = cache[authorization.toString()];
+    if (!id) {
+        return res.status(500);
+    }
+
+    const guild = bot.guilds.cache.get(jData.guild_id.toString());
+    if (!guild) {
+        return res.status(500).json({ message: "I'm not in that guild!" });
+    }
+
+    if (!hasAdministrator(bot, jData.guild_id.toString(), id)) {
+        return res.status(403).json({
+            error: true,
+            message: "You don't have Administrator permission!",
+        });
+    }
+
+    if (!jData.guild_id) { return res.status(500).json({ message: "Guild ID is not defined." }); }
+    
+    const statisticsChannels = await prisma.statisticsChannels.findMany({
+        where: {
+            gid: jData.guild_id.toString(),
+        },
+    });
+
+    return res.json({ statisticsChannels: statisticsChannels });
+});
+
+app.get("/api/text_channels", async (req, res) => {
     const jData = req.query;
     const authorization = req.headers.authorization;
 
@@ -68,12 +104,58 @@ app.get("/api/get_channels", async (req, res) => {
 
     const guild = bot.guilds.cache.get(jData.guild_id.toString());
     if (!guild) {
-        return res.status(403).json({ message: "You're not in that guild!" });
+        return res.status(500).json({ message: "I'm not in that guild!" });
     }
 
     const channels: any = [];
     guild.channels.cache.forEach((channel) => {
         if (channel.type == 0)
+            channels.push({
+                id: channel.id,
+                name: channel.name,
+            });
+    });
+
+    if (channels.length > 0) {
+        res.json({
+            channels: channels,
+        });
+    } else {
+        res.status(500).json({
+            error: true,
+            message: "The bot is not added to that guild!",
+        });
+    }
+});
+
+app.get("/api/voice_channels", async (req, res) => {
+    const jData = req.query;
+    const authorization = req.headers.authorization;
+
+    if (!jData.guild_id || !authorization) {
+        return res.status(400);
+    }
+    cache = await cnfCache(cache, authorization.toString());
+    const id = cache[authorization.toString()];
+    if (!id) {
+        return res.status(500);
+    }
+
+    if (!hasAdministrator(bot, jData.guild_id.toString(), id)) {
+        return res.status(403).json({
+            error: true,
+            message: "You don't have Administrator permission!",
+        });
+    }
+
+    const guild = bot.guilds.cache.get(jData.guild_id.toString());
+    if (!guild) {
+        return res.status(500).json({ message: "I'm not in that guild!" });
+    }
+
+    const channels: any = [];
+    guild.channels.cache.forEach((channel) => {
+        if (channel.type == 2)
             channels.push({
                 id: channel.id,
                 name: channel.name,

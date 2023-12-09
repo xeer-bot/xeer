@@ -11,6 +11,7 @@ cp.exec("npx tsc", (err, stdout, stderr) => {
     if (err) {
         throw err;
     }
+    
     const date = dateRaw.toISOString();
     fs.writeFile("build_date.txt", date, (err) => {
         if (err) {
@@ -19,24 +20,19 @@ cp.exec("npx tsc", (err, stdout, stderr) => {
         console.log(`Build Done! Date ISO String: ${date}`);
     });
 
-    setTimeout(() => {
-        console.log("Copying files...");
-        files.forEach((file) => {
-            console.log(`Copying file ${file}...`);
-            fs.copyFileSync(file, `build/${file}`);
-            console.log(`Copying file ${file} done!`);
-        });
+    console.log("Copying files...");
+    files.forEach((file) => {
+        console.log(`Copying file ${file}...`);
+        fs.copyFileSync(file, `build/${file}`);
+        console.log(`Copying file ${file} done!`);
+    });
 
-        console.log("Copying folders...");
-        folders.forEach((folder) => {
-            console.log(`Copying folder ${folder}...`);
-            fs.cpSync(folder, `build/${folder}`, { recursive: true });
-            console.log(`Copying file ${folder} done!`);
-        });
-
-        setTimeout(() => {
-            console.log("Done! Exitting...");
-            process.exit();
-        }, 1000);
-    }, 1000);
+    console.log("Copying folders...");
+    folders.forEach((folder) => {
+        console.log(`Copying folder ${folder}...`);
+        fs.cpSync(folder, `build/${folder}`, { recursive: true });
+        console.log(`Copying file ${folder} done!`);
+    });
+    
+    console.log("Done!");
 });

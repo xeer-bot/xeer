@@ -7,14 +7,24 @@
     <label for="content">Content</label>
     <input id="content" class="block bg-[#202125] w-[100%] my-[5px] p-[8px] rounded-[6px] text-[#8b9294] outline-none"></input>
     <br>
-    <a class="bg-[#5865f2] rounded-[8px] py-[10px] px-[15px] text-[20px] transition duration-[0.225s] hover:bg-[#4150F1] hover:cursor-pointer" type="submit" id="savebtn">Save Changes</a>
+    <a class="bg-[#5865f2] rounded-[8px] mb-[5px] py-[10px] px-[15px] text-[20px] transition duration-[0.225s] hover:bg-[#4150F1] hover:cursor-pointer" type="submit" id="addbtn">
+        Add channel
+    </a>
+    <a class="bg-[#5865f2] rounded-[8px] mb-[5px] py-[10px] px-[15px] text-[20px] transition duration-[0.225s] hover:bg-[#4150F1] hover:cursor-pointer" type="submit" id="modifybtn">
+        Modify channel
+    </a>
+    <a class="bg-[#5865f2] rounded-[8px] py-[10px] px-[15px] text-[20px] transition duration-[0.225s] hover:bg-[#4150F1] hover:cursor-pointer" type="submit" id="removebtn">
+        Remove channel
+    </a>
 </form>
 <script type="text/javascript" id="invisible">
     const connector_url = "<%= connector_url %>";
     const channel = document.querySelector("#channel");
     const content = document.querySelector("#content");
-    const savebtn = document.querySelector("#savebtn");
-    fetch(new URL(`/api/get_channels?guild_id=<%= guild_id %>`, connector_url), {
+    const addbtn = document.querySelector("#addbtn");
+    const modifybtn = document.querySelector("#modifybtn");
+    const removebtn = document.querySelector("#removebtn");
+    fetch(new URL(`/api/voice_channels?guild_id=<%= guild_id %>`, connector_url), {
             headers: {
                 "Authorization": "<%= token %>"
             }
@@ -28,7 +38,7 @@
                 channel.appendChild(optionObject);
             });
     });
-    savebtn.addEventListener("click", async (e) => {
+    addbtn.addEventListener("click", async (e) => {
         fetch(new URL("/api/save", connector_url), { method: "post", headers: {
             "Content-Type": "application/json",
             "Authorization": "<%= token %>"
@@ -37,7 +47,60 @@
             guild_id: "<%= guild_id %>",
             data: {
                 channel: channel.value,
-                content: content.value
+                content: content.value,
+                method: "add"
+            }
+        }) })
+            .then((res) => {
+                if (res.status == 200) {
+                    res.json().then(json => {
+                        createToast("success", "Statistics", json.message)
+                    });
+                } else {
+                    res.json().then(json => {
+                        createToast("error", "Error", "An error occured.");
+                        console.log(json);
+                    });
+                }
+            })
+    });
+    modifybtn.addEventListener("click", async (e) => {
+        fetch(new URL("/api/save", connector_url), { method: "post", headers: {
+            "Content-Type": "application/json",
+            "Authorization": "<%= token %>"
+        }, body: JSON.stringify({
+            feature: "statistics",
+            guild_id: "<%= guild_id %>",
+            data: {
+                channel: channel.value,
+                content: content.value,
+                method: "modify"
+            }
+        }) })
+            .then((res) => {
+                if (res.status == 200) {
+                    res.json().then(json => {
+                        createToast("success", "Statistics", json.message)
+                    });
+                } else {
+                    res.json().then(json => {
+                        createToast("error", "Error", "An error occured.");
+                        console.log(json);
+                    });
+                }
+            })
+    });
+    removebtn.addEventListener("click", async (e) => {
+        fetch(new URL("/api/save", connector_url), { method: "post", headers: {
+            "Content-Type": "application/json",
+            "Authorization": "<%= token %>"
+        }, body: JSON.stringify({
+            feature: "statistics",
+            guild_id: "<%= guild_id %>",
+            data: {
+                channel: channel.value,
+                content: content.value,
+                method: "remove"
             }
         }) })
             .then((res) => {

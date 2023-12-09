@@ -18,7 +18,7 @@
     const wcs_s = document.querySelector("#wcs");
     const lcs_s = document.querySelector("#lcs");
     const savebtn = document.querySelector("#savebtn");
-    fetch(new URL(`/api/get_channels?guild_id=<%= guild_id %>`, connector_url), {
+    fetch(new URL(`/api/text_channels?guild_id=<%= guild_id %>`, connector_url), {
             headers: {
                 "Authorization": "<%= token %>"
             }
