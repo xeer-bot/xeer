@@ -4,8 +4,6 @@ export async function createGuildConfiguration(id: string) {
     await prisma.guildConfiguration.create({
         data: {
             id: id,
-            welcomemsg: "",
-            leavemsg: "",
         },
     });
 }
@@ -14,8 +12,6 @@ export async function createUserAccount(id: string) {
     await prisma.user.create({
         data: {
             id: id,
-            cash: 0,
-            language: "en_us",
         },
     });
 }

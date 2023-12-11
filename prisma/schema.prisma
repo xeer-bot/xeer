@@ -8,9 +8,10 @@ datasource db {
 }
 
 model User {
-  id       String @id @unique @default("")
-  cash     Int?   @default(0)
-  language String @default("en_us")
+  id       String  @id @unique @default("")
+  cash     Int?    @default(0)
+  premium  Boolean @default(false)
+  language String  @default("en_us")
 }
 
 model GuildConfiguration {

@@ -130,8 +130,20 @@ export default {
     // INFO
     statistics_list: {
         title: ":abacus: Statistics Channels",
-        description: "%%",
+        description: "%%If you notice \"Unknown\" channels, do these steps:\n- Run /statistics debug_list\n- Check that channel's ID\n- Remove that channel via /statistics remove_id",
         color: colors.yellow,
+        timestamp: now.toISOString(),
+    },
+    premium_active: {
+        title: ":star: Premium",
+        description: ":white_check_mark: You have active premium!",
+        color: colors.green,
+        timestamp: now.toISOString(),
+    },
+    premium_not_active: {
+        title: ":star: Premium",
+        description: ":x: You don't have premium!",
+        color: colors.red,
         timestamp: now.toISOString(),
     },
 };

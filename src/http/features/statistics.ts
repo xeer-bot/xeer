@@ -12,7 +12,7 @@ export async function save(guild_id: string, data: any, res: Response) {
                     content: data.content,
                 },
             });
-            return res.json({ message: "Saved." });
+            return res.json({ message: "Saved changes." });
         case "modify":
             await prisma.statisticsChannels.update({
                 where: {
@@ -23,7 +23,7 @@ export async function save(guild_id: string, data: any, res: Response) {
                     content: data.content,
                 }
             });
-            return res.json({ message: "Saved." });
+            return res.json({ message: "Saved changes." });
         case "remove":
             await prisma.statisticsChannels.delete({
                 where: {
@@ -31,7 +31,7 @@ export async function save(guild_id: string, data: any, res: Response) {
                     gid: guild_id,
                 }
             });
-            return res.json({ message: "Removed." });
+            return res.json({ message: "Saved changes." });
         default:
             return res.status(400).json({ message: "That method doesn't exist!" });
     }

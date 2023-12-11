@@ -118,6 +118,35 @@ export class StatisticsCommand {
         }
     }
     @Slash({
+        description: "Removes a statistics channel by its ID.",
+    })
+    async remove_id(
+        @SlashOption({
+            name: "channel",
+            description: "Channel's ID that you want to remove.",
+            required: true,
+            type: ApplicationCommandOptionType.String,
+        })
+        channel_id: string,
+        interaction: CommandInteraction,
+        bot: Client
+    ): Promise<void> {
+        await interaction.deferReply();
+        const user = (await userAccountThing(interaction.user.id)) || { language: "en_us" };
+        if (interaction.memberPermissions?.has("Administrator")) {
+            await prisma.statisticsChannels.delete({
+                where: {
+                    cid: channel_id,
+                    gid: interaction.guild?.id,
+                },
+            });
+            const user = (await userAccountThing(interaction.user.id)) || { language: "en_us" };
+            await interaction.followUp({ embeds: [await getTranslated(user?.language, "embeds", "success")] });
+        } else {
+            throw new Error(format(await getTranslated(user.language, "messages", "no_permission"), "Administrator"));
+        }
+    }
+    @Slash({
         description: "Lists all the statistics channels.",
     })
     async list(interaction: CommandInteraction, bot: Client): Promise<void> {
@@ -131,6 +160,25 @@ export class StatisticsCommand {
         let string = "";
         for (let i = 0; i < statisticsChannels.length; i++) {
             string += `${i}. <#${statisticsChannels[i].cid}>: \`${statisticsChannels[i].content}\`\\n`;
+        }
+        interaction.followUp({
+            embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "statistics_list")), string))],
+        });
+    }
+    @Slash({
+        description: "Lists all the statistics channels.",
+    })
+    async debug_list(interaction: CommandInteraction, bot: Client): Promise<void> {
+        await interaction.deferReply();
+        const user = (await userAccountThing(interaction.user.id)) || { language: "en_us" };
+        const statisticsChannels = await prisma.statisticsChannels.findMany({
+            where: {
+                gid: interaction.guild?.id,
+            },
+        });
+        let string = "";
+        for (let i = 0; i < statisticsChannels.length; i++) {
+            string += `${i}. <#${statisticsChannels[i].cid}> (${statisticsChannels[i].cid}): \`${statisticsChannels[i].content}\`\\n`;
         }
         interaction.followUp({
             embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "statistics_list")), string))],

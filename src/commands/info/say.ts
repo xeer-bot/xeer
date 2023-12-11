@@ -2,7 +2,8 @@ import { ApplicationCommandOptionType, ChannelType, type CommandInteraction } fr
 import { Discord, Slash, Client, SlashOption } from "discordx";
 import { colors, emojis, errEmbed, npEmbed } from "../../utils/embeds.js";
 import config from "../../../botconfig.json" assert { type: "json" };
-import { guildConfigurationThing } from "../../utils/database.js";
+import { guildConfigurationThing, userAccountThing } from "../../utils/database.js";
+import { getTranslated } from "../../languages/helper.js";
 
 @Discord()
 export class SayCommand {
@@ -48,29 +49,23 @@ export class SayCommand {
                 return;
             }
         }
-        if (text.includes("@everyone") || text.includes("@here")) {
+        if (text.includes("@")) {
             await interaction.followUp({
                 embeds: [errEmbed(new Error(), "You wish :3333")],
             });
             return;
         }
         const gID = chnl?.guildId || interaction.guild?.id || "";
-        if (interaction.user.id == config.ownerID) {
+        const user = (await userAccountThing(interaction.user.id)) || { language: "en_us", premium: false }
+        if (user.premium) {
             const guild = await guildConfigurationThing(gID);
             if (guild?.sendcmd_toggled == "allow") {
                 if (cID) {
-                    await chnl?.send(`${text}\n\nMessage sent from \`${interaction.guild?.name} (${interaction.guild?.id})\` by \`${interaction.user.username}\`.`);
-                    const now = new Date();
-                    await interaction.followUp({
-                        embeds: [
-                            {
-                                title: `${emojis.success} Success!`,
-                                description: "Operation completed successfully!",
-                                color: colors.green,
-                                timestamp: now.toISOString(),
-                            },
-                        ],
-                    });
+                    if (interaction.user.id == config.ownerID) {
+                        await chnl?.send(`${text}\n\nMessage sent from \`${interaction.guild?.name} (${interaction.guild?.id})\` by \`${interaction.user.username}\`.`);
+                        const now = new Date();
+                        await interaction.followUp({ embeds: [await getTranslated(user?.language, "embeds", "success")] });
+                    }
                 } else {
                     await interaction.followUp(text);
                 }
@@ -80,9 +75,7 @@ export class SayCommand {
                 });
             }
         } else {
-            await interaction.followUp({
-                embeds: [npEmbed("You're not on the list of premium users!", undefined)],
-            });
+            await interaction.followUp({ embeds: [await getTranslated(user?.language, "embeds", "premium_not_active")] });
         }
     }
 }
