@@ -1,13 +1,13 @@
-import { dirname, importx, resolve } from "@discordx/importer";
 import type { GuildMember, Interaction, Message } from "discord.js";
-import { IntentsBitField } from "discord.js";
-import { Client, DIService, MetadataStorage } from "discordx";
+import { Client, IntentsBitField, Events, Collection } from "discord.js";
 import * as log from "./utils/logger.js";
 import { PrismaClient } from "@prisma/client";
 import { title } from "./utils/main.js";
 import { listen } from "./http/server.js";
 import * as dotenv from "dotenv";
 import { errEmbed } from "./utils/embeds.js";
+import fs from "fs";
+import path from "path";
 
 title();
 await listen();
@@ -17,40 +17,39 @@ dotenv.config();
 export const prisma = new PrismaClient();
 export const executedRecently = new Set();
 
+interface XeerClient extends Client {
+    commands: Collection<string, any>
+}
+
 export const bot = new Client({
     intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.GuildMessageReactions, IntentsBitField.Flags.GuildVoiceStates, IntentsBitField.Flags.MessageContent, IntentsBitField.Flags.GuildPresences],
-    silent: true,
-    simpleCommand: {
-        prefix: "!",
-    },
-});
+}) as XeerClient;
+bot.commands = new Collection();
 
 bot.once("ready", async () => {
     await bot.guilds.fetch();
-    await bot.initApplicationCommands();
-
     log.success(`Bot ready as ${bot.user?.username}.`);
 });
 
 bot.on("interactionCreate", async (interaction: Interaction) => {
-    try {
-        await bot.executeInteraction(interaction);
-    } catch (err) {
-        if (err) {
-            if (interaction.isCommand()) {
-                if (interaction.deferred) {
-                    interaction.followUp({
-                        embeds: [errEmbed(new Error(), err.toString())],
-                    });
-                }
-            }
-        }
-        log.error(err);
-    }
-});
+    if (!interaction.isChatInputCommand()) return;
 
-bot.on("messageCreate", (message: Message) => {
-    bot.executeCommand(message);
+    const command = bot.commands.get(interaction.commandName);
+
+    if (!command) {
+        log.error(`No command matching ${interaction.commandName} was found.`);
+        return;
+    }
+
+    try {
+        await command.execute(interaction, bot);
+    } catch (err: any) {
+        if (interaction.replied || interaction.deferred) {
+            await interaction.followUp({ embeds: [errEmbed(new Error(), err.toString())], ephemeral: true });
+        } else {
+            await interaction.reply({ embeds: [errEmbed(new Error(), err.toString())], ephemeral: true });
+        }
+    }
 });
 
 async function refresh() {
@@ -91,28 +90,41 @@ async function refresh() {
     refresh();
 }
 
-async function LoadFiles(src: string) {
-    const files = await resolve(src);
-    await Promise.all(files.map((file) => import(`${file}?version=${Date.now()}`)));
-}
-
 export async function reload() {
-    log.warn("Reloading commands and events...");
-
-    bot.removeEvents();
-    MetadataStorage.clear();
-    DIService.engine.clearAllServices();
-
-    await LoadFiles(`${dirname(import.meta.url)}/{events,commands,commands-next}/**/*.{js,ts}`);
-
-    await MetadataStorage.instance.build();
-    await bot.initApplicationCommands();
-    bot.initEvents();
+    log.warn("Function not implemented.");
 }
+
+const foldersPath = path.join(__dirname, "commands");
 
 async function run() {
     log.info("Registering commands and events...");
-    await importx(`${dirname(import.meta.url)}/{events,commands}/**/*.{ts,js}`);
+
+    const commandFolders = fs.readdirSync(foldersPath);
+    for (const folder of commandFolders) {
+        const commandsPath = path.join(foldersPath, folder);
+        const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
+        for (const file of commandFiles) {
+            const filePath = path.join(commandsPath, file);
+            const command = await import(filePath);
+            if ("data" in command && "execute" in command) {
+                bot.commands.set(command.data.name, command);
+            } else {
+                log.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`);
+            }
+        }
+    }
+
+    const eventsPath = path.join(__dirname, "events");
+    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"))
+    for (const file of eventFiles) {
+        const filePath = path.join(eventsPath, file);
+        const event = await import(filePath);
+        if (event.once) {
+            bot.once(event.name, (...args) => await event.execute(...args));
+        } else {
+            log.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`);
+        }
+    }
 
     if (!process.env.BOT_TOKEN) {
         log.error("Couldn't find the BOT_TOKEN in your environment/configuration file (.env)!");

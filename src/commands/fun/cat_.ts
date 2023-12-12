@@ -1,15 +1,12 @@
-import { CommandInteraction } from "discord.js";
-import { Discord, Slash, Client } from "discordx";
+import { CommandInteraction, SlashCommandBuilder } from "discord.js";
 import { userAccountThing } from "../../utils/database.js";
 import { getTranslated } from "../../languages/helper.js";
 
-@Discord()
-export class CatSayCommand {
-    @Slash({
-        name: "cat",
-        description: "Gives a random cat.",
-    })
-    async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("cat")
+        .setDescription("Gives a random cat."),
+    async execute(interaction: CommandInteraction) {
         await interaction.deferReply();
         const now = new Date();
         const user = await userAccountThing(interaction.user.id);
@@ -18,4 +15,4 @@ export class CatSayCommand {
             embeds: [await getTranslated(user.language, "embeds", "cat")],
         });
     }
-}
+};
