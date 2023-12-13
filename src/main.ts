@@ -21,7 +21,7 @@ dotenv.config();
 export const prisma = new PrismaClient();
 export const executedRecently = new Set();
 
-interface XeerClient extends Client {
+export interface XeerClient extends Client {
     commands: Collection<string, any>
 }
 
@@ -109,7 +109,8 @@ async function run() {
         const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
         for (const file of commandFiles) {
             const filePath = path.join(commandsPath, file);
-            const command = await import(filePath);
+            let command = await import("file:///" + filePath);
+            if (!command.default) { continue; } else { command = command.default; }
             if ("data" in command && "execute" in command) {
                 bot.commands.set(command.data.name, command);
             } else {
@@ -122,11 +123,11 @@ async function run() {
     const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
     for (const file of eventFiles) {
         const filePath = path.join(eventsPath, file);
-        const event = await import(filePath);
+        const event = await import("file:///" + filePath);
         if (event.once) {
             bot.once(event.name, async (...args) => await event.execute(...args));
         } else {
-            log.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`);
+            bot.on(event.name, async (...args) => await event.execute(...args));
         }
     }
 
