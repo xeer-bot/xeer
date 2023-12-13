@@ -1,5 +1,5 @@
-import type { GuildMember, Interaction, Message } from "discord.js";
-import { Client, IntentsBitField, Events, Collection } from "discord.js";
+import type { GuildMember, Interaction } from "discord.js";
+import { Client, IntentsBitField, Collection } from "discord.js";
 import * as log from "./utils/logger.js";
 import { PrismaClient } from "@prisma/client";
 import { title } from "./utils/main.js";
@@ -8,6 +8,10 @@ import * as dotenv from "dotenv";
 import { errEmbed } from "./utils/embeds.js";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 title();
 await listen();
@@ -115,12 +119,12 @@ async function run() {
     }
 
     const eventsPath = path.join(__dirname, "events");
-    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"))
+    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
     for (const file of eventFiles) {
         const filePath = path.join(eventsPath, file);
         const event = await import(filePath);
         if (event.once) {
-            bot.once(event.name, (...args) => await event.execute(...args));
+            bot.once(event.name, async (...args) => await event.execute(...args));
         } else {
             log.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`);
         }

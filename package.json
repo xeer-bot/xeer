@@ -5,15 +5,15 @@
     "license": "MIT",
     "type": "module",
     "main": "build/main.js",
-    "author": "(GitHub) necesku",
+    "author": "teletvbis",
     "scripts": {
         "build": "node builder.cjs",
         "deploy-cmds:global": "node src/deploy-cmds-global.cjs",
-        "dev": "ts-node-esm src/main.ts",
+        "dev": "node --loader ts-node/esm src/main.ts",
         "prettier": "npx prettier . --write",
         "eslint": "npx eslint --fix .",
         "start": "node build/src/main.js",
-        "watch": "nodemon --exec ts-node-esm src/main.ts"
+        "watch": "nodemon --exec node --loader ts-node/esm src/main.ts"
     },
     "dependencies": {
         "@discordx/di": "^3.3.0",
