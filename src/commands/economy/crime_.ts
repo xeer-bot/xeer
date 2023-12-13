@@ -1,18 +1,15 @@
-import type { CommandInteraction } from "discord.js";
-import { Discord, Slash, Client } from "discordx";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { userAccountThing } from "../../utils/database.js";
+import { format, getTranslated } from "../../languages/helper.js";
 import { executedRecently, prisma } from "../../main.js";
 import { errEmbed } from "../../utils/embeds.js";
-import { userAccountThing } from "../../utils/database.js";
 import { getRandomArbitrary } from "../../utils/main.js";
-import { getTranslated, format } from "../../languages/helper.js";
 
-@Discord()
-export class CrimeCommand {
-    @Slash({
-        name: "crime",
-        description: "Economy : Crime",
-    })
-    async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("crime")
+        .setDescription("Crime."),
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         if (!executedRecently.has(interaction.user.id + "-crime")) {
             const messages = ["", "hacked a darkweb website", "nuked TikTok's server", "hacked a Bank", "hacked FBI", "robbed a Gun Shop", "bought and sold Drugs", "robbed Apple Store", "robbed a Bank"];
@@ -42,4 +39,4 @@ export class CrimeCommand {
                 embeds: [errEmbed(new Error(), "Try again in `30 minutes`!")],
             });
     }
-}
+};

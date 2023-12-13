@@ -1,17 +1,14 @@
-import type { CommandInteraction } from "discord.js";
-import { Discord, Slash, Client } from "discordx";
-import { errEmbed } from "../../utils/embeds.js";
-import { prisma } from "../../main.js";
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { getTranslated, format } from "../../languages/helper.js";
+import { prisma } from "../../main.js";
 import { userAccountThing } from "../../utils/database.js";
+import { errEmbed } from "../../utils/embeds.js";
 
-@Discord()
-export class LeaderboardCommand {
-    @Slash({
-        name: "leaderboard",
-        description: "See the Top People!",
-    })
-    async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("leaderboard")
+        .setDescription("See the Top People!"),
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         const now = new Date();
         const user = await userAccountThing(interaction.user.id);
@@ -36,4 +33,4 @@ export class LeaderboardCommand {
             });
         }
     }
-}
+};

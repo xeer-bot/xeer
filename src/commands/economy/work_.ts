@@ -1,18 +1,15 @@
-import type { CommandInteraction } from "discord.js";
-import { Discord, Slash, Client } from "discordx";
-import { executedRecently, prisma } from "../../main.js";
-import { errEmbed } from "../../utils/embeds.js";
-import { userAccountThing } from "../../utils/database.js";
-import { getRandomArbitrary } from "../../utils/main.js";
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { getTranslated, format } from "../../languages/helper.js";
+import { executedRecently, prisma } from "../../main.js";
+import { userAccountThing } from "../../utils/database.js";
+import { errEmbed } from "../../utils/embeds.js";
+import { getRandomArbitrary } from "../../utils/main.js";
 
-@Discord()
-export class WorkCommand {
-    @Slash({
-        name: "work",
-        description: "Work!",
-    })
-    async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("work")
+        .setDescription("Work!"),
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         if (!executedRecently.has(interaction.user.id)) {
             const messages = ["", "did your chores", "walked someone's dog", "washed a car", "worked in an office", "worked in a zoo", "developed a game", "built a house"];
@@ -41,4 +38,4 @@ export class WorkCommand {
                 embeds: [errEmbed(new Error(), "Try again in `30 seconds`!")],
             });
     }
-}
+};
