@@ -1,14 +1,12 @@
-import type { CommandInteraction } from "discord.js";
-import { Discord, Slash, Client } from "discordx";
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { get_dashboard_latency } from "../../http/server.js";
+import { XeerClient } from "../../main.js";
 
-@Discord()
-export class PingCommand {
-    @Slash({
-        name: "ping",
-        description: "Measures the ping.",
-    })
-    async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("ping")
+        .setDescription("Checks bot's latency."),
+    async execute(interaction: ChatInputCommandInteraction, bot: XeerClient) {
         await interaction.deferReply();
         const now = new Date();
         const sent = await interaction.followUp({
@@ -28,4 +26,4 @@ export class PingCommand {
             ],
         });
     }
-}
+};

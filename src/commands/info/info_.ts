@@ -1,19 +1,17 @@
-import type { CommandInteraction } from "discord.js";
-import { Discord, Slash, Client } from "discordx";
-import botconfig from "../../../botconfig.json" assert { type: "json" };
-import * as fs from "fs";
+import { dirname } from "@discordx/importer";
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { fileURLToPath } from "url";
-import { dirname } from "path";
+import { getTranslated, format } from "../../languages/helper.js";
+import { bot } from "../../main.js";
 import { userAccountThing } from "../../utils/database.js";
-import { format, getTranslated } from "../../languages/helper.js";
+import fs from "fs";
+import botconfig from "../../../botconfig.json";
 
-@Discord()
-export class InfoCommand {
-    @Slash({
-        name: "info",
-        description: "Info about the bot.",
-    })
-    async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("info")
+        .setDescription("Info about the bot."),
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         const now = new Date();
         const user = await userAccountThing(interaction.user.id);
@@ -58,4 +56,4 @@ export class InfoCommand {
             ],
         });
     }
-}
+};

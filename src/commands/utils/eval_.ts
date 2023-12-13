@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { errEmbed } from "../../utils/embeds.js";
 import { XeerClient } from "../../main.js";
+import { checkDev } from "../../guards/devOnly.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -9,6 +10,7 @@ export default {
         .addStringOption(option => option.setName("code").setRequired(true)),
     async execute(interaction: ChatInputCommandInteraction, bot: XeerClient) {
         await interaction.deferReply({ ephemeral: true });
+        if (!checkDev(interaction)) return;
         try {
             const code = interaction.options.getString("code") || "";
             const result = await eval(code);
