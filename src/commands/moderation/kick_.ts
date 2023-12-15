@@ -1,37 +1,25 @@
-import { CommandInteraction, ApplicationCommandOptionType, GuildMember, GuildMemberRoleManager } from "discord.js";
-import { Discord, Slash, Client, SlashOption } from "discordx";
-import { npEmbed, noBotPermsEmbedBUK } from "../../utils/embeds.js";
-import { getTranslated, format } from "../../languages/helper.js";
+import { ChatInputCommandInteraction, GuildMember, GuildMemberRoleManager, SlashCommandBuilder } from "discord.js";
+import { format, getTranslated } from "../../languages/helper.js";
+import { bot } from "../../main.js";
 import { userAccountThing } from "../../utils/database.js";
+import { noBotPermsEmbedBUK, npEmbed } from "../../utils/embeds.js";
 
-@Discord()
-export class KickCommand {
-    @Slash({
-        name: "kick",
-        description: "A perfect command to kick someone.",
-    })
-    async execute(
-        @SlashOption({
-            name: "member",
-            description: "Member to kick! ofc",
-            required: true,
-            type: ApplicationCommandOptionType.User,
-        })
-        member: GuildMember,
-        @SlashOption({
-            name: "reason",
-            description: "Reason ;-;",
-            type: ApplicationCommandOptionType.String,
-        })
-        reason: string,
-        interaction: CommandInteraction,
-        bot: Client
-    ): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("kick")
+        .setDescription("A kickhammer.")
+        .addUserOption(option => option.setName("member").setRequired(true))
+        .addStringOption(option => option.setName("reason").setRequired(true)),
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
-        const now = new Date();
+        const user = await userAccountThing(interaction.user.id);
+        if (!user) return;
+        const member = (interaction.options.getMember("member") as GuildMember);
+        const reason = interaction.options.getString("reason");
+        if (!member) {
+            throw new Error(await getTranslated(user.language, "messages", "unexpected_err"));
+        }
         if (interaction.memberPermissions?.has("KickMembers") && (interaction.member?.roles as GuildMemberRoleManager).highest.position > member.roles.highest.position) {
-            const user = await userAccountThing(interaction.user.id);
-            if (!user) return;
             (await bot.users.fetch(member.id))
                 .send({
                     embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "got_kicked")), interaction.guild?.name, reason))],
@@ -59,4 +47,4 @@ export class KickCommand {
             });
         }
     }
-}
+};

@@ -1,31 +1,19 @@
-import { CommandInteraction, ApplicationCommandOptionType, ChannelType } from "discord.js";
-import { Discord, Slash, Client, SlashOption } from "discordx";
-import { npEmbed } from "../../utils/embeds.js";
+import { ChannelType, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { format, getTranslated } from "../../languages/helper.js";
 import { userAccountThing } from "../../utils/database.js";
+import { npEmbed } from "../../utils/embeds.js";
 
-@Discord()
-export class ClearCommand {
-    @Slash({
-        name: "clear",
-        description: "Deletes messages.",
-    })
-    async execute(
-        @SlashOption({
-            name: "amount",
-            description: "How much messages I should delete?",
-            required: true,
-            type: ApplicationCommandOptionType.Number,
-        })
-        amount: number,
-        interaction: CommandInteraction,
-        bot: Client
-    ): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("clear")
+        .setDescription("Clears messages.")
+        .addNumberOption(option => option.setName("amount").setMaxValue(100).setMinValue(0)),
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
-        const now = new Date();
         const user = await userAccountThing(interaction.user.id);
         if (!user) return;
         if (interaction.channel?.type == ChannelType.DM) throw new Error("Channel's type is `DM`");
+        const amount = interaction.options.getNumber("amount") || 0;
         if (amount > 100) throw new Error(await getTranslated(user.language, "messages", "max_amount_err"));
         if (amount < 0) throw new Error(await getTranslated(user.language, "messages", "min_amount_err"));
         if (interaction.memberPermissions?.has("ManageMessages")) {
@@ -41,4 +29,4 @@ export class ClearCommand {
             });
         }
     }
-}
+};

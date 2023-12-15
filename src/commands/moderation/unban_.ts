@@ -1,28 +1,17 @@
-import { CommandInteraction, ApplicationCommandOptionType } from "discord.js";
-import { Discord, Slash, Client, SlashOption } from "discordx";
-import { noBotPermsEmbedBUK, npEmbed } from "../../utils/embeds.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { format, getTranslated } from "../../languages/helper.js";
 import { userAccountThing } from "../../utils/database.js";
+import { noBotPermsEmbedBUK, npEmbed } from "../../utils/embeds.js";
 
-@Discord()
-export class UnbanCommand {
-    @Slash({
-        name: "unban",
-        description: "An unbanhammer.",
-    })
-    async execute(
-        @SlashOption({
-            name: "memberid",
-            description: "Member to unban! ofc (ID)",
-            required: true,
-            type: ApplicationCommandOptionType.String,
-        })
-        member: string,
-        interaction: CommandInteraction,
-        bot: Client
-    ): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("unban")
+        .setDescription("Unbans a banned member.")
+        .addStringOption(option => option.setName("user_id").setRequired(true)),
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
-        const now = new Date();
+        const member = interaction.options.getUser("user_id");
+        if (!member) throw new Error("Member is undefined.");
         const user = await userAccountThing(interaction.user.id);
         if (!user) return;
         if (interaction.memberPermissions?.has("BanMembers")) {
@@ -46,4 +35,4 @@ export class UnbanCommand {
             });
         }
     }
-}
+};
