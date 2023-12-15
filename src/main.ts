@@ -94,11 +94,24 @@ async function refresh() {
     refresh();
 }
 
-export async function reload() {
-    log.warn("Function not implemented.");
-}
-
 const foldersPath = path.join(__dirname, "commands");
+
+export function reload(commandName: string): boolean {
+    log.info(`Trying to reload command ${commandName}.`);
+    const command = bot.commands.get(commandName);
+    if (command) {
+        bot.commands.delete(commandName);
+        import("file:///" + path.join(foldersPath, commandName) + ".js").then(content => {
+            bot.commands.set(content.data.name, content);
+            log.success(`Successfully reloaded command ${commandName}.`);
+            return true;
+        });
+    } else {
+        log.error(`Command ${commandName} doesn't exist.`);
+        return false;
+    }
+    return false;
+}
 
 async function run() {
     log.info("Registering commands and events...");
@@ -109,6 +122,7 @@ async function run() {
         const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
         for (const file of commandFiles) {
             const filePath = path.join(commandsPath, file);
+            // log.info(`Registering ${filePath}.`);
             let command = await import("file:///" + filePath);
             if (!command.default) { continue; } else { command = command.default; }
             if ("data" in command && "execute" in command) {

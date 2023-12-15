@@ -3,14 +3,21 @@
 
 // https://discordjs.guide/creating-your-bot/command-deployment.html#command-registration
 
-const { REST, Routes } = require("discord.js");
-const { clientId, guildId } = require("../botconfig.json");
-const dotenv = require("dotenv");
-const fs = require("node:fs");
-const path = require("node:path");
+import { REST, Routes } from "discord.js";
+import botconfig from "../botconfig.json" assert { type: "json" };
+const clientID = botconfig.clientID;
+const guildID = botconfig.guildID;
+import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 
 dotenv.config();
-const token = process.env.BOT_TOKEN;
+const token = process.env.BOT_TOKEN || "";
 
 const commands = [];
 const foldersPath = path.join(__dirname, "commands");
@@ -21,7 +28,7 @@ for (const folder of commandFolders) {
     const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
 	for (const file of commandFiles) {
 		const filePath = path.join(commandsPath, file);
-		const command = require(filePath);
+		const command = await import("file:///" + filePath);
 		if ("data" in command && "execute" in command) {
 			commands.push(command.data.toJSON());
 		} else {
@@ -37,7 +44,7 @@ const rest = new REST().setToken(token);
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
 		const data = await rest.put(
-			Routes.applicationCommands(clientId),
+			Routes.applicationCommands(clientID),
 			{ body: commands },
 		);
 

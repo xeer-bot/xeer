@@ -5,7 +5,7 @@ import { getTranslated, format } from "../../languages/helper.js";
 import { bot } from "../../main.js";
 import { userAccountThing } from "../../utils/database.js";
 import fs from "fs";
-import botconfig from "../../../botconfig.json";
+import botconfig from "../../../botconfig.json" assert { type: "json" };
 
 export default {
     data: new SlashCommandBuilder()

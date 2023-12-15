@@ -8,7 +8,7 @@
     "author": "teletvbis",
     "scripts": {
         "build": "node builder.cjs",
-        "deploy-cmds:global": "node src/deploy-cmds-global.cjs",
+        "deploy-cmds:global": "node --loader ts-node/esm src/deploy-cmds-global.ts",
         "dev": "node --loader ts-node/esm src/main.ts",
         "prettier": "npx prettier . --write",
         "eslint": "npx eslint --fix .",

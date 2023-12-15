@@ -3,7 +3,7 @@ import { getTranslated } from "../../languages/helper.js";
 import { bot } from "../../main.js";
 import { userAccountThing, guildConfigurationThing } from "../../utils/database.js";
 import { errEmbed } from "../../utils/embeds.js";
-import config from "../../../botconfig.json";
+import config from "../../../botconfig.json" assert { type: "json" };
 
 export default {
     data: new SlashCommandBuilder()

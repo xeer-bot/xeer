@@ -1,22 +1,30 @@
-import { type CommandInteraction } from "discord.js";
-import { Discord, Slash, Client, Guard } from "discordx";
-import { BotOwnerOnly } from "../../guards/devOnly.js";
-import { getTranslated, format } from "../../languages/helper.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { format, getTranslated } from "../../languages/helper.js";
 import { reload } from "../../main.js";
+import { checkDev } from "../../guards/devOnly.js";
 
-@Discord()
-export class Reload {
-    @Slash({
-        name: "reload",
-        description: "Reloads commands.",
-    })
-    @Guard(BotOwnerOnly)
-    async execute(interaction: CommandInteraction, bot: Client): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("reload")
+        .setDescription("Reloads commands.")
+        .addStringOption((option) =>
+            option
+                .setName("command")
+                .setRequired(true)
+        ),
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
+        if (!checkDev(interaction)) return;
+        const cmd = interaction.options.getString("command");
+        if (!cmd) throw new Error(await getTranslated("en_us", "messages", "unexpected_err"));
         const old = new Date();
-        await reload();
+        const success = reload(cmd);
         const new_ = new Date();
         const diff = (new_.getTime() - old.getTime()) / 1000;
-        await interaction.followUp({ embeds: [JSON.parse(format(JSON.stringify(await getTranslated("en_us", "embeds", "success_alt")), diff + "s"))] });
+        if (success) {
+            await interaction.followUp({ embeds: [JSON.parse(format(JSON.stringify(await getTranslated("en_us", "embeds", "success_alt")), diff + "s"))] });
+        } else {
+            throw new Error((await getTranslated("en_us", "messages", "unexpected_err"), "Check console for more information."));
+        }
     }
-}
+};
