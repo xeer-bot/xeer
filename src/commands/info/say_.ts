@@ -1,35 +1,20 @@
-import { ApplicationCommandOptionType, ChannelType, type CommandInteraction } from "discord.js";
-import { Discord, Slash, Client, SlashOption } from "discordx";
-import { colors, emojis, errEmbed, npEmbed } from "../../utils/embeds.js";
-import config from "../../../botconfig.json" assert { type: "json" };
-import { guildConfigurationThing, userAccountThing } from "../../utils/database.js";
+import { ChannelType, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { getTranslated } from "../../languages/helper.js";
+import { bot } from "../../main.js";
+import { userAccountThing, guildConfigurationThing } from "../../utils/database.js";
+import { errEmbed } from "../../utils/embeds.js";
+import config from "../../../botconfig.json";
 
-@Discord()
-export class SayCommand {
-    @Slash({
-        name: "say",
-        description: "Sends a message.",
-    })
-    async execute(
-        @SlashOption({
-            name: "text",
-            description: "Text to say.",
-            required: true,
-            type: ApplicationCommandOptionType.String,
-        })
-        text: string,
-        @SlashOption({
-            name: "channel_id",
-            description: "Channel ID",
-            required: false,
-            type: ApplicationCommandOptionType.String,
-        })
-        cID: string,
-        interaction: CommandInteraction,
-        bot: Client
-    ): Promise<void> {
+export default {
+    data: new SlashCommandBuilder()
+        .setName("say")
+        .setDescription("Sends a message.")
+        .addStringOption(option => option.setName("text").setRequired(true))
+        .addStringOption(option => option.setName("channel_id").setRequired(false)),
+    async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
+        const text = interaction.options.getString("text") || "undefined :skull:";
+        const cID = interaction.options.getString("channel_id");
         let chnl;
         if (cID) {
             chnl = bot.channels.cache.get(cID);
@@ -56,7 +41,7 @@ export class SayCommand {
             return;
         }
         const gID = chnl?.guildId || interaction.guild?.id || "";
-        const user = (await userAccountThing(interaction.user.id)) || { language: "en_us", premium: false }
+        const user = (await userAccountThing(interaction.user.id)) || { language: "en_us", premium: false };
         if (user.premium) {
             const guild = await guildConfigurationThing(gID);
             if (guild?.sendcmd_toggled == "allow") {
@@ -78,4 +63,4 @@ export class SayCommand {
             await interaction.followUp({ embeds: [await getTranslated(user?.language, "embeds", "premium_not_active")] });
         }
     }
-}
+};
