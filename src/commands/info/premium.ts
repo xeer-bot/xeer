@@ -9,7 +9,7 @@ export default {
         .setName("premium")
         .setDescription("This command checks if you have premium.")
         .addSubcommand((subcommand) => subcommand.setName("check").setDescription("This command checks if you have premium"))
-        .addSubcommand((subcommand) => subcommand.setName("grant").setDescription("This command grants premium.").addUserOption(option => option.setName("user").setRequired(true))),
+        .addSubcommand((subcommand) => subcommand.setName("grant").setDescription("This command grants premium.").addUserOption(option => option.setName("user").setDescription("Member that you want to grant the premium.").setRequired(true))),
     async execute(interaction: ChatInputCommandInteraction) {
         if (interaction.options.getSubcommand() == "check") {
             await interaction.deferReply();

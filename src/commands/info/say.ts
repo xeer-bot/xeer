@@ -9,8 +9,8 @@ export default {
     data: new SlashCommandBuilder()
         .setName("say")
         .setDescription("Sends a message.")
-        .addStringOption(option => option.setName("text").setRequired(true))
-        .addStringOption(option => option.setName("channel_id").setRequired(false)),
+        .addStringOption(option => option.setName("text").setDescription("Text.").setRequired(true))
+        .addStringOption(option => option.setName("channel_id").setDescription("No description.").setRequired(false)),
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         const text = interaction.options.getString("text") || "undefined :skull:";

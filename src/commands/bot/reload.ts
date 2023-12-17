@@ -10,6 +10,7 @@ export default {
         .addStringOption((option) =>
             option
                 .setName("command")
+                .setDescription("No description.")
                 .setRequired(true)
         ),
     async execute(interaction: ChatInputCommandInteraction) {

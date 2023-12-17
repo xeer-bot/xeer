@@ -7,7 +7,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName("eval")
         .setDescription("Evals some code.")
-        .addStringOption(option => option.setName("code").setRequired(true)),
+        .addStringOption(option => option.setName("code").setDescription("No description.").setRequired(true)),
     async execute(interaction: ChatInputCommandInteraction, bot: XeerClient) {
         await interaction.deferReply({ ephemeral: true });
         if (!checkDev(interaction)) return;

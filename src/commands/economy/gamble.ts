@@ -7,9 +7,9 @@ import { getRandomArbitrary } from "../../utils/main.js";
 
 export default {
     data: new SlashCommandBuilder()
-        .setName("catsay")
+        .setName("gamble")
         .setDescription("A cat says something that you want.")
-        .addNumberOption(option => option.setName("bet").setRequired(true)),
+        .addNumberOption(option => option.setName("bet").setDescription("bet").setRequired(true)),
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         const bet = interaction.options.getNumber("bet") || 0;

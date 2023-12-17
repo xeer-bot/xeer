@@ -8,12 +8,13 @@ export default {
         .setDescription("Puts text on image.")
         .addStringOption((option: any) =>
             option.setName("mode")
+            .setDescription("No description.")
             .addChoices(
                 { name: "1", value: "1" },
                 { name: "2", value: "2" }
             )
             .setRequired(true)
-        ).addStringOption((option: any) => option.setName("text").setRequired(true)),
+        ).addStringOption((option: any) => option.setName("text").setDescription("Text.").setRequired(true)),
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         const mode = interaction.options.getString("mode") || "";

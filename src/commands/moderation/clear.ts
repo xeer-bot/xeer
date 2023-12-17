@@ -1,4 +1,4 @@
-import { ChannelType, ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChannelType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { format, getTranslated } from "../../languages/helper.js";
 import { userAccountThing } from "../../utils/database.js";
 import { npEmbed } from "../../utils/embeds.js";
@@ -7,7 +7,8 @@ export default {
     data: new SlashCommandBuilder()
         .setName("clear")
         .setDescription("Clears messages.")
-        .addNumberOption(option => option.setName("amount").setMaxValue(100).setMinValue(0)),
+        .addNumberOption(option => option.setName("amount").setDescription("No description.").setMaxValue(100).setMinValue(0).setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         const user = await userAccountThing(interaction.user.id);

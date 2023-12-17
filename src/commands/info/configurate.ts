@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
+import { SlashCommandBuilder, ChatInputCommandInteraction, PermissionFlagsBits } from "discord.js";
 import { getTranslated } from "../../languages/helper.js";
 import { prisma } from "../../main.js";
 import { guildConfigurationThing, userAccountThing } from "../../utils/database.js";
@@ -9,7 +9,9 @@ export default {
         .setName("configurate")
         .setDescription("Configure feature's settings.")
         .addStringOption((option: any) =>
-            option.setName("option").setDescription("Configuration Option")
+            option
+            .setName("option")
+            .setDescription("Configuration Option")
             .addChoices(
                 { name: "Welcome Message", value: "welcomemsg" },
                 { name: "Leave Message", value: "leavemsg" },
@@ -19,7 +21,8 @@ export default {
             )
             .setRequired(true)
         )
-        .addStringOption((option: any) => option.setName("text").setDescription("Text (Placeholders: {user}, {guildname}, {timestamp})").setRequired(true)),
+        .addStringOption((option: any) => option.setName("text").setDescription("Text (Placeholders: {user}, {guildname}, {timestamp})").setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         const option = interaction.options.getString("option");

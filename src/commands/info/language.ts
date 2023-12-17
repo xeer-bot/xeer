@@ -9,12 +9,13 @@ export default {
         .setDescription("Changes language.")
         .addStringOption((option: any) =>
             option.setName("language")
+            .setDescription("Choose your language here.")
             .addChoices(
                 { name: "English (US)", value: "en_us" }
             )
             .setRequired(true)
         )
-        .addStringOption((option: any) => option.setName("text").setRequired(true)),
+        .addStringOption((option: any) => option.setName("text").setDescription("Text.").setRequired(true)),
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         const selectedLanguage = interaction.options.getString("language") || "";

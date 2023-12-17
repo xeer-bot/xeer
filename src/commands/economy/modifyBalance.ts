@@ -10,18 +10,25 @@ export default {
         .setName("modifybalance")
         .setDescription("This command modifies people's balance.")
         .addSubcommand((subcommand) => 
-            subcommand.setName("set")
+            subcommand
+            .setName("set")
+            .setDescription("No description.")
             .addUserOption(option => 
                 option.setName("user")
-                .setRequired(true))
+                .setRequired(true)
+                .setDescription("No description."))
             .addNumberOption(option => 
                 option.setName("newbalance")
+                .setDescription("No description.")
                 .setRequired(true)))
         .addSubcommand((subcommand) => 
-        subcommand.setName("get")
+            subcommand
+            .setName("get")
+            .setDescription("Get.")
         .addUserOption(option => 
             option.setName("user")
-            .setRequired(true))),
+            .setRequired(true)
+            .setDescription("Member."))),
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         if (!checkDev(interaction)) return;

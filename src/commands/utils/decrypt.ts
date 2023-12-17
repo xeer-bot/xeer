@@ -3,7 +3,7 @@ import crypto from "crypto";
 
 export default {
     data: new SlashCommandBuilder()
-        .setName("encrypt")
+        .setName("decrypt")
         .setDescription("Decrypts text.")
         .addStringOption(option => option.setName("text").setDescription("The text.").setRequired(true))
         .addStringOption(option => option.setName("key").setDescription("The key.").setRequired(true))

@@ -8,7 +8,7 @@
     "author": "teletvbis",
     "scripts": {
         "build": "node builder.cjs",
-        "deploy-cmds:global": "node --loader ts-node/esm src/deploy-cmds-global.ts",
+        "deploy-cmds:global": "node src/cmd-deploy-scripts/deploy-cmds-global.cjs",
         "dev": "node --loader ts-node/esm src/main.ts",
         "prettier": "npx prettier . --write",
         "eslint": "npx eslint --fix .",
@@ -44,7 +44,7 @@
         "nodemon": "^2.0.22",
         "prettier": "3.0.3",
         "prisma": "^5.1.1",
-        "ts-node": "^10.9.1",
+        "ts-node": "^10.9.2",
         "typescript": "^5.3.3"
     },
     "engines": {

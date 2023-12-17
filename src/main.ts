@@ -1,5 +1,5 @@
-import type { GuildMember, Interaction } from "discord.js";
-import { Client, IntentsBitField, Collection } from "discord.js";
+import type { ChatInputCommandInteraction, GuildMember, Interaction, SlashCommandBuilder } from "discord.js";
+import { Client, IntentsBitField, Collection, REST, Routes } from "discord.js";
 import * as log from "./utils/logger.js";
 import { PrismaClient } from "@prisma/client";
 import { title } from "./utils/main.js";
@@ -9,6 +9,7 @@ import { errEmbed } from "./utils/embeds.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import config from "../botconfig.json" assert { type: "json" };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,18 +22,60 @@ dotenv.config();
 export const prisma = new PrismaClient();
 export const executedRecently = new Set();
 
+interface SlashCommand {
+    data: SlashCommandBuilder,
+    execute: (interaction: ChatInputCommandInteraction, bot?: XeerClient) => void
+}
+
 export interface XeerClient extends Client {
-    commands: Collection<string, any>
+    commands: Collection<string, SlashCommand>
 }
 
 export const bot = new Client({
     intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMembers, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.GuildMessageReactions, IntentsBitField.Flags.GuildVoiceStates, IntentsBitField.Flags.MessageContent, IntentsBitField.Flags.GuildPresences],
 }) as XeerClient;
+
 bot.commands = new Collection();
+
+async function deployGuildCommands() {
+    if (!process.env.BOT_TOKEN || !bot.application?.id) { log.error("Couldn't deploy commands due to no token or Application ID present."); return; }
+    const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN || "");
+    try {
+        log.info(`Started deploying ${bot.commands.size} application (/) commands.`);
+        const data = await rest.put(
+            Routes.applicationGuildCommands(bot.application.id, config.guildID),
+            { body: Array.from(bot.commands).map((cmd) => cmd[1].data.toJSON()) },
+        ) as { length: number };
+        log.success(`Successfully deployed ${data.length} application (/) commands.`);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function deployCommands() {
+    if (!process.env.BOT_TOKEN || !bot.application?.id) { log.error("Couldn't deploy commands due to no token or Application ID present."); return; }
+    const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN || "");
+    try {
+        log.info(`Started deploying ${bot.commands.size} application (/) commands.`);
+        const data = await rest.put(
+            Routes.applicationCommands(bot.application.id),
+            { body: Array.from(bot.commands).map((cmd) => cmd[1].data.toJSON()) },
+        ) as { length: number };
+        log.success(`Successfully deployed ${data.length} application (/) commands.`);
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 bot.once("ready", async () => {
     await bot.guilds.fetch();
     log.success(`Bot ready as ${bot.user?.username}.`);
+    deployGuildCommands();
+    const args = process.argv.slice(2);
+    if (args[0] == "deploy-global-cmds") {
+        log.info("Deploying commands...");
+        deployCommands();
+    }
 });
 
 bot.on("interactionCreate", async (interaction: Interaction) => {

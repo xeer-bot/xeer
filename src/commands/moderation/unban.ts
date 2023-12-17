@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { format, getTranslated } from "../../languages/helper.js";
 import { userAccountThing } from "../../utils/database.js";
 import { noBotPermsEmbedBUK, npEmbed } from "../../utils/embeds.js";
@@ -7,7 +7,8 @@ export default {
     data: new SlashCommandBuilder()
         .setName("unban")
         .setDescription("Unbans a banned member.")
-        .addStringOption(option => option.setName("user_id").setRequired(true)),
+        .addStringOption(option => option.setName("user_id").setDescription("No description.").setRequired(true))
+        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         const member = interaction.options.getUser("user_id");
