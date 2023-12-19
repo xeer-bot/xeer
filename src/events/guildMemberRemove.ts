@@ -1,13 +1,12 @@
-import { Discord, ArgsOf, On, Client } from "discordx";
-import { prisma } from "../main.js";
-import { createGuildConfiguration } from "../utils/database.js";
+import { createGuildConfiguration, guildConfigurationThing } from "../utils/database.js";
+import { ChannelType, Events, GuildMember, Message } from "discord.js";
+import config from "../../botconfig.json" assert { type: "json" };
+import { XeerClient, prisma } from "../main.js";
 
-@Discord()
-export class GuildMemberAdd {
-    @On({
-        event: "guildMemberRemove",
-    })
-    async guildMemberAdd([member]: ArgsOf<"guildMemberRemove">, bot: Client, guardPayload: any) {
+export default {
+    name: Events.GuildMemberRemove,
+    once: false,
+    async execute(member: GuildMember, bot: XeerClient) {
         const guildConfig = await prisma.guildConfiguration.findUnique({
             where: {
                 id: member.guild.id,

@@ -20,7 +20,6 @@ model GuildConfiguration {
   leavemsg        String @default("")
   welcomechannel  String @default("")
   leavechannel    String @default("")
-  sendcmd_toggled String @default("allow")
 }
 
 model StatisticsChannels {

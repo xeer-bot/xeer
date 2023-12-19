@@ -2,7 +2,6 @@ import { SlashCommandBuilder, ChatInputCommandInteraction, PermissionFlagsBits }
 import { getTranslated } from "../../languages/helper.js";
 import { prisma } from "../../main.js";
 import { guildConfigurationThing, userAccountThing } from "../../utils/database.js";
-import { errEmbed, npEmbed } from "../../utils/embeds.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -17,7 +16,6 @@ export default {
                 { name: "Leave Message", value: "leavemsg" },
                 { name: "Welcome Message Channel ID", value: "welcomechannel" },
                 { name: "Leave Message Channel ID", value: "leavechannel" },
-                { name: "Send Command (ALLOW or DISALLOW)", value: "sendcmd_toggled" },
             )
             .setRequired(true)
         )
@@ -43,7 +41,7 @@ export default {
                 text = text.toLowerCase();
                 if (text != "allow" && text != "disallow") {
                     await interaction.followUp({
-                        embeds: [errEmbed(new Error(), "Wrong text, I only accept `ALLOW` or `DISALLOW`.")],
+                        embeds: [await getTranslated(user.language, "messages", "wrong_text_arg")],
                     });
                     return;
                 }
@@ -60,9 +58,7 @@ export default {
                 embeds: [await getTranslated(user.language, "embeds", "success")],
             });
         } else {
-            await interaction.followUp({
-                embeds: [npEmbed(undefined, "Administrator")],
-            });
+            throw new Error(await getTranslated(user.language, "messages", "no_permission2"));
         }
     }
 };

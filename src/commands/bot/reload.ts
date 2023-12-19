@@ -9,17 +9,24 @@ export default {
         .setDescription("Reloads commands.")
         .addStringOption((option) =>
             option
+                .setName("category")
+                .setDescription("No description.")
+                .setRequired(true)
+        )
+        .addStringOption((option) =>
+            option
                 .setName("command")
                 .setDescription("No description.")
                 .setRequired(true)
         ),
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
-        if (!checkDev(interaction)) return;
+        if (!(await checkDev(interaction))) return;
         const cmd = interaction.options.getString("command");
-        if (!cmd) throw new Error(await getTranslated("en_us", "messages", "unexpected_err"));
+        const category = interaction.options.getString("category");
+        if (!cmd || !category) throw new Error(await getTranslated("en_us", "messages", "unexpected_err"));
         const old = new Date();
-        const success = reload(cmd);
+        const success = reload(category, cmd);
         const new_ = new Date();
         const diff = (new_.getTime() - old.getTime()) / 1000;
         if (success) {

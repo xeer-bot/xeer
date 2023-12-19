@@ -1,5 +1,4 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { errEmbed } from "../../utils/embeds.js";
 import { XeerClient } from "../../main.js";
 import { checkDev } from "../../guards/devOnly.js";
 
@@ -10,21 +9,13 @@ export default {
         .addStringOption(option => option.setName("code").setDescription("No description.").setRequired(true)),
     async execute(interaction: ChatInputCommandInteraction, bot: XeerClient) {
         await interaction.deferReply({ ephemeral: true });
-        if (!checkDev(interaction)) return;
-        try {
-            const code = interaction.options.getString("code") || "";
-            const result = await eval(code);
-            let resultReplaced = "No output.";
-            if (typeof result == "string") {
-                resultReplaced = result.replace(bot.token ?? "😧", "no.");
-            }
-            interaction.followUp(resultReplaced);
-        } catch (err) {
-            if (err instanceof Error) {
-                await interaction.followUp({ embeds: [errEmbed(err, undefined)] });
-            } else {
-                await interaction.followUp({ embeds: [errEmbed(new Error("An unexpected error occured!"), undefined)] });
-            }
+        if (!(await checkDev(interaction))) return;
+        const code = interaction.options.getString("code") || "";
+        const result = await eval(code);
+        let resultReplaced = "No output.";
+        if (typeof result == "string") {
+            resultReplaced = result.replace(bot.token ?? "😧", "no.");
         }
+        interaction.followUp(resultReplaced);
     }
 };

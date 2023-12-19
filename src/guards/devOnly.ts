@@ -1,12 +1,14 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import { errEmbed } from "../utils/embeds.js";
 import config from "../../botconfig.json" assert { type: "json" };
+import { getTranslated } from "../languages/helper.js";
 
-export function checkDev(interaction: ChatInputCommandInteraction) {
-    if (interaction.user.id != config.ownerID) {
-        interaction.followUp({
-            embeds: [errEmbed(new Error(), "You're not an owner of this bot!")],
-        });
-        return false;
-    } else true;
+export async function checkDev(interaction: ChatInputCommandInteraction) {
+    return new Promise(async (resolve, reject) => {
+        if (interaction.user.id != config.ownerID) {
+            await interaction.followUp({
+                embeds: [await getTranslated("en_us", "embeds", "not_a_dev")],
+            });
+            resolve(false);
+        } else resolve(true);
+    });
 }

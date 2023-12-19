@@ -2,7 +2,6 @@ import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { getTranslated, format } from "../../languages/helper.js";
 import { prisma } from "../../main.js";
 import { userAccountThing } from "../../utils/database.js";
-import { errEmbed } from "../../utils/embeds.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -28,9 +27,7 @@ export default {
                 embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "leaderboard")), leaderboard))],
             });
         } else {
-            interaction.followUp({
-                embeds: [errEmbed(new Error(), "No accounts found in the database!")],
-            });
+            throw new Error(await getTranslated(user.language, "messages", "no_accs_in_db"));
         }
     }
 };

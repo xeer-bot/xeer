@@ -2,7 +2,6 @@ import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { userAccountThing } from "../../utils/database.js";
 import { format, getTranslated } from "../../languages/helper.js";
 import { executedRecently, prisma } from "../../main.js";
-import { errEmbed } from "../../utils/embeds.js";
 import { getRandomArbitrary } from "../../utils/main.js";
 
 export default {
@@ -13,10 +12,10 @@ export default {
     async execute(interaction: ChatInputCommandInteraction) {
         await interaction.deferReply();
         const bet = interaction.options.getNumber("bet") || 0;
+        const user = await userAccountThing(interaction.user.id);
+        if (!user) throw new Error(await getTranslated("en_us", "messages", "unexpected_err"));
         if (!executedRecently.has(interaction.user.id + "-gamble")) {
             const now = new Date();
-            const user = await userAccountThing(interaction.user.id);
-            if (!user) return;
             let userCash = user?.cash;
             if (!userCash) userCash = 0;
             if (userCash < bet) {
@@ -50,7 +49,7 @@ export default {
             }, 216000000);
         } else
             await interaction.followUp({
-                embeds: [errEmbed(new Error(), "Try again in `1 hour`!")],
+                embeds: [JSON.parse(format(JSON.stringify(getTranslated(user.language, "embeds", "cooldown")), "1 hour"))],
             });
     }
 };

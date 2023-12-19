@@ -5,17 +5,36 @@ import { PrismaClient } from "@prisma/client";
 import { title } from "./utils/main.js";
 import { listen } from "./http/server.js";
 import * as dotenv from "dotenv";
-import { errEmbed } from "./utils/embeds.js";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import config from "../botconfig.json" assert { type: "json" };
+import { refresh } from "./funcs/refresh.js";
+import { deployCommands, deployGuildCommands, deleteCommands, deleteGuildCommands } from "./funcs/deployScripts.js";
+import { getTranslated, format } from "./languages/helper.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 title();
 await listen();
+
+function importHelper(paths: string[]) {
+    let current = 0;
+    paths.forEach(path => {
+        import(paths[current]).then(async () => {
+            if (paths.length >= current) {
+                await run();
+            } else {
+                current++;
+            }
+        });
+    });
+}
+
+// Import funcs
+importHelper([
+    "./funcs/handler.js"
+]);
 
 dotenv.config();
 
@@ -37,44 +56,16 @@ export const bot = new Client({
 
 bot.commands = new Collection();
 
-async function deployGuildCommands() {
-    if (!process.env.BOT_TOKEN || !bot.application?.id) { log.error("Couldn't deploy commands due to no token or Application ID present."); return; }
-    const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN || "");
-    try {
-        log.info(`Started deploying ${bot.commands.size} application (/) commands.`);
-        const data = await rest.put(
-            Routes.applicationGuildCommands(bot.application.id, config.guildID),
-            { body: Array.from(bot.commands).map((cmd) => cmd[1].data.toJSON()) },
-        ) as { length: number };
-        log.success(`Successfully deployed ${data.length} application (/) commands.`);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function deployCommands() {
-    if (!process.env.BOT_TOKEN || !bot.application?.id) { log.error("Couldn't deploy commands due to no token or Application ID present."); return; }
-    const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN || "");
-    try {
-        log.info(`Started deploying ${bot.commands.size} application (/) commands.`);
-        const data = await rest.put(
-            Routes.applicationCommands(bot.application.id),
-            { body: Array.from(bot.commands).map((cmd) => cmd[1].data.toJSON()) },
-        ) as { length: number };
-        log.success(`Successfully deployed ${data.length} application (/) commands.`);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
 bot.once("ready", async () => {
     await bot.guilds.fetch();
     log.success(`Bot ready as ${bot.user?.username}.`);
-    deployGuildCommands();
     const args = process.argv.slice(2);
-    if (args[0] == "deploy-global-cmds") {
-        log.info("Deploying commands...");
-        deployCommands();
+    if (args[0] == "refresh-global-cmds") {
+        await deleteCommands();
+        await deployCommands();
+    } else {
+        await deleteGuildCommands();
+        await deployGuildCommands();
     }
 });
 
@@ -92,102 +83,39 @@ bot.on("interactionCreate", async (interaction: Interaction) => {
         await command.execute(interaction, bot);
     } catch (err: any) {
         if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({ embeds: [errEmbed(new Error(), err.toString())], ephemeral: true });
+            await interaction.followUp({ embeds: [JSON.parse(format(JSON.stringify(getTranslated("en_us", "embeds", "error")), err.toString()))], ephemeral: true });
         } else {
-            await interaction.reply({ embeds: [errEmbed(new Error(), err.toString())], ephemeral: true });
+            await interaction.reply({ embeds: [JSON.parse(format(JSON.stringify(getTranslated("en_us", "embeds", "error")), err.toString()))], ephemeral: true });
         }
     }
 });
 
-async function refresh() {
-    const guilds = await bot.guilds.fetch();
-    guilds.forEach((guild: any) => {
-        setTimeout(async () => {
-            const statisticsChannels = await prisma.statisticsChannels.findMany({
-                where: {
-                    gid: guild.id,
-                },
-            });
-            if (!statisticsChannels) return;
-            statisticsChannels.forEach(async (statisticsChannel) => {
-                try {
-                    const channel = await bot.channels.fetch(statisticsChannel.cid);
-                    if (!channel) {
-                        return;
-                    }
-                    if (channel?.isVoiceBased()) {
-                        const guildFetched = await guild.fetch();
-                        const guildMembersTotal = await guildFetched.members.fetch();
-                        const guildMembers = guildMembersTotal.filter((m: GuildMember) => !m.user.bot);
-                        const guildMembersOnline = guildMembers.filter((m: GuildMember) => m.presence?.status == "online" || m.presence?.status == "idle" || m.presence?.status == "dnd");
-                        const guildBots = guildMembersTotal.filter((m: GuildMember) => m.user.bot);
-                        let content = statisticsChannel.content;
-                        content = content.replaceAll("{bots}", guildBots.size.toString());
-                        content = content.replaceAll("{members}", guildMembers.size.toString());
-                        content = content.replaceAll("{memberstotal}", guildMembersTotal.size.toString());
-                        content = content.replaceAll("{membersonline}", guildMembersOnline.size.toString());
-                        await channel?.setName(content);
-                    }
-                } catch (err) {
-                    /* empty */
-                }
-            });
-        }, 1000);
-    });
-    refresh();
-}
-
 const foldersPath = path.join(__dirname, "commands");
 
-export function reload(commandName: string): boolean {
+export function reload(categoryName: string, commandName: string): boolean {
     log.info(`Trying to reload command ${commandName}.`);
-    const command = bot.commands.get(commandName);
-    if (command) {
-        bot.commands.delete(commandName);
-        import("file:///" + path.join(foldersPath, commandName) + ".js").then(content => {
-            bot.commands.set(content.data.name, content);
-            log.success(`Successfully reloaded command ${commandName}.`);
-            return true;
-        });
-    } else {
-        log.error(`Command ${commandName} doesn't exist.`);
+    try {
+        const command = bot.commands.get(commandName);
+        const filePath = path.join(foldersPath, categoryName, commandName + ".js");
+        const filePathTS = path.join(foldersPath, categoryName, commandName + ".ts");
+        if (command && fs.existsSync(filePathTS)) {
+            bot.commands.delete(commandName);
+            import("file:///" + filePath).then(content => content.default).then(content => {
+                bot.commands.set(content.data.name, content);
+                log.success(`Successfully reloaded command ${commandName}.`);
+            });
+        } else {
+            log.error(`Command ${commandName} doesn't exist.`);
+            return false;
+        }
+        return true;
+    } catch (err: any) {
+        log.error(`An error occured while trying to reload ${commandName}: \n${format(err)}`);
         return false;
     }
-    return false;
 }
 
 async function run() {
-    log.info("Registering commands and events...");
-
-    const commandFolders = fs.readdirSync(foldersPath);
-    for (const folder of commandFolders) {
-        const commandsPath = path.join(foldersPath, folder);
-        const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
-        for (const file of commandFiles) {
-            const filePath = path.join(commandsPath, file);
-            // log.info(`Registering ${filePath}.`);
-            let command = await import("file:///" + filePath);
-            if (!command.default) { continue; } else { command = command.default; }
-            if ("data" in command && "execute" in command) {
-                bot.commands.set(command.data.name, command);
-            } else {
-                log.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`);
-            }
-        }
-    }
-
-    const eventsPath = path.join(__dirname, "events");
-    const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
-    for (const file of eventFiles) {
-        const filePath = path.join(eventsPath, file);
-        const event = await import("file:///" + filePath);
-        if (event.once) {
-            bot.once(event.name, async (...args) => await event.execute(...args));
-        } else {
-            bot.on(event.name, async (...args) => await event.execute(...args));
-        }
-    }
-
     if (!process.env.BOT_TOKEN) {
         log.error("Couldn't find the BOT_TOKEN in your environment/configuration file (.env)!");
     } else {
@@ -197,5 +125,3 @@ async function run() {
         });
     }
 }
-
-run();

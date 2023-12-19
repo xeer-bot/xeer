@@ -1,10 +1,10 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
-import { createCanvas } from "canvas";
+import { createCanvas } from "@napi-rs/canvas";
 import { wrapText, altWrapText } from "../../utils/text_helper.js";
 
 export default {
     data: new SlashCommandBuilder()
-        .setName("textoimage")
+        .setName("texttoimage")
         .setDescription("Puts text on image.")
         .addStringOption((option: any) =>
             option.setName("mode")

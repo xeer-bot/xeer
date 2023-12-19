@@ -1,7 +1,6 @@
 import { ChannelType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { format, getTranslated } from "../../languages/helper.js";
 import { userAccountThing } from "../../utils/database.js";
-import { npEmbed } from "../../utils/embeds.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -17,17 +16,11 @@ export default {
         const amount = interaction.options.getNumber("amount") || 0;
         if (amount > 100) throw new Error(await getTranslated(user.language, "messages", "max_amount_err"));
         if (amount < 0) throw new Error(await getTranslated(user.language, "messages", "min_amount_err"));
-        if (interaction.memberPermissions?.has("ManageMessages")) {
-            await interaction.followUp(await getTranslated(user.language, "messages", "deleting_msgs"));
-            await interaction.channel?.bulkDelete(amount, true);
-            await interaction.channel?.send({
-                embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "deleted_msgs")), amount, interaction.user.username))],
-            });
-        } else {
-            const e = npEmbed(undefined, "Manage Messages");
-            await interaction.followUp({
-                embeds: [e],
-            });
-        }
+        if (!interaction.memberPermissions?.has("ManageMessages")) throw new Error(await getTranslated(user.language, "messages", "no_permission2"));
+        await interaction.followUp(await getTranslated(user.language, "messages", "deleting_msgs"));
+        await interaction.channel?.bulkDelete(amount, true);
+        await interaction.channel?.send({
+            embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "deleted_msgs")), amount, interaction.user.username))],
+        });
     }
 };

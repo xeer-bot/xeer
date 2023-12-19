@@ -2,7 +2,6 @@ import { ChatInputCommandInteraction, GuildMember, GuildMemberRoleManager, Permi
 import { format, getTranslated } from "../../languages/helper.js";
 import { bot } from "../../main.js";
 import { userAccountThing } from "../../utils/database.js";
-import { noBotPermsEmbedBUK, npEmbed } from "../../utils/embeds.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -20,32 +19,23 @@ export default {
         if (!member) {
             throw new Error(await getTranslated(user.language, "messages", "unexpected_err"));
         }
-        if (interaction.memberPermissions?.has("KickMembers") && (interaction.member?.roles as GuildMemberRoleManager).highest.position > member.roles.highest.position) {
-            (await bot.users.fetch(member.id))
-                .send({
-                    embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "got_kicked")), interaction.guild?.name, reason))],
-                })
-                .catch(async () => {
-                    interaction.channel?.send(await getTranslated(user.language, "messages", "dm_noperms"));
-                });
-            interaction.guild?.members
-                .kick(member)
-                .then(async (res) => {
-                    await interaction.followUp({
-                        embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "user_kicked")), interaction.guild?.name, reason))],
-                    });
-                })
-                .catch(async () => {
-                    const e = noBotPermsEmbedBUK("Kick Members");
-                    await interaction.followUp({
-                        embeds: [e],
-                    });
-                });
-        } else {
-            const e = npEmbed(undefined, "Kick Members");
-            await interaction.followUp({
-                embeds: [e],
+        if (!interaction.memberPermissions?.has("KickMembers") || (interaction.member?.roles as GuildMemberRoleManager).highest.position < member.roles.highest.position) throw new Error(await getTranslated(user.language, "messages", "no_permission2"));
+        (await bot.users.fetch(member.id))
+            .send({
+                embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "got_kicked")), interaction.guild?.name, reason))],
+            })
+            .catch(async () => {
+                interaction.channel?.send(await getTranslated(user.language, "messages", "dm_noperms"));
             });
-        }
+        interaction.guild?.members
+            .kick(member)
+            .then(async (res) => {
+                await interaction.followUp({
+                    embeds: [JSON.parse(format(JSON.stringify(await getTranslated(user.language, "embeds", "user_kicked")), interaction.guild?.name, reason))],
+                });
+            })
+            .catch(async () => {
+                throw new Error(await getTranslated(user.language, "messages", "dm_noperms"));
+            });
     }
 };

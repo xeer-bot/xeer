@@ -3,6 +3,7 @@ import { colors, emojis } from "../../utils/embeds.js";
 const now = new Date();
 
 export default {
+    // GENERAL
     success: {
         title: `${emojis.success} Success!`,
         description: "Operation completed successfully!",
@@ -14,6 +15,24 @@ export default {
         description: "Operation completed successfully! (Took %%)",
         color: colors.green,
         timestamp: now.toISOString(),
+    },
+    error: {
+        title: `${emojis.error} Error.`,
+        description: "An error occured!\n```%%```",
+        color: colors.red,
+        timestamp: now.toISOString()
+    },
+    not_a_dev: {
+        title: `${emojis.error} No permission.`,
+        description: "You're not a dev of this bot.",
+        color: colors.red,
+        timestamp: now.toISOString()
+    },
+    cooldown: {
+        title: `${emojis.error} Cooldown.`,
+        description: "You're on cooldown! Try again in `%%`.",
+        color: colors.red,
+        timestamp: now.toISOString()
     },
     // MODERATION
     user_banned: {

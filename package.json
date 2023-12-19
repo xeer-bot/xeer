@@ -8,7 +8,7 @@
     "author": "teletvbis",
     "scripts": {
         "build": "node builder.cjs",
-        "deploy-cmds:global": "node src/cmd-deploy-scripts/deploy-cmds-global.cjs",
+        "refresh-cmds": "node --loader ts-node/esm src/main.ts refresh-global-cmds",
         "dev": "node --loader ts-node/esm src/main.ts",
         "prettier": "npx prettier . --write",
         "eslint": "npx eslint --fix .",
@@ -18,9 +18,9 @@
     "dependencies": {
         "@discordx/di": "^3.3.0",
         "@discordx/importer": "^1.3.0",
+        "@napi-rs/canvas": "^0.1.44",
         "@prisma/client": "^5.1.1",
         "body-parser": "^1.20.2",
-        "canvas": "^2.11.2",
         "colorette": "^2.0.20",
         "discord.js": "^14.14.1",
         "discordx": "^11.9.0",
@@ -44,7 +44,7 @@
         "nodemon": "^2.0.22",
         "prettier": "3.0.3",
         "prisma": "^5.1.1",
-        "ts-node": "^10.9.2",
+        "ts-node": "^11.0.0-beta.1",
         "typescript": "^5.3.3"
     },
     "engines": {
