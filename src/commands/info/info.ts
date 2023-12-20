@@ -3,7 +3,6 @@ import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { fileURLToPath } from "url";
 import { getTranslated, format } from "../../languages/helper.js";
 import { bot } from "../../main.js";
-import { userAccountThing } from "../../utils/database.js";
 import fs from "fs";
 import botconfig from "../../../botconfig.json" assert { type: "json" };
 
@@ -11,11 +10,9 @@ export default {
     data: new SlashCommandBuilder()
         .setName("info")
         .setDescription("Info about the bot."),
-    async execute(interaction: ChatInputCommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction, user: any) {
         await interaction.deferReply();
         const now = new Date();
-        const user = await userAccountThing(interaction.user.id);
-        if (!user) return;
         const translated = await getTranslated(user.language, "custom", "info");
         let botowner = bot.users.cache.get(botconfig.ownerID)?.username;
         if (!botowner) {

@@ -1,7 +1,6 @@
 import { ChatInputCommandInteraction, GuildMember, GuildMemberRoleManager, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { format, getTranslated } from "../../languages/helper.js";
 import { bot } from "../../main.js";
-import { userAccountThing } from "../../utils/database.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -10,10 +9,8 @@ export default {
         .addUserOption(option => option.setName("member").setDescription("Member that you want to ban.").setRequired(true))
         .addStringOption(option => option.setName("reason").setDescription("No description.").setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
-    async execute(interaction: ChatInputCommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction, user: any) {
         await interaction.deferReply();
-        const user = await userAccountThing(interaction.user.id);
-        if (!user) return;
         const member = (interaction.options.getMember("member") as GuildMember);
         const reason = interaction.options.getString("reason");
         if (!member) {

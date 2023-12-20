@@ -1,7 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { format, getTranslated } from "../../languages/helper.js";
 import { prisma } from "../../main.js";
-import { userAccountThing } from "../../utils/database.js";
 import { checkDev } from "../../guards/devOnly.js";
 
 export default {
@@ -33,7 +32,7 @@ export default {
                 .setDescription("No description.")
             )
         ),
-    async execute(interaction: ChatInputCommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction, user: any) {
         await interaction.deferReply();
         if (!(await checkDev(interaction))) return;
         if (interaction.options.getSubcommand() == "set") {
@@ -41,8 +40,6 @@ export default {
             const cash = interaction.options.getNumber("newbalance");
             if (!cash) throw new Error("Cash is undefined.");
             const iuser = iuserr || interaction.user;
-            const user = await userAccountThing(interaction.user.id);
-            if (!user) return;
             await prisma.user.update({
                 where: {
                     id: iuser.id,
@@ -57,23 +54,23 @@ export default {
         } else {
             const iuserr = interaction.options.getUser("user");
             const iuser = iuserr || interaction.user;
-            const user = await prisma.user.findUnique({
+            const user0 = await prisma.user.findUnique({
                 where: {
                     id: iuser.id,
                 },
             });
-            if (user) {
+            if (user0) {
                 await interaction.followUp({
                     embeds: [JSON.parse(format(JSON.stringify(await getTranslated("en_us", "embeds", "user_balance")), iuser.id || interaction.user.id, user.cash))],
                 });
             } else {
-                throw new Error("No account found in database, try again!");
                 await prisma.user.create({
                     data: {
                         id: iuser.id,
                         cash: 0,
                     },
                 });
+                throw new Error("No account found in database, try again!");
             }
         }
     }

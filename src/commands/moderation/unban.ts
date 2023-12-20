@@ -1,6 +1,5 @@
 import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { format, getTranslated } from "../../languages/helper.js";
-import { userAccountThing } from "../../utils/database.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -8,12 +7,10 @@ export default {
         .setDescription("Unbans a banned member.")
         .addStringOption(option => option.setName("user_id").setDescription("No description.").setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
-    async execute(interaction: ChatInputCommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction, user: any) {
         await interaction.deferReply();
         const member = interaction.options.getUser("user_id");
         if (!member) throw new Error("Member is undefined.");
-        const user = await userAccountThing(interaction.user.id);
-        if (!user) return;
         if (!interaction.memberPermissions?.has("BanMembers")) throw new Error(await getTranslated(user.language, "messages", "no_permission2"));
         interaction.guild?.members
             .unban(member)

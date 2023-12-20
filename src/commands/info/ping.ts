@@ -6,7 +6,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName("ping")
         .setDescription("Checks bot's latency."),
-    async execute(interaction: ChatInputCommandInteraction, bot: XeerClient) {
+    async execute(interaction: ChatInputCommandInteraction, db_user_acc: any, bot: XeerClient) {
         await interaction.deferReply();
         const now = new Date();
         const sent = await interaction.followUp({

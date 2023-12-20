@@ -1,5 +1,4 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { userAccountThing } from "../../utils/database.js";
 import { format, getTranslated } from "../../languages/helper.js";
 import { executedRecently, prisma } from "../../main.js";
 import { getRandomArbitrary } from "../../utils/main.js";
@@ -9,11 +8,9 @@ export default {
         .setName("gamble")
         .setDescription("A cat says something that you want.")
         .addNumberOption(option => option.setName("bet").setDescription("bet").setRequired(true)),
-    async execute(interaction: ChatInputCommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction, user: any) {
         await interaction.deferReply();
         const bet = interaction.options.getNumber("bet") || 0;
-        const user = await userAccountThing(interaction.user.id);
-        if (!user) throw new Error(await getTranslated("en_us", "messages", "unexpected_err"));
         if (!executedRecently.has(interaction.user.id + "-gamble")) {
             const now = new Date();
             let userCash = user?.cash;

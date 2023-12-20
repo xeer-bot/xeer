@@ -3,9 +3,6 @@
         "target": "ESNext",
         "module": "ESNext",
         "outDir": "build",
-        "typeRoots": [
-            "src/types.d.ts"
-        ],
         "rootDir": "./",
         "strict": true,
         "moduleResolution": "Node",

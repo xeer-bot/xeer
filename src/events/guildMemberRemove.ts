@@ -1,6 +1,5 @@
-import { createGuildConfiguration, guildConfigurationThing } from "../utils/database.js";
-import { ChannelType, Events, GuildMember, Message } from "discord.js";
-import config from "../../botconfig.json" assert { type: "json" };
+import { createGuildConfiguration } from "../utils/database.js";
+import { Events, GuildMember } from "discord.js";
 import { XeerClient, prisma } from "../main.js";
 
 export default {
@@ -30,4 +29,4 @@ export default {
             await createGuildConfiguration(member.guild.id);
         }
     }
-}
+};

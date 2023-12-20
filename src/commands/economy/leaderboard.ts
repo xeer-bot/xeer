@@ -1,17 +1,14 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { getTranslated, format } from "../../languages/helper.js";
 import { prisma } from "../../main.js";
-import { userAccountThing } from "../../utils/database.js";
 
 export default {
     data: new SlashCommandBuilder()
         .setName("leaderboard")
         .setDescription("See the Top People!"),
-    async execute(interaction: ChatInputCommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction, user: any) {
         await interaction.deferReply();
         const now = new Date();
-        const user = await userAccountThing(interaction.user.id);
-        if (!user) return;
         const users = await prisma.user.findMany({
             orderBy: {
                 cash: "desc",

@@ -1,5 +1,5 @@
-import type { ChatInputCommandInteraction, GuildMember, Interaction, SlashCommandBuilder } from "discord.js";
-import { Client, IntentsBitField, Collection, REST, Routes } from "discord.js";
+import type { ChatInputCommandInteraction, Interaction, SlashCommandBuilder } from "discord.js";
+import { Client, IntentsBitField, Collection } from "discord.js";
 import * as log from "./utils/logger.js";
 import { PrismaClient } from "@prisma/client";
 import { title } from "./utils/main.js";
@@ -10,6 +10,7 @@ import { fileURLToPath } from "url";
 import { refresh } from "./components/refresh.js";
 import { deployCommands, deployGuildCommands, deleteCommands, deleteGuildCommands } from "./components/deployScripts.js";
 import { getTranslated, format } from "./languages/helper.js";
+import { userAccountThing } from "./utils/database.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,7 +33,7 @@ function importComponents(paths: string[]) {
 
 // Import components
 importComponents([
-    "./funcs/handler.js"
+    "./components/handler.js"
 ]);
 
 dotenv.config();
@@ -42,7 +43,7 @@ export const executedRecently = new Set();
 
 interface SlashCommand {
     data: SlashCommandBuilder,
-    execute: (interaction: ChatInputCommandInteraction, bot?: XeerClient) => void
+    execute: (interaction: ChatInputCommandInteraction, db_user_acc: any, bot?: XeerClient) => void
 }
 
 export interface XeerClient extends Client {
@@ -80,12 +81,13 @@ bot.on("interactionCreate", async (interaction: Interaction) => {
     }
 
     try {
-        await command.execute(interaction, bot);
+        const db_acc = userAccountThing(interaction.user.id);
+        await command.execute(interaction, db_acc, bot);
     } catch (err: any) {
-        if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({ embeds: [JSON.parse(format(JSON.stringify(getTranslated("en_us", "embeds", "error")), err.toString()))], ephemeral: true });
+        if (interaction.deferred) {
+            await interaction.followUp({ embeds: [JSON.parse(format(JSON.stringify(await getTranslated("en_us", "embeds", "error")), err.message))], ephemeral: true });
         } else {
-            await interaction.reply({ embeds: [JSON.parse(format(JSON.stringify(getTranslated("en_us", "embeds", "error")), err.toString()))], ephemeral: true });
+            await interaction.reply({ embeds: [JSON.parse(format(JSON.stringify(await getTranslated("en_us", "embeds", "error")), err.message))], ephemeral: true });
         }
     }
 });

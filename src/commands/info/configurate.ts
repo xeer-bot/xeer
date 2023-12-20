@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, PermissionFlagsBits } from "discord.js";
 import { getTranslated } from "../../languages/helper.js";
 import { prisma } from "../../main.js";
-import { guildConfigurationThing, userAccountThing } from "../../utils/database.js";
+import { guildConfigurationThing } from "../../utils/database.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -21,13 +21,11 @@ export default {
         )
         .addStringOption((option: any) => option.setName("text").setDescription("Text (Placeholders: {user}, {guildname}, {timestamp})").setRequired(true))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
-    async execute(interaction: ChatInputCommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction, user: any) {
         await interaction.deferReply();
         const option = interaction.options.getString("option");
         let text = interaction.options.getString("text");
-        const user = await userAccountThing(interaction.user.id);
         const gID = interaction.guild?.id || "";
-        if (!user) return;
         if (!option || !text) {
             await interaction.followUp({
                 embeds: [await getTranslated(user.language, "embeds", "success")],

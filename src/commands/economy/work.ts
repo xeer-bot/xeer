@@ -1,17 +1,14 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { getTranslated, format } from "../../languages/helper.js";
 import { executedRecently, prisma } from "../../main.js";
-import { userAccountThing } from "../../utils/database.js";
 import { getRandomArbitrary } from "../../utils/main.js";
 
 export default {
     data: new SlashCommandBuilder()
         .setName("work")
         .setDescription("Work!"),
-    async execute(interaction: ChatInputCommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction, user: any) {
         await interaction.deferReply();
-        const user = await userAccountThing(interaction.user.id);
-        if (!user) throw new Error(await getTranslated("en_us", "messages", "unexpected_err"));
         if (!executedRecently.has(interaction.user.id)) {
             const messages = ["", "did your chores", "walked someone's dog", "washed a car", "worked in an office", "worked in a zoo", "developed a game", "built a house"];
             const now = new Date();
