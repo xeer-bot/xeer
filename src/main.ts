@@ -5,11 +5,10 @@ import { PrismaClient } from "@prisma/client";
 import { title } from "./utils/main.js";
 import { listen } from "./http/server.js";
 import * as dotenv from "dotenv";
-import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { refresh } from "./funcs/refresh.js";
-import { deployCommands, deployGuildCommands, deleteCommands, deleteGuildCommands } from "./funcs/deployScripts.js";
+import { refresh } from "./components/refresh.js";
+import { deployCommands, deployGuildCommands, deleteCommands, deleteGuildCommands } from "./components/deployScripts.js";
 import { getTranslated, format } from "./languages/helper.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +17,7 @@ const __dirname = path.dirname(__filename);
 title();
 await listen();
 
-function importHelper(paths: string[]) {
+function importComponents(paths: string[]) {
     let current = 0;
     paths.forEach(path => {
         import(paths[current]).then(async () => {
@@ -31,8 +30,8 @@ function importHelper(paths: string[]) {
     });
 }
 
-// Import funcs
-importHelper([
+// Import components
+importComponents([
     "./funcs/handler.js"
 ]);
 
@@ -63,6 +62,7 @@ bot.once("ready", async () => {
     if (args[0] == "refresh-global-cmds") {
         await deleteCommands();
         await deployCommands();
+        await deleteGuildCommands();
     } else {
         await deleteGuildCommands();
         await deployGuildCommands();
@@ -89,31 +89,6 @@ bot.on("interactionCreate", async (interaction: Interaction) => {
         }
     }
 });
-
-const foldersPath = path.join(__dirname, "commands");
-
-export function reload(categoryName: string, commandName: string): boolean {
-    log.info(`Trying to reload command ${commandName}.`);
-    try {
-        const command = bot.commands.get(commandName);
-        const filePath = path.join(foldersPath, categoryName, commandName + ".js");
-        const filePathTS = path.join(foldersPath, categoryName, commandName + ".ts");
-        if (command && fs.existsSync(filePathTS)) {
-            bot.commands.delete(commandName);
-            import("file:///" + filePath).then(content => content.default).then(content => {
-                bot.commands.set(content.data.name, content);
-                log.success(`Successfully reloaded command ${commandName}.`);
-            });
-        } else {
-            log.error(`Command ${commandName} doesn't exist.`);
-            return false;
-        }
-        return true;
-    } catch (err: any) {
-        log.error(`An error occured while trying to reload ${commandName}: \n${format(err)}`);
-        return false;
-    }
-}
 
 async function run() {
     if (!process.env.BOT_TOKEN) {

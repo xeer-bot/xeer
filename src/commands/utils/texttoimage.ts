@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
-import { createCanvas } from "@napi-rs/canvas";
+import { Canvas } from "skia-canvas";
 import { wrapText, altWrapText } from "../../utils/text_helper.js";
 
 export default {
@@ -23,21 +23,21 @@ export default {
             const canvas = makeCanvas(200, 200);
             wrapText(canvas.getContext("2d"), text, 5, 13, 39, 10);
             await interaction.followUp({
-                files: [canvas.toBuffer("image/png")],
+                files: [await canvas.toBuffer("png")],
             });
         }
         if (mode == "2") {
             const canvas = makeCanvas(200, 600);
             altWrapText(canvas.getContext("2d"), text, 5, 13, 39, 10);
             await interaction.followUp({
-                files: [canvas.toBuffer("image/png")],
+                files: [await canvas.toBuffer("png")],
             });
         }
     }
 };
 
 function makeCanvas(width: number, height: number) {
-    const canvas = createCanvas(width, height);
+    const canvas = new Canvas(width, height);
     const ctx = canvas.getContext("2d");
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, width, height);
