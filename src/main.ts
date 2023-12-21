@@ -81,9 +81,11 @@ bot.on("interactionCreate", async (interaction: Interaction) => {
     }
 
     try {
-        const db_acc = userAccountThing(interaction.user.id);
+        const db_acc = await userAccountThing(interaction.user.id);
+        if (!db_acc) return;
         await command.execute(interaction, db_acc, bot);
     } catch (err: any) {
+        console.log(err);
         if (interaction.deferred) {
             await interaction.followUp({ embeds: [JSON.parse(format(JSON.stringify(await getTranslated("en_us", "embeds", "error")), err.message))], ephemeral: true });
         } else {
