@@ -3,6 +3,10 @@ import path from "path";
 import { format } from "util";
 import { bot } from "../main.js";
 import fs from "fs";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const foldersPath = path.join(__dirname, "commands");
 

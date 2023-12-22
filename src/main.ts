@@ -11,6 +11,7 @@ import { refresh } from "./components/refresh.js";
 import { deployCommands, deployGuildCommands, deleteCommands, deleteGuildCommands } from "./components/deployScripts.js";
 import { getTranslated, format } from "./languages/helper.js";
 import { userAccountThing } from "./utils/database.js";
+import { LavalinkManager } from "lavalink-client/dist/types/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,21 +20,19 @@ title();
 await listen();
 
 function importComponents(paths: string[]) {
-    let current = 0;
-    paths.forEach(path => {
-        import(paths[current]).then(async () => {
-            if (paths.length >= current) {
+    for (let i = 1; paths.length > i; i++) {
+        import(paths[i]).then(async () => {
+            if (paths.length < i) {
                 await run();
-            } else {
-                current++;
             }
         });
-    });
+    }
 }
 
 // Import components
 importComponents([
-    "./components/handler.js"
+    "./components/handler.js",
+    "./components/music.js"
 ]);
 
 dotenv.config();
@@ -47,7 +46,8 @@ interface SlashCommand {
 }
 
 export interface XeerClient extends Client {
-    commands: Collection<string, SlashCommand>
+    commands: Collection<string, SlashCommand>,
+    lavalink: LavalinkManager
 }
 
 export const bot = new Client({
@@ -59,6 +59,7 @@ bot.commands = new Collection();
 bot.once("ready", async () => {
     await bot.guilds.fetch();
     log.success(`Bot ready as ${bot.user?.username}.`);
+    await bot.lavalink.init({ ...bot.user! });
     const args = process.argv.slice(2);
     if (args[0] == "refresh-global-cmds") {
         await deleteCommands();
