@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { format, getTranslated } from "../../languages/helper.js";
-import { reload } from "../../components/reload.js";
+import { reload } from "../../functions/reload.js";
 import { checkDev } from "../../guards/devOnly.js";
 
 export default {

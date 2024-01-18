@@ -7,8 +7,8 @@ import { listen } from "./http/server.js";
 import * as dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import { refresh } from "./components/refresh.js";
-import { deployCommands, deployGuildCommands, deleteCommands, deleteGuildCommands } from "./components/deployScripts.js";
+import { refresh } from "./functions/refresh.js";
+import { deployCommands, deployGuildCommands, deleteCommands, deleteGuildCommands } from "./functions/deployScripts.js";
 import { getTranslated, format } from "./languages/helper.js";
 import { userAccountThing } from "./utils/database.js";
 
@@ -18,23 +18,7 @@ const __dirname = path.dirname(__filename);
 title();
 await listen();
 
-function importComponents(paths: string[]) {
-    let count = 0;
-    for (let i = 0; paths.length > i; i++) {
-        log.info(`Importing component at ${paths[i]}`);
-        import(paths[i]).then(async () => {
-            count++;
-            if (count == paths.length) {
-                await run();
-            }
-        });
-    }
-}
-
-// Import components
-importComponents([
-    "./components/handler.js",
-]);
+import("./handler/handler.js").then(async () => await run());
 
 dotenv.config();
 
