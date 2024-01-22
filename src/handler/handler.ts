@@ -8,7 +8,7 @@ import { format } from "util";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
     
-log.info("Registering commands and events...");
+log.info("Registering commands and events...", "Handler");
 
 const foldersPath = path.join(__dirname, "../commands");  
 
@@ -25,10 +25,10 @@ for (const folder of commandFolders) {
             if ("data" in command && "execute" in command) {
                 bot.commands.set(command.data.name, command);
             } else {
-                log.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`);
+                log.warn(`The command at ${filePath} is missing a required "data" or "execute" property.`, "Handler");
             }
         } catch (err: any) {
-            log.error(`Failed to register ${filePath}: \n${format(err)}`);
+            log.error(`Failed to register ${filePath}: \n${format(err)}`, "Handler");
         }
     }
 }
@@ -45,6 +45,6 @@ for (const file of eventFiles) {
             bot.on(event.name, async (...args) => await event.execute(...args));
         }
     } catch (err: any) {
-        log.error(`Failed to register ${filePath}: \n${format(err)}`);
+        log.error(`Failed to register ${filePath}: \n${format(err)}`, "Handler");
     }
 }

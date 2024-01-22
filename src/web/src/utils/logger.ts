@@ -25,7 +25,7 @@ function error(msg: any, source: (undefined | string) = "undefined") {
     console.log(` ${red(time)} ${blackBright("|")} ${red(bold("ERROR"))} ${blackBright(">")}`, msg, blackBright("(" + source + ")"));
 }
 
-export {
+export default {
     info,
     warn,
     error,

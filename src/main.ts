@@ -3,7 +3,7 @@ import { Client, IntentsBitField, Collection } from "discord.js";
 import * as log from "./utils/logger.js";
 import { PrismaClient } from "@prisma/client";
 import { title } from "./utils/main.js";
-import { listen } from "./http/server.js";
+import { listenHttp } from "./http/server.js";
 import * as dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -11,12 +11,14 @@ import { refresh } from "./functions/refresh.js";
 import { deployCommands, deployGuildCommands, deleteCommands, deleteGuildCommands } from "./functions/deployScripts.js";
 import { getTranslated, format } from "./languages/helper.js";
 import { userAccountThing } from "./utils/database.js";
+import { listenWeb } from "./web/src/main.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 title();
-await listen();
+await listenHttp();
+await listenWeb();
 
 import("./handler/handler.js").then(async () => await run());
 
@@ -42,7 +44,7 @@ bot.commands = new Collection();
 
 bot.once("ready", async () => {
     await bot.guilds.fetch();
-    log.success(`Bot ready as ${bot.user?.username}.`);
+    log.success(`Bot ready as ${bot.user?.username}.`, "Ready Event");
     const args = process.argv.slice(2);
     if (args[0] == "refresh-global-cmds") {
         await deleteCommands();
@@ -60,7 +62,7 @@ bot.on("interactionCreate", async (interaction: Interaction) => {
     const command = bot.commands.get(interaction.commandName);
 
     if (!command) {
-        log.error(`No command matching ${interaction.commandName} was found.`);
+        log.error(`No command matching ${interaction.commandName} was found.`, "InteractionCreate Event");
         return;
     }
 
@@ -80,9 +82,9 @@ bot.on("interactionCreate", async (interaction: Interaction) => {
 
 async function run() {
     if (!process.env.BOT_TOKEN) {
-        log.error("Couldn't find the BOT_TOKEN in your environment/configuration file (.env)!");
+        log.error("Couldn't find the BOT_TOKEN in your environment/configuration file (.env)!", "Main");
     } else {
-        log.info("Logging in...");
+        log.info("Logging in...", "Main");
         bot.login(process.env.BOT_TOKEN).then(async () => {
             await refresh();
         });

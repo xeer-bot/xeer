@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 const foldersPath = path.join(__dirname, "commands");
 
 export function reload(categoryName: string, commandName: string): boolean {
-    log.info(`Trying to reload command ${commandName}.`);
+    log.info(`Trying to reload command ${commandName}.`, "Reload");
     try {
         const command = bot.commands.get(commandName);
         const filePath = path.join(foldersPath, categoryName, commandName + ".js");
@@ -20,15 +20,15 @@ export function reload(categoryName: string, commandName: string): boolean {
             bot.commands.delete(commandName);
             import("file:///" + filePath + `?v=${Date.now()}`).then(content => content.default).then(content => {
                 bot.commands.set(content.data.name, content);
-                log.success(`Successfully reloaded command ${commandName}.`);
+                log.success(`Successfully reloaded command ${commandName}.`, "Reload");
             });
         } else {
-            log.error(`Command ${commandName} doesn't exist.`);
+            log.error(`Command ${commandName} doesn't exist.`, "Reload");
             return false;
         }
         return true;
     } catch (err: any) {
-        log.error(`An error occured while trying to reload ${commandName}: \n${format(err)}`);
+        log.error(`An error occured while trying to reload ${commandName}: \n${format(err)}`, "Reload");
         return false;
     }
 }

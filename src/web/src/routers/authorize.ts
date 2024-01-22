@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import session from "express-session";
 export const router = express.Router();
 
-import config from "../../config.json";
+import config from "../../config.json" assert { type: "json" };
 
 router.use(
     session({

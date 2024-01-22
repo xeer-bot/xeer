@@ -1,16 +1,20 @@
 import express from "express";
-import config from "../config.json";
-import logger from "./utils/logger";
+import config from "../config.json" assert { type: "json" };
+import logger from "./utils/logger.js";
 import path from "path";
-import { isLoggedIn, router } from "./routers/authorize";
+import { isLoggedIn, router } from "./routers/authorize.js";
 import session from "express-session";
 import fs from "fs";
+import { fileURLToPath } from "url";
 
 if (process.platform == "win32") {
     process.title = "xeer";
 } else {
     process.stdout.write("\x1b]2;" + "xeer" + "\x1b\x5c");
 }
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -75,6 +79,8 @@ app.get("/add", (req, res) => {
     res.redirect(config.bot.invite_link);
 });
 
-app.listen(config.port, () => {
-    logger.success(`Listening on ${config.port}! :3`);
-});
+export async function listenWeb() {
+    app.listen(config.port, () => {
+        logger.success(`Listening on ${config.port}!`, "Web Server");
+    });
+}

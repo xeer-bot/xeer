@@ -227,8 +227,8 @@ app.post("/api/save", async (req: Request, res: Response) => {
     }
 });
 
-export async function listen() {
+export async function listenHttp() {
     app.listen(port, () => {
-        logger.success(`Listening on port ${port}.`);
+        logger.success(`Listening on port ${port}.`, "HTTP Server");
     });
 }
