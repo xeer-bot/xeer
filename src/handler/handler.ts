@@ -4,6 +4,7 @@ import { bot } from "../main.js";
 import * as log from "../utils/logger.js";
 import { fileURLToPath } from "url";
 import { format } from "util";
+import args from "../../arguments.json" assert { type: "json" };
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,9 +14,17 @@ log.info("Registering commands and events...", "Handler");
 const foldersPath = path.join(__dirname, "../commands");  
 
 const commandFolders = fs.readdirSync(foldersPath);
+
 for (const folder of commandFolders) {
     const commandsPath = path.join(foldersPath, folder);
-    const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
+
+    let commandFiles;
+    if (args.production) {
+        commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".js"));
+    } else {
+        commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
+    }
+    
     for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
         // log.info(`Registering ${filePath}...`);
@@ -34,7 +43,14 @@ for (const folder of commandFolders) {
 }
 
 const eventsPath = path.join(__dirname, "../events");
-const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
+
+let eventFiles;
+if (args.production) {
+    eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".js"));
+} else {
+    eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(".ts")).map(file => file.replace(".ts", ".js"));
+}
+
 for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
     try {

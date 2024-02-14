@@ -1,10 +1,10 @@
-import { dirname } from "@discordx/importer";
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import { fileURLToPath } from "url";
 import { getTranslated, format } from "../../languages/helper.js";
 import { bot } from "../../main.js";
 import fs from "fs";
-import botconfig from "../../../botconfig.json" assert { type: "json" };
+import botconfig from "../../../bot_config.json" assert { type: "json" };
+import { dirname } from "path";
 
 export default {
     data: new SlashCommandBuilder()

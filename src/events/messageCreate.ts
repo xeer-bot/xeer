@@ -1,6 +1,6 @@
 import { guildConfigurationThing } from "../utils/database.js";
 import { ChannelType, Events, Message } from "discord.js";
-import config from "../../botconfig.json" assert { type: "json" };
+import config from "../../bot_config.json" assert { type: "json" };
 import { XeerClient } from "../main.js";
 
 export default {

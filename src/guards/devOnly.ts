@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import config from "../../botconfig.json" assert { type: "json" };
+import config from "../../bot_config.json" assert { type: "json" };
 import { getTranslated } from "../languages/helper.js";
 
 export async function checkDev(interaction: ChatInputCommandInteraction) {

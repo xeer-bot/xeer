@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const foldersPath = path.join(__dirname, "commands");
+const foldersPath = path.join(__dirname, "../commands");
 
 export function reload(categoryName: string, commandName: string): boolean {
     log.info(`Trying to reload command ${commandName}.`, "Reload");
@@ -16,6 +16,7 @@ export function reload(categoryName: string, commandName: string): boolean {
         const command = bot.commands.get(commandName);
         const filePath = path.join(foldersPath, categoryName, commandName + ".js");
         const filePathTS = path.join(foldersPath, categoryName, commandName + ".ts");
+        log.info(`Path: ${filePathTS}`, "Reload");
         if (command && fs.existsSync(filePathTS)) {
             bot.commands.delete(commandName);
             import("file:///" + filePath + `?v=${Date.now()}`).then(content => content.default).then(content => {

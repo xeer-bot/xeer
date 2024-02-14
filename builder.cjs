@@ -1,8 +1,8 @@
 const fs = require("fs");
 const cp = require("child_process");
 
-const files = ["build_date.txt", ".env"];
-const folders = ["./src/languages/custom/", "./src/languages/embeds", "./src/languages/messages", "./prisma"];
+const files = ["build_date.txt", ".env", "bot_config.json"];
+const folders = ["./src/languages/custom/", "./src/languages/embeds", "./src/languages/messages", "./prisma", "./package.json", "./assets"];
 
 console.log("Running...");
 

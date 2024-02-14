@@ -12,6 +12,8 @@ import { deployCommands, deployGuildCommands, deleteCommands, deleteGuildCommand
 import { getTranslated, format } from "./languages/helper.js";
 import { userAccountThing } from "./utils/database.js";
 import { listenWeb } from "./web/src/main.js";
+import args from "../arguments.json" assert { type: "json" };
+import { GlobalFonts } from "@napi-rs/canvas";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,6 +23,8 @@ await listenHttp();
 await listenWeb();
 
 import("./handler/handler.js").then(async () => await run());
+
+GlobalFonts.registerFromPath(path.join(__dirname, "..", "assets", "fonts", "default.ttf"), "default");
 
 dotenv.config();
 
@@ -45,8 +49,7 @@ bot.commands = new Collection();
 bot.once("ready", async () => {
     await bot.guilds.fetch();
     log.success(`Bot ready as ${bot.user?.username}.`, "Ready Event");
-    const args = process.argv.slice(2);
-    if (args[0] == "refresh-global-cmds") {
+    if (args.global_commands) {
         await deleteCommands();
         await deployCommands();
         await deleteGuildCommands();

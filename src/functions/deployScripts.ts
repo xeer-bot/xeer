@@ -1,6 +1,6 @@
 import * as log from "../utils/logger.js";
 import { REST, Routes } from "discord.js";
-import config from "../../botconfig.json" assert { type: "json" };
+import config from "../../bot_config.json" assert { type: "json" };
 import { bot } from "../main.js";
 
 export async function deployGuildCommands() {
