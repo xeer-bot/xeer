@@ -1,4 +1,4 @@
-export declare enum Attributes {
-    PremiumOnly = "PremiumOnly",
-    DevOnly = "DevOnly"
+export const Attributes: object =  {
+    PremiumOnly: "premium_only",
+    DevOnly: "dev_only" 
 }

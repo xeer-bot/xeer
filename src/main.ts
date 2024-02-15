@@ -24,6 +24,7 @@ await listenWeb();
 
 import("./handler/handler.js").then(async () => await run());
 
+// If this throws an error somehow then insert a font into assets/fonts and name it "default.ttf".
 GlobalFonts.registerFromPath(path.join(__dirname, "..", "assets", "fonts", "default.ttf"), "default");
 
 dotenv.config();

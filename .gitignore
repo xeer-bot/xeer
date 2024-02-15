@@ -11,6 +11,9 @@ lerna-debug.log*
 data.db
 data.db-journal
 
+# Font
+assets/fonts/default.ttf
+
 # Build
 build
 
